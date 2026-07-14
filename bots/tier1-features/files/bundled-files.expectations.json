@@ -1,0 +1,187 @@
+{
+  "test": {
+    "id": "tier1-features/files/bundled-files",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "save-bundled-file",
+        "use-bundled-file-as-template",
+        "file-find-replace",
+        "get-file-contents",
+        "if",
+        "add-to-list",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "save-explicit-path",
+      "kind": "round-trip",
+      "description": "save-bundled-file decoded the embedded base64 to the explicit scratch path: the harness's own read of that file equals the pre-encoding source text (em dash = multi-byte utf8 pinned), and the captured path variable points at a real file the bot could re-read.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/bundled/note.txt"
+                  }
+                ]
+              },
+              "Hello NAME — welcome to CITY."
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "readNote"
+              },
+              "Hello NAME — welcome to CITY."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "save-temp-path",
+      "kind": "round-trip",
+      "description": "Blank destination → a per-run temp path: the returned path is engine-specific so shape is asserted (non-empty, distinct from the explicit path, leaf keeps the bundled fileName) and its CONTENT was verified in-bot against the explicit copy (crumb).",
+      "expr": {
+        "and": [
+          {
+            "ends_with": [
+              {
+                "$var": "tempPath"
+              },
+              "note.txt"
+            ]
+          },
+          {
+            "not_equals": [
+              {
+                "$var": "tempPath"
+              },
+              {
+                "$var": "notePath"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "readTemp"
+              },
+              "Hello NAME — welcome to CITY."
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "crumbs"
+              },
+              [
+                "bundled-save-ok"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "template-fill-and-independence",
+      "kind": "round-trip",
+      "description": "use-bundled-file-as-template materialized two INDEPENDENT working copies: copy A's {{QTY}} placeholders were filled in place (both occurrences), while copy B still holds the pristine template — physical bytes confirmed for both by the harness.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "readTplA"
+              },
+              "id,qty\nwidget,7\ntotal,7\n"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/bundled/tplA.csv"
+                  }
+                ]
+              },
+              "id,qty\nwidget,7\ntotal,7\n"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "readTplB"
+              },
+              "id,qty\nwidget,{{QTY}}\ntotal,{{QTY}}\n"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/bundled/tplB.csv"
+                  }
+                ]
+              },
+              "id,qty\nwidget,{{QTY}}\ntotal,{{QTY}}\n"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "non-file-variable-buried",
+      "kind": "round-trip",
+      "description": "save-bundled-file pointed at a non-file variable failed ('not a bundled file variable', buried): the sentinel result variable is untouched and no file appeared at the would-be destination.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "badSavePath"
+              },
+              "UNTOUCHED"
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/bundled/bad.txt"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

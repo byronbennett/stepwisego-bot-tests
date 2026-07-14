@@ -1,0 +1,747 @@
+{
+  "job": {
+    "jobName": "sharepoint-list-lifecycle-roundtrip",
+    "jobGuid": "51b70002-0000-4000-8000-000000000001",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "ba039a3c-bfc6-474c-9544-980a9814a56f",
+      "stepName": "Require shared variables: sgtSharePoint",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtSharePoint"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "51b70002-0000-4000-8000-000000000002",
+      "stepName": "arrange: create session list with the field-type roster",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-create-list",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "newListName": {
+            "value": "sgt-{var:_sgtSessionId}-life"
+          },
+          "newIsLibrary": {
+            "value": false
+          },
+          "newListDescription": {
+            "value": "sgtester Track 15 session list"
+          },
+          "fieldsConfig": {
+            "value": {
+              "fields": [
+                {
+                  "displayName": "SgtText",
+                  "internalName": "SgtText",
+                  "fieldType": "Text"
+                },
+                {
+                  "displayName": "SgtNote",
+                  "internalName": "SgtNote",
+                  "fieldType": "Note"
+                },
+                {
+                  "displayName": "SgtNum",
+                  "internalName": "SgtNum",
+                  "fieldType": "Number"
+                },
+                {
+                  "displayName": "SgtCur",
+                  "internalName": "SgtCur",
+                  "fieldType": "Currency"
+                },
+                {
+                  "displayName": "SgtBool",
+                  "internalName": "SgtBool",
+                  "fieldType": "Boolean"
+                },
+                {
+                  "displayName": "SgtWhen",
+                  "internalName": "SgtWhen",
+                  "fieldType": "DateTime"
+                },
+                {
+                  "displayName": "SgtChoice",
+                  "internalName": "SgtChoice",
+                  "fieldType": "Choice",
+                  "choices": [
+                    "Red",
+                    "Green",
+                    "Blue"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "scl"
+    },
+    {
+      "stepGuid": "51b70002-0000-4000-8000-000000000003",
+      "stepName": "act: insert the fully-typed item (row A)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-life"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "row-A"
+                },
+                {
+                  "internalName": "SgtText",
+                  "displayName": "SgtText",
+                  "value": "Ünïcødé 漢字 text"
+                },
+                {
+                  "internalName": "SgtNote",
+                  "displayName": "SgtNote",
+                  "value": "line1\nline2"
+                },
+                {
+                  "internalName": "SgtNum",
+                  "displayName": "SgtNum",
+                  "fieldType": "Number",
+                  "value": "1234.56"
+                },
+                {
+                  "internalName": "SgtCur",
+                  "displayName": "SgtCur",
+                  "fieldType": "Currency",
+                  "value": "9876.54"
+                },
+                {
+                  "internalName": "SgtBool",
+                  "displayName": "SgtBool",
+                  "fieldType": "Boolean",
+                  "value": "true"
+                },
+                {
+                  "internalName": "SgtWhen",
+                  "displayName": "SgtWhen",
+                  "fieldType": "DateTime",
+                  "value": "2026-06-01T14:30:00Z"
+                },
+                {
+                  "internalName": "SgtChoice",
+                  "displayName": "SgtChoice",
+                  "fieldType": "Choice",
+                  "value": "Green"
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sia"
+    },
+    {
+      "stepGuid": "51b70002-0000-4000-8000-000000000004",
+      "stepName": "act: insert the trichotomy item (row B: empty-string text, everything else never set)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-life"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "row-B"
+                },
+                {
+                  "internalName": "SgtText",
+                  "displayName": "SgtText",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sib"
+    },
+    {
+      "stepGuid": "51b70002-0000-4000-8000-000000000005",
+      "stepName": "act: insert the sacrificial delete-target (row C)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-life"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "row-C"
+                },
+                {
+                  "internalName": "SgtNum",
+                  "displayName": "SgtNum",
+                  "fieldType": "Number",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sic"
+    },
+    {
+      "stepGuid": "51b70002-0000-4000-8000-000000000006",
+      "stepName": "assert: select all rows back (plugin readback witness)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-select-items",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-life"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "queryConfig": {
+            "value": {
+              "selectedFields": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title"
+                },
+                {
+                  "internalName": "SgtText",
+                  "displayName": "SgtText"
+                },
+                {
+                  "internalName": "SgtNum",
+                  "displayName": "SgtNum",
+                  "fieldType": "Number"
+                },
+                {
+                  "internalName": "SgtCur",
+                  "displayName": "SgtCur",
+                  "fieldType": "Currency"
+                },
+                {
+                  "internalName": "SgtBool",
+                  "displayName": "SgtBool",
+                  "fieldType": "Boolean"
+                },
+                {
+                  "internalName": "SgtWhen",
+                  "displayName": "SgtWhen",
+                  "fieldType": "DateTime"
+                },
+                {
+                  "internalName": "SgtChoice",
+                  "displayName": "SgtChoice",
+                  "fieldType": "Choice"
+                }
+              ],
+              "orderBy": [
+                {
+                  "field": "Title",
+                  "direction": "asc"
+                }
+              ]
+            }
+          },
+          "maxItems": 50,
+          "includeSubfolders": {
+            "value": false
+          },
+          "folderPath": {
+            "value": ""
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssel"
+    },
+    {
+      "stepGuid": "51b70002-0000-4000-8000-000000000007",
+      "stepName": "capture row-A cells from the selected DataTable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "dataTable"
+          },
+          "dataTableVariable": {
+            "value": "{ssel:resultDT}"
+          },
+          "maxIterations": {
+            "value": 100
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "51b70002-0000-4000-8000-000000000008",
+          "stepName": "is this row-A?",
+          "parentGuid": "51b70002-0000-4000-8000-000000000007",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{slp-currentDataRow:Title}",
+                    "comparator": "equals",
+                    "rightOperand": "row-A"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 8,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "51b70002-0000-4000-8000-000000000009",
+              "stepName": "set {var:rowACells}",
+              "parentGuid": "51b70002-0000-4000-8000-000000000008",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:rowACells}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "num={slp-currentDataRow:SgtNum}|cur={slp-currentDataRow:SgtCur}|bool={slp-currentDataRow:SgtBool}|when={slp-currentDataRow:SgtWhen}|choice={slp-currentDataRow:SgtChoice}|text={slp-currentDataRow:SgtText}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 9,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [],
+              "stepPrefix": ""
+            }
+          ],
+          "stepPrefix": ""
+        }
+      ],
+      "stepPrefix": "slp"
+    },
+    {
+      "stepGuid": "51b70002-0000-4000-8000-000000000010",
+      "stepName": "act: patch row-A's SgtNum only (others must stay intact)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-update-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-life"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "updateMode": {
+            "value": "filtersOnly"
+          },
+          "updateConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "SgtNum",
+                  "displayName": "SgtNum",
+                  "fieldType": "Number",
+                  "value": "2222.25"
+                }
+              ],
+              "filters": [
+                {
+                  "logic": "and",
+                  "field": "Title",
+                  "comparator": "eq",
+                  "value": "row-A"
+                }
+              ]
+            }
+          },
+          "loopList": {
+            "value": ""
+          },
+          "loopDataTable": {
+            "value": ""
+          },
+          "ignoreMissingUploadFiles": {
+            "value": false
+          },
+          "disableConcurrency": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "supd"
+    },
+    {
+      "stepGuid": "51b70002-0000-4000-8000-000000000011",
+      "stepName": "act: delete row-C by filter",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-delete-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-life"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "deleteMode": {
+            "value": "filtersOnly"
+          },
+          "deleteConfig": {
+            "value": {
+              "filters": [
+                {
+                  "logic": "and",
+                  "field": "Title",
+                  "comparator": "eq",
+                  "value": "row-C"
+                }
+              ]
+            }
+          },
+          "loopList": {
+            "value": ""
+          },
+          "loopDataTable": {
+            "value": ""
+          },
+          "recycleBin": {
+            "value": true
+          },
+          "disableConcurrency": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sdel"
+    },
+    {
+      "stepGuid": "51b70002-0000-4000-8000-000000000012",
+      "stepName": "assert: delete with a no-match filter affects zero rows (pass, not error)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-delete-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-life"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "deleteMode": {
+            "value": "filtersOnly"
+          },
+          "deleteConfig": {
+            "value": {
+              "filters": [
+                {
+                  "logic": "and",
+                  "field": "Title",
+                  "comparator": "eq",
+                  "value": "row-C"
+                }
+              ]
+            }
+          },
+          "loopList": {
+            "value": ""
+          },
+          "loopDataTable": {
+            "value": ""
+          },
+          "recycleBin": {
+            "value": true
+          },
+          "disableConcurrency": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sdl2"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "rowACells",
+      "token": "{var:rowACells}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.180"
+}

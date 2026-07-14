@@ -1,0 +1,118 @@
+{
+  "test": {
+    "id": "tier1-features/web/upload",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "upload-file",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/upload.html",
+      "fixtures/upload-payload.txt"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "upload-outputs",
+      "kind": "round-trip",
+      "description": "upload-file reports success with fileCount 1",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000c-0000-0000-0000-000000000003",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000c-0000-0000-0000-000000000003",
+                  "name": "fileCount"
+                }
+              },
+              1
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-sees-file-name",
+      "kind": "round-trip",
+      "description": "the change handler saw the original basename",
+      "expr": {
+        "equals": [
+          {
+            "$var": "upNames"
+          },
+          "upload-payload.txt"
+        ]
+      }
+    },
+    {
+      "id": "page-sees-exact-byte-size",
+      "kind": "round-trip",
+      "description": "the File object carries the exact utf-8 byte size (63 — multibyte chars count as bytes, not chars)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "upSize"
+          },
+          "63"
+        ]
+      }
+    },
+    {
+      "id": "page-reads-content",
+      "kind": "round-trip",
+      "description": "file.text() in-page returns the payload (innerText read collapses the newline to a space)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "upContent"
+          },
+          "sgt-upload-payload Ünïcødé 漢字 line-1 line-2 exact bytes"
+        ]
+      }
+    },
+    {
+      "id": "filelist-has-one-entry",
+      "kind": "round-trip",
+      "description": "the input's FileList length is 1",
+      "expr": {
+        "equals": [
+          {
+            "$var": "upCount"
+          },
+          "1"
+        ]
+      }
+    }
+  ]
+}

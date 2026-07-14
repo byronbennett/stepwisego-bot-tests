@@ -1,0 +1,292 @@
+{
+  "job": {
+    "jobName": "SGT web — browser session lifecycle (headless open, navigate, page data, close, double-close buried, op-after-close buried)",
+    "jobGuid": "a9e10001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "browser",
+      "token": "{var:browser}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "titleVal",
+      "token": "{var:titleVal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "8bbf7453-927e-4146-9e97-103a6cf15080",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "5fbc26b9-69ee-48d6-8f87-e5a42da79f6b",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a9e10001-0000-0000-0000-000000000001",
+      "stepName": "open headless chromium session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "open-browser-session",
+        "actionPropValues": {
+          "browserType": {
+            "value": "chromium"
+          },
+          "headless": {
+            "value": true
+          },
+          "sessionVariable": {
+            "value": "{var:browser}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sopen"
+    },
+    {
+      "stepGuid": "a9e10001-0000-0000-0000-000000000002",
+      "stepName": "navigate to the staged fixture page",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "navigate-to-url",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "url": {
+            "value": "file://{var:_sgtScratchDir}/session-page.html"
+          },
+          "waitUntil": {
+            "value": "load"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "snav"
+    },
+    {
+      "stepGuid": "a9e10001-0000-0000-0000-000000000003",
+      "stepName": "read the page title through get-page-data",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-page-data",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "dataType": {
+            "value": "PageTitle"
+          },
+          "resultVariable": {
+            "value": "{var:titleVal}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdata"
+    },
+    {
+      "stepGuid": "a9e10001-0000-0000-0000-000000000004",
+      "stepName": "close the session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "close-browser-session",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sclose"
+    },
+    {
+      "stepGuid": "a9e10001-0000-0000-0000-000000000005",
+      "stepName": "double-close fails (buried): session id no longer registered",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "close-browser-session",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdouble"
+    },
+    {
+      "stepGuid": "a9e10001-0000-0000-0000-000000000006",
+      "stepName": "operation after close fails (buried): get-page-data on a dead session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-page-data",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "dataType": {
+            "value": "PageUrl"
+          },
+          "resultVariable": {
+            "value": "{var:titleVal}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "safter"
+    }
+  ]
+}

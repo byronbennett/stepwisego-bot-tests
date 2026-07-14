@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>SGT Action Matrix</title></head>
+<body>
+<input id="check-me" type="checkbox">
+<select id="pick-me">
+  <option value="">(none)</option>
+  <option value="opt-a">Option A</option>
+  <option value="opt-b">Option B</option>
+</select>
+<input id="clear-me" type="text" value="pre-filled">
+<input id="focus-me" type="text">
+<div id="focus-log">none</div>
+<div id="hover-zone" style="width:200px;height:40px;background:#ddd">hover zone</div>
+<div id="hover-reveal" style="display:none">revealed by hover</div>
+<div id="mouse-log">none</div>
+<script>
+  document.getElementById("focus-me").addEventListener("focus", () => {
+    document.getElementById("focus-log").textContent = "focused";
+  });
+  const zone = document.getElementById("hover-zone");
+  zone.addEventListener("mouseenter", () => {
+    document.getElementById("hover-reveal").style.display = "block";
+    document.getElementById("mouse-log").textContent = "entered";
+  });
+</script>
+</body>
+</html>

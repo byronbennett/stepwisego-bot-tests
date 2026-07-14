@@ -1,0 +1,38 @@
+{
+  "test": {
+    "id": "tier1-features/logic/structural-logging-delay",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["section", "comment", "write-to-log", "delay", "add-to-list"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "crumb-order",
+      "kind": "round-trip",
+      "description": "Exact control-flow order: section executes its child exactly once in place; comment and write-to-log (info/error/debug, incl. empty message) pass without disturbing flow; delay(150ms) passes and continues; the invalid-duration delay fails but is buried by ignoreErrors so 'end' is still reached. No crumb is missing, duplicated, or reordered.",
+      "expr": {
+        "equals": [
+          { "$var": "crumbs" },
+          ["start", "in-section", "after-comment", "after-logs", "after-delay", "end"]
+        ]
+      }
+    }
+  ]
+}

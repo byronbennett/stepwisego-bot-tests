@@ -1,0 +1,479 @@
+{
+  "job": {
+    "jobName": "SGT files — well-known folders (appdata, desktop, documents — portable shape asserts)",
+    "jobGuid": "f4a00005-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "crumbs",
+      "token": "{var:crumbs}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "appdataPath",
+      "token": "{var:appdataPath}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "desktopPath",
+      "token": "{var:desktopPath}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "documentsPath",
+      "token": "{var:documentsPath}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "appdataName",
+      "token": "{var:appdataName}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "desktopName",
+      "token": "{var:desktopName}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "documentsName",
+      "token": "{var:documentsName}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "desktopParent",
+      "token": "{var:desktopParent}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "documentsParent",
+      "token": "{var:documentsParent}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "548ff98d-3393-4f31-abff-9f5c3095149a",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "8e7b48f1-9cf9-4b32-9883-8f0e62b32b4d",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00005-0000-0000-0000-000000000001",
+      "stepName": "get-appdata-folder → per-app data folder (…/stepwisego)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-appdata-folder",
+        "actionPropValues": {
+          "resultVariable": {
+            "value": "{var:appdataPath}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00005-0000-0000-0000-000000000002",
+      "stepName": "get-desktop-folder",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-desktop-folder",
+        "actionPropValues": {
+          "resultVariable": {
+            "value": "{var:desktopPath}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00005-0000-0000-0000-000000000003",
+      "stepName": "get-documents-folder",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-documents-folder",
+        "actionPropValues": {
+          "resultVariable": {
+            "value": "{var:documentsPath}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00005-0000-0000-0000-000000000004",
+      "stepName": "basename of appdata path via a SECOND action (get-filename)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-filename",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:appdataPath}"
+          },
+          "resultVariable": {
+            "value": "{var:appdataName}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00005-0000-0000-0000-000000000005",
+      "stepName": "basename of desktop path",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-filename",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:desktopPath}"
+          },
+          "resultVariable": {
+            "value": "{var:desktopName}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00005-0000-0000-0000-000000000006",
+      "stepName": "basename of documents path",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-filename",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:documentsPath}"
+          },
+          "resultVariable": {
+            "value": "{var:documentsName}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00005-0000-0000-0000-000000000007",
+      "stepName": "parent of desktop path (get-folder-path)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-folder-path",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:desktopPath}"
+          },
+          "resultVariable": {
+            "value": "{var:desktopParent}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00005-0000-0000-0000-000000000008",
+      "stepName": "parent of documents path",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-folder-path",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:documentsPath}"
+          },
+          "resultVariable": {
+            "value": "{var:documentsParent}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00005-0000-0000-0000-000000000009",
+      "stepName": "in-bot: Desktop and Documents share the same parent (the home dir) and all three paths are distinct",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:desktopParent}",
+                "comparator": "equalsExact",
+                "rightOperand": "{var:documentsParent}"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:desktopPath}",
+                "comparator": "notEqualsExact",
+                "rightOperand": "{var:documentsPath}"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:appdataPath}",
+                "comparator": "notEqualsExact",
+                "rightOperand": "{var:desktopPath}"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "f4a00005-0000-0000-0000-000000000901",
+          "stepName": "crumb: same-home",
+          "parentGuid": "f4a00005-0000-0000-0000-000000000009",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "same-home"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 12,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

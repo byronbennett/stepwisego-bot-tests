@@ -1,0 +1,671 @@
+{
+  "job": {
+    "jobName": "sharepoint-library-files-folders",
+    "jobGuid": "51b70001-0000-4000-8000-000000000001",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "ece9e8e6-cfc7-48e9-bc55-843f10b22635",
+      "stepName": "Require shared variables: sgtSharePoint",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtSharePoint"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "140945b9-173c-4678-925c-c699fceeba5e",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "51b70001-0000-4000-8000-000000000002",
+      "stepName": "arrange: write local upload source (v1, unicode name + body)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sgt-ūpløad-源.txt"
+          },
+          "content": {
+            "value": "sgt upload v1 Ünïcødé 漢字 [sgt-{var:_sgtSessionId}]"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": ""
+    },
+    {
+      "stepGuid": "51b70001-0000-4000-8000-000000000003",
+      "stepName": "act: create session folder in Documents",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-manage-folder",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "Documents"
+          },
+          "listId": {
+            "value": ""
+          },
+          "folderAction": {
+            "value": "Create"
+          },
+          "folderPath": {
+            "value": "sgt-{var:_sgtSessionId}-fld"
+          },
+          "parentFolder": {
+            "value": ""
+          },
+          "loopVariable": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "smf"
+    },
+    {
+      "stepGuid": "51b70001-0000-4000-8000-000000000004",
+      "stepName": "act: upload v1 into the session folder (overwrite=false, fresh name)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-upload-file",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "libraryName": {
+            "value": "Documents"
+          },
+          "libraryId": {
+            "value": ""
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sgt-ūpløad-源.txt"
+          },
+          "targetFolder": {
+            "value": "sgt-{var:_sgtSessionId}-fld"
+          },
+          "fileName": {
+            "value": ""
+          },
+          "overwrite": {
+            "value": false
+          },
+          "fieldMappings": {
+            "value": ""
+          },
+          "uploadMode": {
+            "value": "single"
+          },
+          "loopVariable": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sup1"
+    },
+    {
+      "stepGuid": "51b70001-0000-4000-8000-000000000005",
+      "stepName": "arrange: rewrite local source (v2 REPLACED)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sgt-ūpløad-源.txt"
+          },
+          "content": {
+            "value": "sgt upload v2 REPLACED [sgt-{var:_sgtSessionId}]"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": ""
+    },
+    {
+      "stepGuid": "51b70001-0000-4000-8000-000000000006",
+      "stepName": "act: re-upload same name with overwrite=true (in-place replace)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-upload-file",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "libraryName": {
+            "value": "Documents"
+          },
+          "libraryId": {
+            "value": ""
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sgt-ūpløad-源.txt"
+          },
+          "targetFolder": {
+            "value": "sgt-{var:_sgtSessionId}-fld"
+          },
+          "fileName": {
+            "value": ""
+          },
+          "overwrite": {
+            "value": true
+          },
+          "fieldMappings": {
+            "value": ""
+          },
+          "uploadMode": {
+            "value": "single"
+          },
+          "loopVariable": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sup2"
+    },
+    {
+      "stepGuid": "51b70001-0000-4000-8000-000000000007",
+      "stepName": "act: overwrite=false against the existing name — conflict captured via Error Handler",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "error-handler",
+        "actionPropValues": {
+          "statusVariable": {
+            "value": "{var:ehConflictStatus}"
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "51b70001-0000-4000-8000-000000000008",
+          "stepName": "upload same name, overwrite=false (must fail with a conflict)",
+          "parentGuid": "51b70001-0000-4000-8000-000000000007",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "sp-upload-file",
+            "actionPropValues": {
+              "connectionVariable": {
+                "value": "{svar:sgtSharePoint}"
+              },
+              "libraryName": {
+                "value": "Documents"
+              },
+              "libraryId": {
+                "value": ""
+              },
+              "filePath": {
+                "value": "{var:_sgtScratchDir}/sgt-ūpløad-源.txt"
+              },
+              "targetFolder": {
+                "value": "sgt-{var:_sgtSessionId}-fld"
+              },
+              "fileName": {
+                "value": ""
+              },
+              "overwrite": {
+                "value": false
+              },
+              "fieldMappings": {
+                "value": ""
+              },
+              "uploadMode": {
+                "value": "single"
+              },
+              "loopVariable": {
+                "value": ""
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 9,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": "supx"
+        }
+      ],
+      "stepPrefix": "seh"
+    },
+    {
+      "stepGuid": "51b70001-0000-4000-8000-000000000009",
+      "stepName": "assert: list root folders of Documents (session folder must appear)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-manage-folder",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "Documents"
+          },
+          "listId": {
+            "value": ""
+          },
+          "folderAction": {
+            "value": "List"
+          },
+          "folderPath": {
+            "value": "/"
+          },
+          "parentFolder": {
+            "value": ""
+          },
+          "loopVariable": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sml"
+    },
+    {
+      "stepGuid": "51b70001-0000-4000-8000-000000000010",
+      "stepName": "scan folder list for the session folder",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "dataTable"
+          },
+          "dataTableVariable": {
+            "value": "{sml:resultDT}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "51b70001-0000-4000-8000-000000000011",
+          "stepName": "is this row the session folder?",
+          "parentGuid": "51b70001-0000-4000-8000-000000000010",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{slp-currentDataRow:Name}",
+                    "comparator": "equals",
+                    "rightOperand": "sgt-{var:_sgtSessionId}-fld"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 12,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "51b70001-0000-4000-8000-000000000012",
+              "stepName": "set {var:foundFld}",
+              "parentGuid": "51b70001-0000-4000-8000-000000000011",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:foundFld}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 13,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [],
+              "stepPrefix": ""
+            }
+          ],
+          "stepPrefix": ""
+        }
+      ],
+      "stepPrefix": "slp"
+    },
+    {
+      "stepGuid": "51b70001-0000-4000-8000-000000000013",
+      "stepName": "cleanup: delete the session folder (removes the file with it)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-manage-folder",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "Documents"
+          },
+          "listId": {
+            "value": ""
+          },
+          "folderAction": {
+            "value": "Delete"
+          },
+          "folderPath": {
+            "value": "sgt-{var:_sgtSessionId}-fld"
+          },
+          "parentFolder": {
+            "value": ""
+          },
+          "loopVariable": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "smd"
+    },
+    {
+      "stepGuid": "51b70001-0000-4000-8000-000000000014",
+      "stepName": "assert: double delete fails with a not-found — captured via Error Handler",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "error-handler",
+        "actionPropValues": {
+          "statusVariable": {
+            "value": "{var:ehDeleteStatus}"
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "51b70001-0000-4000-8000-000000000015",
+          "stepName": "delete the already-deleted session folder",
+          "parentGuid": "51b70001-0000-4000-8000-000000000014",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "sp-manage-folder",
+            "actionPropValues": {
+              "connectionVariable": {
+                "value": "{svar:sgtSharePoint}"
+              },
+              "listName": {
+                "value": "Documents"
+              },
+              "listId": {
+                "value": ""
+              },
+              "folderAction": {
+                "value": "Delete"
+              },
+              "folderPath": {
+                "value": "sgt-{var:_sgtSessionId}-fld"
+              },
+              "parentFolder": {
+                "value": ""
+              },
+              "loopVariable": {
+                "value": ""
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 16,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": "smdx"
+        }
+      ],
+      "stepPrefix": "seh2"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundFld",
+      "token": "{var:foundFld}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "ehConflictStatus",
+      "token": "{var:ehConflictStatus}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "ehDeleteStatus",
+      "token": "{var:ehDeleteStatus}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.180"
+}

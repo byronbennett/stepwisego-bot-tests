@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>SGT Download</title></head>
+<body>
+<a id="dl-link" href="#">download it</a>
+<script>
+  const port = new URLSearchParams(location.search).get("port");
+  document.getElementById("dl-link").href = "http://127.0.0.1:" + port + "/dl.txt";
+</script>
+</body>
+</html>

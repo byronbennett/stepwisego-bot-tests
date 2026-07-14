@@ -1,0 +1,69 @@
+{
+  "test": {
+    "id": "tier1-features/datatable/dt-core",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["dt-get-column-names", "dt-get-row-count", "dt-get-value", "dt-get-row", "dt-select-rows", "dt-to-html", "csv-read", "csv-write-datatable", "json-stringify"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "column-names",
+      "kind": "round-trip",
+      "description": "dt-get-column-names returns the header names in order.",
+      "expr": { "equals": [ { "$var": "cols" }, ["name", "dept", "score"] ] }
+    },
+    {
+      "id": "row-count-number",
+      "kind": "round-trip",
+      "description": "dt-get-row-count stores a NUMBER 4 (not the string '4').",
+      "expr": { "equals": [ { "$var": "rowCount" }, 4 ] }
+    },
+    {
+      "id": "get-value-by-name",
+      "kind": "round-trip",
+      "description": "dt-get-value with a column NAME reads row 1 (0-based) → Bob. The later out-of-range read (row 99) fails loudly (buried) and must NOT overwrite this.",
+      "expr": { "equals": [ { "$var": "cellByName" }, "Bob" ] }
+    },
+    {
+      "id": "get-value-by-index-typed",
+      "kind": "round-trip",
+      "description": "dt-get-value with a numeric column INDEX ('2') reads the score cell, and dynamic typing means the value is the NUMBER 42.",
+      "expr": { "equals": [ { "$var": "cellByIndex" }, 42 ] }
+    },
+    {
+      "id": "get-row-shape",
+      "kind": "round-trip",
+      "description": "dt-get-row returns a DataRow {columns, values} snapshot of row 2 — values keep their dynamic types (9 is a number).",
+      "expr": { "equals": [ { "$var": "row2Text" }, "{\"columns\":[\"name\",\"dept\",\"score\"],\"values\":[\"Cara\",\"eng\",9]}" ] }
+    },
+    {
+      "id": "select-where-orderby",
+      "kind": "round-trip",
+      "description": "dt-select-rows where dept='eng' order by score DESC keeps Alice(42) then Cara(9) — numeric ordering, columns preserved (witnessed via csv-write-datatable).",
+      "expr": { "equals": [ { "$var": "selectedCsv" }, "name,dept,score\nAlice,eng,42\nCara,eng,9" ] }
+    },
+    {
+      "id": "to-html-escaped",
+      "kind": "round-trip",
+      "description": "dt-to-html emits thead/tbody with one th per column and one tr per row, HTML-escaping cell text (D&E → D&amp;E).",
+      "expr": { "equals": [ { "$var": "htmlOut" }, "<table><thead><tr><th>name</th><th>dept</th><th>score</th></tr></thead><tbody><tr><td>Alice</td><td>eng</td><td>42</td></tr><tr><td>Bob</td><td>ops</td><td>17</td></tr><tr><td>Cara</td><td>eng</td><td>9</td></tr><tr><td>D&amp;E</td><td>ops</td><td>5</td></tr></tbody></table>" ] }
+    }
+  ]
+}

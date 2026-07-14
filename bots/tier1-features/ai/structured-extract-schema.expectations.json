@@ -1,0 +1,94 @@
+{
+  "test": {
+    "id": "tier1-features/ai/structured-extract-schema",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "ai-structured-extract",
+        "json-get-property",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_AI_OPENAI_API_KEY"
+    ],
+    "serialGroup": "ai-openai",
+    "engines": [
+      "in-process",
+      "agent"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 90000
+  },
+  "predictions": [
+    {
+      "id": "pred-invoice-number",
+      "kind": "round-trip",
+      "description": "unambiguous literal extraction: the invoice number appears verbatim once in the fixture",
+      "expr": {
+        "equals": [
+          {
+            "$var": "invNum"
+          },
+          "INV-88412"
+        ]
+      }
+    },
+    {
+      "id": "pred-vendor",
+      "kind": "round-trip",
+      "description": "vendor name extracted from the fixture (contains-check: whether the trailing sentence period belongs to the name is a judgment call, so per the playbook this is structure, not an exact pin)",
+      "expr": {
+        "contains": [
+          {
+            "$var": "vendor"
+          },
+          "Acme Corp"
+        ]
+      }
+    },
+    {
+      "id": "pred-total-contains",
+      "kind": "round-trip",
+      "description": "total amount extracted (contains the digits; exact normalization of the thousands separator is model-dependent and not pinned)",
+      "expr": {
+        "contains": [
+          {
+            "$var": "total"
+          },
+          "234.56"
+        ]
+      }
+    },
+    {
+      "id": "pred-schema-tokens",
+      "kind": "round-trip",
+      "description": "token accounting populated on the extract step",
+      "expr": {
+        "greater_than": [
+          {
+            "$stepOut": {
+              "stepGuid": "a13b0002-0000-4000-8000-000000000002",
+              "name": "totalTokens"
+            }
+          },
+          0
+        ]
+      }
+    }
+  ]
+}

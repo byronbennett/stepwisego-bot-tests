@@ -1,0 +1,43 @@
+{
+  "test": {
+    "id": "tier1-features/logic/require-shared-vars-skip",
+    "tier": 1,
+    "synthesizedAt": "2026-07-13T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["require-shared-vars", "add-to-list"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "sharedVarSeeds": [
+      { "name": "sgtGateAlpha", "value": "alpha-value" },
+      { "name": "sgtGateEmpty", "value": "" }
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "skips-before-test-body",
+      "kind": "round-trip",
+      "description": "a missing shared variable (never seeded) and a declared-but-empty one both gate the bot: the run ends cleanly at the gate — before-gate crumb only, after-gate never recorded — while the run classifies complete with zero errors",
+      "expr": { "equals": [ { "$var": "crumbs" }, ["before-gate"] ] }
+    },
+    {
+      "id": "status-names-the-gaps",
+      "kind": "round-trip",
+      "description": "the status variable records skipped:<missing> naming the empty and absent variables in listed order",
+      "expr": { "equals": [ { "$var": "sgtPreflight" }, "skipped:sgtGateEmpty|sgtGateMissing" ] }
+    }
+  ]
+}

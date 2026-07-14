@@ -1,0 +1,179 @@
+{
+  "test": {
+    "id": "tier1-features/web/page-data",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "get-page-data",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/page-data.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "page-title-unicode",
+      "kind": "round-trip",
+      "description": "PageTitle round-trips the unicode <title> exactly",
+      "expr": {
+        "equals": [
+          {
+            "$var": "titleVal"
+          },
+          "SGT Page Data — Ünïcødé 漢字"
+        ]
+      }
+    },
+    {
+      "id": "page-url",
+      "kind": "round-trip",
+      "description": "PageUrl is the staged fixture's file:// URL",
+      "expr": {
+        "and": [
+          {
+            "starts_with": [
+              {
+                "$var": "urlVal"
+              },
+              "file://"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$var": "urlVal"
+              },
+              "/page-data.html"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-source-serializes-document",
+      "kind": "round-trip",
+      "description": "PageSource is the serialized document including hidden markup",
+      "expr": {
+        "and": [
+          {
+            "starts_with": [
+              {
+                "$var": "srcVal"
+              },
+              "<!DOCTYPE html>"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "$var": "srcVal"
+              },
+              "hidden-text"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "$var": "srcVal"
+              },
+              "<title>SGT Page Data — Ünïcødé 漢字</title>"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "inner-text-is-rendered-only",
+      "kind": "round-trip",
+      "description": "InnerText collapses whitespace runs and EXCLUDES display:none text",
+      "expr": {
+        "and": [
+          {
+            "contains": [
+              {
+                "$var": "innerVal"
+              },
+              "alpha beta"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "$var": "innerVal"
+              },
+              "gamma"
+            ]
+          },
+          {
+            "not": [
+              {
+                "contains": [
+                  {
+                    "$var": "innerVal"
+                  },
+                  "hidden-text"
+                ]
+              }
+            ]
+          },
+          {
+            "not": [
+              {
+                "contains": [
+                  {
+                    "$var": "innerVal"
+                  },
+                  "alpha   beta"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "visible-text-is-raw-text-content",
+      "kind": "round-trip",
+      "description": "VisibleText (textContent) preserves raw whitespace and INCLUDES display:none text",
+      "expr": {
+        "and": [
+          {
+            "contains": [
+              {
+                "$var": "visVal"
+              },
+              "alpha   beta"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "$var": "visVal"
+              },
+              "hidden-text"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

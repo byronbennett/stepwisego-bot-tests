@@ -1,0 +1,408 @@
+{
+  "job": {
+    "jobName": "SGT web — wait-for-element states (Visible appears late, Hidden via removal, Enabled unlocks, Attached immediate, Detached timeout buried, missing Visible timeout buried)",
+    "jobGuid": "a9e1000a-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "browser",
+      "token": "{var:browser}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "53d47762-3007-41ee-9076-d012a449dbe3",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "39382d5a-0ad1-46d1-bc62-f7e0eeeb7098",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a9e1000a-0000-0000-0000-000000000001",
+      "stepName": "open headless chromium session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "open-browser-session",
+        "actionPropValues": {
+          "browserType": {
+            "value": "chromium"
+          },
+          "headless": {
+            "value": true
+          },
+          "sessionVariable": {
+            "value": "{var:browser}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sopen"
+    },
+    {
+      "stepGuid": "a9e1000a-0000-0000-0000-000000000002",
+      "stepName": "navigate to the staged waits.html fixture",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "navigate-to-url",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "url": {
+            "value": "file://{var:_sgtScratchDir}/waits.html"
+          },
+          "waitUntil": {
+            "value": "load"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "snav"
+    },
+    {
+      "stepGuid": "a9e1000a-0000-0000-0000-000000000003",
+      "stepName": "element appears after ~400ms — Visible wait succeeds",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "wait-for-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#appears"
+          },
+          "state": {
+            "value": "Visible"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "swaitvis"
+    },
+    {
+      "stepGuid": "a9e1000a-0000-0000-0000-000000000004",
+      "stepName": "element is removed after ~400ms — Hidden satisfied (absence counts)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "wait-for-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#vanishes"
+          },
+          "state": {
+            "value": "Hidden"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "swaithid"
+    },
+    {
+      "stepGuid": "a9e1000a-0000-0000-0000-000000000005",
+      "stepName": "disabled button unlocks after ~400ms — Enabled wait succeeds",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "wait-for-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#locked"
+          },
+          "state": {
+            "value": "Enabled"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "swaiten"
+    },
+    {
+      "stepGuid": "a9e1000a-0000-0000-0000-000000000006",
+      "stepName": "always-present element — Attached succeeds immediately",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "wait-for-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#stays"
+          },
+          "state": {
+            "value": "Attached"
+          },
+          "timeoutSeconds": {
+            "value": 5
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "swaitatt"
+    },
+    {
+      "stepGuid": "a9e1000a-0000-0000-0000-000000000007",
+      "stepName": "present element never detaches — Detached times out (buried), outputs still set",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "wait-for-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#stays"
+          },
+          "state": {
+            "value": "Detached"
+          },
+          "timeoutSeconds": {
+            "value": 2
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "swaitdet"
+    },
+    {
+      "stepGuid": "a9e1000a-0000-0000-0000-000000000008",
+      "stepName": "selector never exists — Visible times out (buried), outputs still set",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "wait-for-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#never-exists"
+          },
+          "state": {
+            "value": "Visible"
+          },
+          "timeoutSeconds": {
+            "value": 2
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "swaitmiss"
+    },
+    {
+      "stepGuid": "a9e1000a-0000-0000-0000-000000000009",
+      "stepName": "close the session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "close-browser-session",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sclose"
+    }
+  ]
+}

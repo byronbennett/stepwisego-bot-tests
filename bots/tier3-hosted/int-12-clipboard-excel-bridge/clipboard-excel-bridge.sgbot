@@ -1,0 +1,657 @@
+{
+  "job": {
+    "jobName": "SGT INT-12 clipboard-excel-bridge — DataTable through the OS clipboard into a second workbook, null-cell seam pinned, clipboard restored",
+    "jobGuid": "aa170012-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "clipOrig",
+      "token": "{var:clipOrig}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbSrc",
+      "token": "{var:wbSrc}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbDst",
+      "token": "{var:wbDst}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dtBridge",
+      "token": "{var:dtBridge}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "clipText",
+      "token": "{var:clipText}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "clipHdr",
+      "token": "{var:clipHdr}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "pasteF",
+      "token": "{var:pasteF}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "pasteH",
+      "token": "{var:pasteH}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "3b6eed06-eee5-4b21-acc5-d4fcb6fe73f1",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "2134db0a-a911-4322-88e0-1feea09e57a7",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000001",
+      "stepName": "ARRANGE: capture the operator's clipboard for restore etiquette",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-clipboard",
+        "actionPropValues": {
+          "storeToVariable": {
+            "value": "{var:clipOrig}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sarrange"
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000002",
+      "stepName": "xl-create-new-workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": "1"
+          },
+          "storeToVariable": {
+            "value": "{var:wbSrc}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000003",
+      "stepName": "xl-create-new-workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": "1"
+          },
+          "storeToVariable": {
+            "value": "{var:wbDst}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000004",
+      "stepName": "xl-set-values",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbSrc}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": [
+              "hcol",
+              "hmid",
+              "hnum"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000005",
+      "stepName": "xl-set-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbSrc}"
+          },
+          "range": {
+            "value": "A2"
+          },
+          "value": {
+            "value": "vone"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000006",
+      "stepName": "B2 is deliberately never written: the null cell crosses the clipboard seam",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbSrc}"
+          },
+          "range": {
+            "value": "C2"
+          },
+          "value": {
+            "value": "99"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000007",
+      "stepName": "xl-get-range-as-datatable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-range-as-datatable",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbSrc}"
+          },
+          "range": {
+            "value": "A1:C2"
+          },
+          "includeHeaders": {
+            "value": true
+          },
+          "storeToVariable": {
+            "value": "{var:dtBridge}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sgrab"
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000008",
+      "stepName": "set-datatable-to-clipboard",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-datatable-to-clipboard",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dtBridge}"
+          },
+          "delimiter": {
+            "value": "tab"
+          },
+          "includeHeaders": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000009",
+      "stepName": "known-vector: the exact tab-delimited rendering (incl. the null cell) is the pinned contract",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-clipboard",
+        "actionPropValues": {
+          "storeToVariable": {
+            "value": "{var:clipText}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sclip"
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000010",
+      "stepName": "paste lands anchored at B2 in the second workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-paste-from-clipboard",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbDst}"
+          },
+          "range": {
+            "value": "B2"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000011",
+      "stepName": "xl-save-as-csv",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-csv",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbDst}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/bridge-dst.csv"
+          },
+          "replaceExisting": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000012",
+      "stepName": "second leg: xl-copy-to-clipboard stores a BOT-SCOPED clipboard (design: OS clipboard untouched)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-copy-to-clipboard",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbSrc}"
+          },
+          "range": {
+            "value": "A1:C1"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000013",
+      "stepName": "OS clipboard still holds the set-datatable text: pins the bot-scoped design",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-clipboard",
+        "actionPropValues": {
+          "storeToVariable": {
+            "value": "{var:clipHdr}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sclipb"
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000014",
+      "stepName": "paste replays the internal marker (headers row) at F1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-paste-from-clipboard",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbDst}"
+          },
+          "range": {
+            "value": "F1"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000015",
+      "stepName": "xl-get-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbDst}"
+          },
+          "range": {
+            "value": "F1"
+          },
+          "storeToVariable": {
+            "value": "{var:pasteF}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000016",
+      "stepName": "xl-get-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbDst}"
+          },
+          "range": {
+            "value": "H1"
+          },
+          "storeToVariable": {
+            "value": "{var:pasteH}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170012-0000-0000-0000-000000000017",
+      "stepName": "CLEANUP: restore the captured clipboard",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-clipboard",
+        "actionPropValues": {
+          "content": {
+            "value": "{var:clipOrig}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 19,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "scleanup"
+    }
+  ]
+}

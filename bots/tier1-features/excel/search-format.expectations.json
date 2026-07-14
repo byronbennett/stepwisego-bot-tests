@@ -1,0 +1,371 @@
+{
+  "test": {
+    "id": "tier1-features/excel/search-format",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xl-find",
+        "xl-find-and-replace",
+        "xl-format-range",
+        "xl-sort-range",
+        "xl-remove-duplicate-rows",
+        "xl-clear-formats",
+        "xl-create-new-workbook",
+        "xl-set-value",
+        "xl-set-values",
+        "xl-get-value",
+        "xl-get-values",
+        "xl-set-formula",
+        "xl-get-formula",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "find-defaults-all-matches",
+      "kind": "round-trip",
+      "description": "xl-find defaults (partial, case-insensitive, by rows) into a LIST destination collects every match address in row-major order: alpha/Alpha/ALPHABET/alpha beta/alpha.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "findAll"
+          },
+          [
+            "A1",
+            "B1",
+            "C1",
+            "B2",
+            "A3"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "find-case-and-whole-cell",
+      "kind": "round-trip",
+      "description": "matchCase=true drops Alpha/ALPHABET but keeps the partial 'alpha beta'; adding matchWholeCell keeps only exact-cell 'alpha' hits.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "findCase"
+              },
+              [
+                "A1",
+                "B2",
+                "A3"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "findWhole"
+              },
+              [
+                "A1",
+                "A3"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "find-number-stringified",
+      "kind": "round-trip",
+      "description": "find '42' matches both the NUMERIC cell C2 and the text-locked cell B3 — cell values stringify before comparison.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "findNum"
+          },
+          [
+            "C2",
+            "B3"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "find-by-columns-order",
+      "kind": "round-trip",
+      "description": "searchBy=columns walks column-major: A1,A3 (col A) before B1,B2 (col B) before C1.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "findByCols"
+          },
+          [
+            "A1",
+            "A3",
+            "B1",
+            "B2",
+            "C1"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "find-scalar-range-miss",
+      "kind": "round-trip",
+      "description": "Scalar destination keeps only the FIRST match; a range prop restricts the scan (A1:B2 drops C1/A3); a no-match find overwrites the scalar SENTINEL with '' — proving the action ran and stored.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "findScalar"
+              },
+              "A1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "findRanged"
+              },
+              [
+                "A1",
+                "B1",
+                "B2"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "findMiss"
+              },
+              ""
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "replace-partial-case-insensitive",
+      "kind": "round-trip",
+      "description": "find-and-replace defaults are partial + case-insensitive: cat→bird, conCATenate→conbirdenate, CAT→bird. Read back by xl-get-values.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "replacedA"
+          },
+          [
+            "bird",
+            "conbirdenate",
+            "bird"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "replace-whole-cell",
+      "kind": "round-trip",
+      "description": "matchWholeCell+matchCase replaces the exact cell dog→wolf.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "replacedB1"
+          },
+          "wolf"
+        ]
+      }
+    },
+    {
+      "id": "replace-in-formulas-and-recompute",
+      "kind": "round-trip",
+      "description": "searchIn=formulas rewrites the formula TEXT (SUM→MAX) — witnessed by xl-get-formula — and the formualizer engine then computes the REWRITTEN formula: MAX(5,9)=9, not SUM=14.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "frFormula"
+              },
+              "=MAX(A10:A11)"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "frComputed"
+              },
+              "9"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "sort-numeric-with-headers",
+      "kind": "round-trip",
+      "description": "sort by column A ascending with headers: ids order NUMERICALLY (2,9,10 — not lexicographic 10,2,9), the header row stays put, and whole rows move together (names follow their ids).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "sortedIds"
+              },
+              [
+                "2",
+                "9",
+                "10"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "sortedNames"
+              },
+              [
+                "b",
+                "i",
+                "j"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "sort-multikey-numeric-column-index",
+      "kind": "round-trip",
+      "description": "hasHeaders=false sorts every row; sortColumn accepts a 1-based NUMERIC index ('4' = column D); key2 descending breaks the x-tie by value: x/2, x/1, y/1.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "sortedMulti"
+          },
+          [
+            "x",
+            "2",
+            "x",
+            "1",
+            "y",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "sort-descending",
+      "kind": "round-trip",
+      "description": "re-sorting the same range descending inverts the order — sort is idempotent-safe over already-sorted data.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "sortedDesc"
+          },
+          [
+            "10",
+            "9",
+            "2"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "dedupe-whole-row-case-sensitive",
+      "kind": "round-trip",
+      "description": "remove-duplicate-rows keeps first occurrence per whole-row key: (a,1),(b,2),(a,1)dup,(A,1),(b,2)dup → header + a/1, b/2, A/1. Case-DISTINCT 'A' survives (exact JSON row comparison), and the cleared tail compacts away under skipEmpty.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "deduped"
+          },
+          [
+            "k",
+            "v",
+            "a",
+            "1",
+            "b",
+            "2",
+            "A",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "format-merge-unmerge-observable",
+      "kind": "round-trip",
+      "description": "format-range mergeCells=true makes slave B1 read the master value 'M'; mergeCells=false unmerges and B1 reads back empty — the one style op with a value-level witness in Fast mode.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "mergedB1"
+              },
+              "M"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "unmergedB1"
+              },
+              ""
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "style-ops-preserve-values",
+      "kind": "invariant",
+      "description": "format-range (bold/size/fill), clear-formats on a range, and clear-formats sheet-wide all leave cell VALUES untouched (styles have no Fast-mode reader — see review.md).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "styledC1"
+              },
+              "styled"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "clearedC1"
+              },
+              "styled"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "afterSheetClear"
+              },
+              "M"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

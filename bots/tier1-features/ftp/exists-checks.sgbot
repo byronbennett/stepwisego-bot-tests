@@ -1,0 +1,609 @@
+{
+  "job": {
+    "jobName": "SGT ftp — check-file/check-folder exists trichotomy against the loopback sftp server (calibrated sentinel dance, nested create-folder)",
+    "jobGuid": "aa10ff02-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "launchOut",
+      "token": "{var:launchOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "port",
+      "token": "{var:port}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "existsBefore",
+      "token": "{var:existsBefore}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "existsAfter",
+      "token": "{var:existsAfter}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folderExists",
+      "token": "{var:folderExists}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "fileAsFolder",
+      "token": "{var:fileAsFolder}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dirAsFile",
+      "token": "{var:dirAsFile}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "afb30b94-ea81-4732-8712-f88a6d214ddf",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "253b1ece-f577-4952-9557-b501ad4a98fa",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff02-0000-0000-0000-000000000001",
+      "stepName": "arrange: spawn the detached loopback sftp server (ssh2), wait for its port file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-script",
+        "actionPropValues": {
+          "scriptLanguage": {
+            "value": "node"
+          },
+          "scriptText": {
+            "value": "const {spawn}=require('child_process');\nconst fs=require('fs');\nconst dir=process.argv[2];\nconst backstop=process.argv[3]||'45000';\nconst portFile=dir+'/sftp-port.txt';\ntry{fs.unlinkSync(portFile);}catch{}\nconst child=spawn(process.execPath,[dir+'/sftp-server.mjs'],{detached:true,stdio:'ignore',env:{...process.env,SGT_SFTP_ROOT:dir+'/sftp-root',SGT_SFTP_PORT_FILE:portFile,SGT_SFTP_STOP_FILE:dir+'/sftp-stop.txt',SGT_SFTP_BACKSTOP_MS:backstop}});\nchild.unref();\nconst t0=Date.now();\nwhile(!fs.existsSync(portFile)){\n  if(Date.now()-t0>10000){console.error('sftp server never started');process.exit(1);}\n  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,50);\n}\nconsole.log('server-up');"
+          },
+          "arguments": {
+            "value": "{var:_sgtScratchDir} 45000"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          },
+          "storeToVariable": {
+            "value": "{var:launchOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "slaunch"
+    },
+    {
+      "stepGuid": "aa10ff02-0000-0000-0000-000000000002",
+      "stepName": "arrange: read the ephemeral sftp port",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sftp-port.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:port}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff02-0000-0000-0000-000000000003",
+      "stepName": "probe calibration: sentinel absent before anything exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-check-file-exists",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "remotePath": {
+            "value": "/probe"
+          },
+          "fileName": {
+            "value": "sentinel.txt"
+          },
+          "resultVariable": {
+            "value": "{var:existsBefore}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff02-0000-0000-0000-000000000004",
+      "stepName": "ftp-create-folder: nested path in one call (recursive mkdir pinned)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-create-folder",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "remotePath": {
+            "value": "/probe/nested/deep"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff02-0000-0000-0000-000000000005",
+      "stepName": "arrange: local sentinel",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sentinel.txt"
+          },
+          "content": {
+            "value": "sgt-sentinel"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff02-0000-0000-0000-000000000006",
+      "stepName": "upload the sentinel into /probe",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-upload-files",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "localPath": {
+            "value": "{var:_sgtScratchDir}/sentinel.txt"
+          },
+          "remotePath": {
+            "value": "/probe"
+          },
+          "onFileExists": {
+            "value": "overwrite"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff02-0000-0000-0000-000000000007",
+      "stepName": "probe calibration: sentinel present after upload",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-check-file-exists",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "remotePath": {
+            "value": "/probe"
+          },
+          "fileName": {
+            "value": "sentinel.txt"
+          },
+          "resultVariable": {
+            "value": "{var:existsAfter}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff02-0000-0000-0000-000000000008",
+      "stepName": "ftp-check-folder-exists: the nested folder is a folder",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-check-folder-exists",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "remotePath": {
+            "value": "/probe/nested/deep"
+          },
+          "resultVariable": {
+            "value": "{var:folderExists}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff02-0000-0000-0000-000000000009",
+      "stepName": "trichotomy pin: a FILE at the path is not a folder",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-check-folder-exists",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "remotePath": {
+            "value": "/probe/sentinel.txt"
+          },
+          "resultVariable": {
+            "value": "{var:fileAsFolder}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff02-0000-0000-0000-000000000010",
+      "stepName": "quirk pin: ftp-check-file-exists on a DIRECTORY name answers true (runner checks existence, not type)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-check-file-exists",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "remotePath": {
+            "value": "/probe"
+          },
+          "fileName": {
+            "value": "nested"
+          },
+          "resultVariable": {
+            "value": "{var:dirAsFile}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff02-0000-0000-0000-000000000011",
+      "stepName": "cleanup: write the stop file — the server watches it and exits",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sftp-stop.txt"
+          },
+          "content": {
+            "value": "stop"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "job": {
+    "jobName": "SGT json — navigation (parse, get-property, get-values, get-children, stringify)",
+    "jobGuid": "f3c00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "doc", "token": "{var:doc}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "city", "token": "{var:city}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "missingProp", "token": "{var:missingProp}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "SENTINEL", "defaultValue": "SENTINEL", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "nameValue", "token": "{var:nameValue}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "tagValues", "token": "{var:tagValues}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "rootKeys", "token": "{var:rootKeys}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "tagChildren", "token": "{var:tagChildren}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "primChildren", "token": "{var:primChildren}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": ["SENTINEL"], "defaultValue": ["SENTINEL"], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "addr", "token": "{var:addr}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "compactJson", "token": "{var:compactJson}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "prettyAddr", "token": "{var:prettyAddr}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "badTarget", "token": "{var:badTarget}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "not-json", "defaultValue": "not-json", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-000000000001",
+      "stepName": "parse fixture document",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-parse", "actionPropValues": { "jsonString": { "value": "{\"user\":{\"name\":\"Ada\",\"address\":{\"city\":\"Oslo\",\"zip\":\"0150\"}},\"tags\":[\"red\",\"green\",\"blue\"],\"active\":true,\"count\":3}" }, "resultVariable": { "value": "{var:doc}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-000000000002",
+      "stepName": "get-property dot path user.address.city",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-get-property", "actionPropValues": { "jsonVariable": { "value": "{var:doc}" }, "propertyName": { "value": "user.address.city" }, "resultVariable": { "value": "{var:city}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-000000000003",
+      "stepName": "get-property missing path passes and stores null",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-get-property", "actionPropValues": { "jsonVariable": { "value": "{var:doc}" }, "propertyName": { "value": "user.missing.deep" }, "resultVariable": { "value": "{var:missingProp}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-000000000004",
+      "stepName": "get-values single JSONPath match unwraps to scalar",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-get-values", "actionPropValues": { "jsonVariable": { "value": "{var:doc}" }, "jsonPath": { "value": "$.user.name" }, "resultVariable": { "value": "{var:nameValue}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-000000000005",
+      "stepName": "get-values multi match stays a list",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-get-values", "actionPropValues": { "jsonVariable": { "value": "{var:doc}" }, "jsonPath": { "value": "$.tags[*]" }, "resultVariable": { "value": "{var:tagValues}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-000000000006",
+      "stepName": "get-children of root object = key names",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-get-children", "actionPropValues": { "jsonVariable": { "value": "{var:doc}" }, "path": { "value": "$" }, "listVariable": { "value": "{var:rootKeys}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-000000000007",
+      "stepName": "get-children of array = elements",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-get-children", "actionPropValues": { "jsonVariable": { "value": "{var:doc}" }, "path": { "value": "$.tags" }, "listVariable": { "value": "{var:tagChildren}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-000000000008",
+      "stepName": "get-children of primitive = empty list (sentinel must be overwritten)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-get-children", "actionPropValues": { "jsonVariable": { "value": "{var:doc}" }, "path": { "value": "$.count" }, "listVariable": { "value": "{var:primChildren}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-000000000009",
+      "stepName": "get-property object result (user.address) for the pretty-print check",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-get-property", "actionPropValues": { "jsonVariable": { "value": "{var:doc}" }, "propertyName": { "value": "user.address" }, "resultVariable": { "value": "{var:addr}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-00000000000a",
+      "stepName": "stringify whole doc compact",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-stringify", "actionPropValues": { "jsonVariable": { "value": "{var:doc}" }, "pretty": { "value": false }, "resultVariable": { "value": "{var:compactJson}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-00000000000b",
+      "stepName": "stringify addr pretty (2-space indent)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-stringify", "actionPropValues": { "jsonVariable": { "value": "{var:addr}" }, "pretty": { "value": true }, "resultVariable": { "value": "{var:prettyAddr}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00001-0000-0000-0000-00000000000c",
+      "stepName": "get-property on non-object variable (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-get-property", "actionPropValues": { "jsonVariable": { "value": "{var:badTarget}" }, "propertyName": { "value": "anything" }, "resultVariable": { "value": "{var:city}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 12, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

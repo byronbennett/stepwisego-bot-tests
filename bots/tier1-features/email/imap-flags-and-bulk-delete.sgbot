@@ -1,0 +1,3276 @@
+{
+  "job": {
+    "jobName": "email-imap-flags-and-bulk-delete",
+    "jobGuid": "e13a0003-0000-4000-8000-000000000000",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "a6896fbd-ae90-491d-9564-c87807b25b1f",
+      "stepName": "Require shared variables: sgtMailAccount, sgtMailImapHost, sgtMailImapPort, sgtMailPassword, sgtMailSmtpHost, sgtMailSmtpPort",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtMailAccount\nsgtMailImapHost\nsgtMailImapPort\nsgtMailPassword\nsgtMailSmtpHost\nsgtMailSmtpPort"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000001",
+      "stepName": "arrange: fetch INBOX (calibration + clean slate)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:calEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "scal"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000006",
+      "stepName": "arrange: scan calibration + session stragglers",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:calEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000003",
+          "stepName": "calibration email visible?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000006",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{slc:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-calibration]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 4,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000002",
+              "stepName": "set {var:calFound}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000003",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:calFound}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 5,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000005",
+          "stepName": "this session already present? (must not be)",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000006",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{slc:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 6,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000004",
+              "stepName": "set {var:preCount}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000005",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:preCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:preCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 7,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "slc"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000007",
+      "stepName": "act: send session message A",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "send-email",
+        "actionPropValues": {
+          "useConnectionVariable": {
+            "value": false
+          },
+          "smtpServer": {
+            "value": "{svar:sgtMailSmtpHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailSmtpPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "requiresAuth": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "from": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "to": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "cc": {
+            "value": ""
+          },
+          "bcc": {
+            "value": ""
+          },
+          "priority": {
+            "value": "normal"
+          },
+          "subject": {
+            "value": "[sgt-{var:_sgtSessionId}] bulk-A"
+          },
+          "isHtml": {
+            "value": false
+          },
+          "body": {
+            "value": "sgt bulk A {var:_sgtSessionId}"
+          },
+          "attachments": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssna"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000008",
+      "stepName": "act: send session message B",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "send-email",
+        "actionPropValues": {
+          "useConnectionVariable": {
+            "value": false
+          },
+          "smtpServer": {
+            "value": "{svar:sgtMailSmtpHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailSmtpPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "requiresAuth": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "from": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "to": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "cc": {
+            "value": ""
+          },
+          "bcc": {
+            "value": ""
+          },
+          "priority": {
+            "value": "normal"
+          },
+          "subject": {
+            "value": "[sgt-{var:_sgtSessionId}] bulk-B"
+          },
+          "isHtml": {
+            "value": false
+          },
+          "body": {
+            "value": "sgt bulk B {var:_sgtSessionId}"
+          },
+          "attachments": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssnb"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000024",
+      "stepName": "assert: bounded poll until BOTH messages are visible (12 x 5s)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "count"
+          },
+          "count": {
+            "value": 12
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000010",
+          "stepName": "both already seen? stop polling",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000024",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:bothSeen}",
+                    "comparator": "equals",
+                    "rightOperand": "1"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 11,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000009",
+              "stepName": "exit poll",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000010",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "exit-loop",
+                "actionPropValues": {},
+                "requiresChildSteps": false
+              },
+              "seq": 12,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000011",
+          "stepName": "wait for delivery",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000024",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "delay",
+            "actionPropValues": {
+              "delayType": {
+                "value": "seconds"
+              },
+              "duration": {
+                "value": 5
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 13,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000012",
+          "stepName": "reset per-pass counters (A)",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000024",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "set-variable",
+            "actionPropValues": {
+              "variableToken": {
+                "value": "{var:seenA}"
+              },
+              "valueSource": {
+                "value": "substitute"
+              },
+              "value": {
+                "value": "0"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 14,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000013",
+          "stepName": "reset per-pass counters (B)",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000024",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "set-variable",
+            "actionPropValues": {
+              "variableToken": {
+                "value": "{var:seenB}"
+              },
+              "valueSource": {
+                "value": "substitute"
+              },
+              "value": {
+                "value": "0"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 15,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000014",
+          "stepName": "fetch INBOX (markAsRead=false while polling)",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000024",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "get-emails-imap",
+            "actionPropValues": {
+              "imapServer": {
+                "value": "{svar:sgtMailImapHost}"
+              },
+              "port": {
+                "value": "{svar:sgtMailImapPort}"
+              },
+              "useSsl": {
+                "value": true
+              },
+              "emailAccount": {
+                "value": "{svar:sgtMailAccount}"
+              },
+              "password": {
+                "value": "{svar:sgtMailPassword}"
+              },
+              "folder": {
+                "value": "INBOX"
+              },
+              "unreadOnly": {
+                "value": false
+              },
+              "markAsRead": {
+                "value": false
+              },
+              "maxEmails": {
+                "value": 50
+              },
+              "resultVariable": {
+                "value": "{var:pollEmails}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 16,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": "sgp"
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000021",
+          "stepName": "scan poll fetch",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000024",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "loop",
+            "actionPropValues": {
+              "loopType": {
+                "value": "list"
+              },
+              "listVariable": {
+                "value": "{var:pollEmails}"
+              },
+              "maxIterations": {
+                "value": 1000
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 17,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000017",
+              "stepName": "message A present?",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000021",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "if",
+                "actionPropValues": {
+                  "conditions": {
+                    "value": [
+                      {
+                        "logic": "and",
+                        "leftOperand": "{spl:loopItem|subject}",
+                        "comparator": "equalsExact",
+                        "rightOperand": "[sgt-{var:_sgtSessionId}] bulk-A"
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": true
+              },
+              "seq": 18,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [
+                {
+                  "stepGuid": "e13a0003-0000-4000-8000-000000000015",
+                  "stepName": "set {var:seenA}",
+                  "parentGuid": "e13a0003-0000-4000-8000-000000000017",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:seenA}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "1"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 19,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0003-0000-4000-8000-000000000016",
+                  "stepName": "capture unread state of A before markAsRead",
+                  "parentGuid": "e13a0003-0000-4000-8000-000000000017",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:aReadBefore}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{spl:loopItem|isRead}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 20,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                }
+              ]
+            },
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000020",
+              "stepName": "message B present?",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000021",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "if",
+                "actionPropValues": {
+                  "conditions": {
+                    "value": [
+                      {
+                        "logic": "and",
+                        "leftOperand": "{spl:loopItem|subject}",
+                        "comparator": "equalsExact",
+                        "rightOperand": "[sgt-{var:_sgtSessionId}] bulk-B"
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": true
+              },
+              "seq": 21,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [
+                {
+                  "stepGuid": "e13a0003-0000-4000-8000-000000000018",
+                  "stepName": "set {var:seenB}",
+                  "parentGuid": "e13a0003-0000-4000-8000-000000000020",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:seenB}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "1"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 22,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0003-0000-4000-8000-000000000019",
+                  "stepName": "capture unread state of B before markAsRead",
+                  "parentGuid": "e13a0003-0000-4000-8000-000000000020",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:bReadBefore}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{spl:loopItem|isRead}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 23,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "stepPrefix": "spl"
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000023",
+          "stepName": "A seen and B seen?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000024",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:seenA}{var:seenB}",
+                    "comparator": "equalsExact",
+                    "rightOperand": "11"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 24,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000022",
+              "stepName": "set {var:bothSeen}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000023",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:bothSeen}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 25,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "spol"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000025",
+      "stepName": "assert: unreadOnly=true fetch of INBOX — the unread session messages must be there",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": true
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:unreadBefore}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 26,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sub"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000026",
+      "stepName": "capture unreadOnly result count",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:unreadBeforeTotal}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{var:unreadBefore|count}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 27,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000033",
+      "stepName": "assert: both session messages ARE in the unreadOnly fetch (they are unread)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:unreadBefore}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 28,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000029",
+          "stepName": "A in unreadOnly fetch?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000033",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{subl:loopItem|subject}",
+                    "comparator": "equalsExact",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}] bulk-A"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 29,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000027",
+              "stepName": "set {var:unreadBeforeA}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000029",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:unreadBeforeA}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 30,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            },
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000028",
+              "stepName": "capture isRead of A from the unreadOnly fetch",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000029",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:unreadAIsRead}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{subl:loopItem|isRead}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 31,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000032",
+          "stepName": "B in unreadOnly fetch?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000033",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{subl:loopItem|subject}",
+                    "comparator": "equalsExact",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}] bulk-B"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 32,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000030",
+              "stepName": "set {var:unreadBeforeB}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000032",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:unreadBeforeB}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 33,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            },
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000031",
+              "stepName": "capture isRead of B from the unreadOnly fetch",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000032",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:unreadBIsRead}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{subl:loopItem|isRead}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 34,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "subl"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000034",
+      "stepName": "act: fetch INBOX to move both session messages",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:moveEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 35,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "smvf"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000039",
+      "stepName": "act: move both session messages INBOX -> sgt-bulk",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:moveEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 36,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000038",
+          "stepName": "session marker match?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000039",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sml:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 37,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000035",
+              "stepName": "move to sgt-bulk (targeted, live step token)",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000038",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "move-single-email-imap",
+                "actionPropValues": {
+                  "imapServer": {
+                    "value": "{svar:sgtMailImapHost}"
+                  },
+                  "port": {
+                    "value": "{svar:sgtMailImapPort}"
+                  },
+                  "useSsl": {
+                    "value": true
+                  },
+                  "emailAccount": {
+                    "value": "{svar:sgtMailAccount}"
+                  },
+                  "password": {
+                    "value": "{svar:sgtMailPassword}"
+                  },
+                  "emailVariable": {
+                    "value": "{sml:loopItem}"
+                  },
+                  "sourceFolder": {
+                    "value": "INBOX"
+                  },
+                  "targetFolder": {
+                    "value": "sgt-bulk"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 38,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [],
+              "stepPrefix": "smb"
+            },
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000036",
+              "stepName": "set {var:movedCount}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000038",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:movedCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:movedCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 39,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            },
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000037",
+              "stepName": "capture last move success",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000038",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:moveSuccess}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{smb:success}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 40,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "sml"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000050",
+      "stepName": "assert: bounded poll until BOTH are in sgt-bulk (12 x 5s)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "count"
+          },
+          "count": {
+            "value": 12
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 41,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000041",
+          "stepName": "both already in sgt-bulk? stop polling",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000050",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:bulkBoth}",
+                    "comparator": "equals",
+                    "rightOperand": "1"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 42,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000040",
+              "stepName": "exit bulk poll",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000041",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "exit-loop",
+                "actionPropValues": {},
+                "requiresChildSteps": false
+              },
+              "seq": 43,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000042",
+          "stepName": "wait for delivery",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000050",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "delay",
+            "actionPropValues": {
+              "delayType": {
+                "value": "seconds"
+              },
+              "duration": {
+                "value": 5
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 44,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000043",
+          "stepName": "reset bulk pass counter",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000050",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "set-variable",
+            "actionPropValues": {
+              "variableToken": {
+                "value": "{var:bulkSessionCount}"
+              },
+              "valueSource": {
+                "value": "substitute"
+              },
+              "value": {
+                "value": "0"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 45,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000044",
+          "stepName": "fetch sgt-bulk",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000050",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "get-emails-imap",
+            "actionPropValues": {
+              "imapServer": {
+                "value": "{svar:sgtMailImapHost}"
+              },
+              "port": {
+                "value": "{svar:sgtMailImapPort}"
+              },
+              "useSsl": {
+                "value": true
+              },
+              "emailAccount": {
+                "value": "{svar:sgtMailAccount}"
+              },
+              "password": {
+                "value": "{svar:sgtMailPassword}"
+              },
+              "folder": {
+                "value": "sgt-bulk"
+              },
+              "unreadOnly": {
+                "value": false
+              },
+              "markAsRead": {
+                "value": false
+              },
+              "maxEmails": {
+                "value": 50
+              },
+              "resultVariable": {
+                "value": "{var:bulkEmails}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 46,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": "sbk"
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000047",
+          "stepName": "scan sgt-bulk",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000050",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "loop",
+            "actionPropValues": {
+              "loopType": {
+                "value": "list"
+              },
+              "listVariable": {
+                "value": "{var:bulkEmails}"
+              },
+              "maxIterations": {
+                "value": 1000
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 47,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000046",
+              "stepName": "session marker match in sgt-bulk?",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000047",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "if",
+                "actionPropValues": {
+                  "conditions": {
+                    "value": [
+                      {
+                        "logic": "and",
+                        "leftOperand": "{sbl:loopItem|subject}",
+                        "comparator": "contains",
+                        "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": true
+              },
+              "seq": 48,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [
+                {
+                  "stepGuid": "e13a0003-0000-4000-8000-000000000045",
+                  "stepName": "set {var:bulkSessionCount}",
+                  "parentGuid": "e13a0003-0000-4000-8000-000000000046",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:bulkSessionCount}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{var:bulkSessionCount|add:1}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 49,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "stepPrefix": "sbl"
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000049",
+          "stepName": "both present in sgt-bulk?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000050",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:bulkSessionCount}",
+                    "comparator": "equals",
+                    "rightOperand": "2"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 50,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000048",
+              "stepName": "set {var:bulkBoth}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000049",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:bulkBoth}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 51,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "sbpl"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000051",
+      "stepName": "record bulk count before the bulk delete",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:bulkBefore}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{var:bulkSessionCount}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 52,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000052",
+      "stepName": "arrange: calibrate the unreadOnly probe IN sgt-bulk (both must be unread here)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "sgt-bulk"
+          },
+          "unreadOnly": {
+            "value": true
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:bulkUnread}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 53,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sbu"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000055",
+      "stepName": "count session messages in the sgt-bulk unreadOnly fetch (expect 2)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:bulkUnread}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 54,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000054",
+          "stepName": "session message unread in sgt-bulk?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000055",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sbul:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 55,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000053",
+              "stepName": "set {var:bulkUnreadBefore}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000054",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:bulkUnreadBefore}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:bulkUnreadBefore|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 56,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "sbul"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000056",
+      "stepName": "act: fetch sgt-bulk with markAsRead=true (flips \\Seen on what it returns)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "sgt-bulk"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": true
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:readEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 57,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "smrk"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000061",
+      "stepName": "assert: both session messages came back from the markAsRead fetch",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:readEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 58,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000058",
+          "stepName": "A in markAsRead fetch?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000061",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{smr:loopItem|subject}",
+                    "comparator": "equalsExact",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}] bulk-A"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 59,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000057",
+              "stepName": "set {var:markFetchA}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000058",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:markFetchA}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 60,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000060",
+          "stepName": "B in markAsRead fetch?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000061",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{smr:loopItem|subject}",
+                    "comparator": "equalsExact",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}] bulk-B"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 61,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000059",
+              "stepName": "set {var:markFetchB}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000060",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:markFetchB}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 62,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "smr"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000062",
+      "stepName": "assert: unreadOnly=true re-fetch of sgt-bulk (both must now be absent)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "sgt-bulk"
+          },
+          "unreadOnly": {
+            "value": true
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:unreadEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 63,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sunr"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000063",
+      "stepName": "capture unreadOnly residual count in sgt-bulk",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:unreadAfterTotal}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{var:unreadEmails|count}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 64,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000066",
+      "stepName": "assert: count session messages still unread in sgt-bulk (expect 0)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:unreadEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 65,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000065",
+          "stepName": "session message still unread?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000066",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sul:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 66,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000064",
+              "stepName": "set {var:unreadSessionCount}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000065",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:unreadSessionCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:unreadSessionCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 67,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "sul"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000067",
+      "stepName": "act: delete-emails-imap (action under test) — SCOPED TO sgt-bulk ONLY, NEVER INBOX",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "delete-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "sgt-bulk"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 0
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 68,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sbd"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000068",
+      "stepName": "capture deletedCount step output",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:bulkDeleted}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{sbd:deletedCount}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 69,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000069",
+      "stepName": "assert: re-fetch sgt-bulk (expect zero session messages)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "sgt-bulk"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:bulkAfterEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 70,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sba"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000070",
+      "stepName": "capture sgt-bulk residual count",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:bulkAfterTotal}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{var:bulkAfterEmails|count}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 71,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000073",
+      "stepName": "assert: count session messages left in sgt-bulk (expect 0)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:bulkAfterEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 72,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000072",
+          "stepName": "session message still in sgt-bulk?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000073",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sbal:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 73,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000071",
+              "stepName": "set {var:bulkAfterCount}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000072",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:bulkAfterCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:bulkAfterCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 74,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "sbal"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000074",
+      "stepName": "cleanup: re-fetch INBOX",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:afterInbox}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 75,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "saf"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000078",
+      "stepName": "cleanup: delete any session leftovers still in INBOX (expect none)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:afterInbox}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 76,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000077",
+          "stepName": "session message still in INBOX?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000078",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sal:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 77,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000075",
+              "stepName": "set {var:inboxLeftover}",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000077",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:inboxLeftover}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:inboxLeftover|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 78,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            },
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000076",
+              "stepName": "self-heal: delete leftover from INBOX (targeted)",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000077",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "delete-single-email-imap",
+                "actionPropValues": {
+                  "imapServer": {
+                    "value": "{svar:sgtMailImapHost}"
+                  },
+                  "port": {
+                    "value": "{svar:sgtMailImapPort}"
+                  },
+                  "useSsl": {
+                    "value": true
+                  },
+                  "emailAccount": {
+                    "value": "{svar:sgtMailAccount}"
+                  },
+                  "password": {
+                    "value": "{svar:sgtMailPassword}"
+                  },
+                  "emailVariable": {
+                    "value": "{sal:loopItem}"
+                  },
+                  "folder": {
+                    "value": "INBOX"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 79,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": true,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [],
+              "stepPrefix": "shl"
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "sal"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000079",
+      "stepName": "cleanup: re-fetch sgt-bulk and self-heal leftovers",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "sgt-bulk"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:healBulk}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 80,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "shb"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000082",
+      "stepName": "cleanup: delete any session leftovers still in sgt-bulk",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:healBulk}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 81,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000081",
+          "stepName": "session message still in sgt-bulk?",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000082",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{shbl:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 82,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0003-0000-4000-8000-000000000080",
+              "stepName": "self-heal: delete leftover from sgt-bulk (targeted)",
+              "parentGuid": "e13a0003-0000-4000-8000-000000000081",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "delete-single-email-imap",
+                "actionPropValues": {
+                  "imapServer": {
+                    "value": "{svar:sgtMailImapHost}"
+                  },
+                  "port": {
+                    "value": "{svar:sgtMailImapPort}"
+                  },
+                  "useSsl": {
+                    "value": true
+                  },
+                  "emailAccount": {
+                    "value": "{svar:sgtMailAccount}"
+                  },
+                  "password": {
+                    "value": "{svar:sgtMailPassword}"
+                  },
+                  "emailVariable": {
+                    "value": "{shbl:loopItem}"
+                  },
+                  "folder": {
+                    "value": "sgt-bulk"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 83,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": true,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [],
+              "stepPrefix": "shd"
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "shbl"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "calEmails",
+      "token": "{var:calEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "pollEmails",
+      "token": "{var:pollEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "unreadBefore",
+      "token": "{var:unreadBefore}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "moveEmails",
+      "token": "{var:moveEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bulkEmails",
+      "token": "{var:bulkEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bulkUnread",
+      "token": "{var:bulkUnread}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readEmails",
+      "token": "{var:readEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "unreadEmails",
+      "token": "{var:unreadEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bulkAfterEmails",
+      "token": "{var:bulkAfterEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "afterInbox",
+      "token": "{var:afterInbox}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "healBulk",
+      "token": "{var:healBulk}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "calFound",
+      "token": "{var:calFound}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "preCount",
+      "token": "{var:preCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "movedCount",
+      "token": "{var:movedCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bulkSessionCount",
+      "token": "{var:bulkSessionCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bulkUnreadBefore",
+      "token": "{var:bulkUnreadBefore}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "unreadSessionCount",
+      "token": "{var:unreadSessionCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bulkAfterCount",
+      "token": "{var:bulkAfterCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "inboxLeftover",
+      "token": "{var:inboxLeftover}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "seenA",
+      "token": "{var:seenA}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "seenB",
+      "token": "{var:seenB}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bothSeen",
+      "token": "{var:bothSeen}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "unreadBeforeA",
+      "token": "{var:unreadBeforeA}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "unreadBeforeB",
+      "token": "{var:unreadBeforeB}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bulkBoth",
+      "token": "{var:bulkBoth}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "markFetchA",
+      "token": "{var:markFetchA}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "markFetchB",
+      "token": "{var:markFetchB}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "aReadBefore",
+      "token": "{var:aReadBefore}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bReadBefore",
+      "token": "{var:bReadBefore}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "unreadAIsRead",
+      "token": "{var:unreadAIsRead}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "unreadBIsRead",
+      "token": "{var:unreadBIsRead}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "unreadBeforeTotal",
+      "token": "{var:unreadBeforeTotal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "moveSuccess",
+      "token": "{var:moveSuccess}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bulkBefore",
+      "token": "{var:bulkBefore}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bulkDeleted",
+      "token": "{var:bulkDeleted}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bulkAfterTotal",
+      "token": "{var:bulkAfterTotal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "unreadAfterTotal",
+      "token": "{var:unreadAfterTotal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.176"
+}

@@ -1,0 +1,271 @@
+{
+  "job": {
+    "jobName": "ai-structured-extract-schema",
+    "jobGuid": "a13b0002-0000-4000-8000-000000000001",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "9f802869-eb89-47bc-8661-c405dabf9fe9",
+      "stepName": "Require shared variables: sgtAiOpenAi",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtAiOpenAi"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a13b0002-0000-4000-8000-000000000002",
+      "stepName": "act: structured extract against a strict JSON schema",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ai-structured-extract",
+        "actionPropValues": {
+          "credential": {
+            "value": "sgtAiOpenAi"
+          },
+          "systemPrompt": {
+            "value": ""
+          },
+          "prompt": {
+            "value": "Extract the fields from this invoice text:\n{var:invoiceText}"
+          },
+          "jsonSchema": {
+            "value": "{\"type\": \"object\", \"properties\": {\"invoiceNumber\": {\"type\": \"string\"}, \"vendorName\": {\"type\": \"string\"}, \"totalAmount\": {\"type\": \"string\"}}, \"required\": [\"invoiceNumber\", \"vendorName\", \"totalAmount\"], \"additionalProperties\": false}"
+          },
+          "resultVariable": {
+            "value": "{var:extracted}"
+          },
+          "model": {
+            "value": ""
+          },
+          "temperature": {
+            "value": 0
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sxe"
+    },
+    {
+      "stepGuid": "a13b0002-0000-4000-8000-000000000003",
+      "stepName": "assert: pull invoiceNumber",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-get-property",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:extracted}"
+          },
+          "propertyName": {
+            "value": "invoiceNumber"
+          },
+          "resultVariable": {
+            "value": "{var:invNum}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "a13b0002-0000-4000-8000-000000000004",
+      "stepName": "assert: pull vendorName",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-get-property",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:extracted}"
+          },
+          "propertyName": {
+            "value": "vendorName"
+          },
+          "resultVariable": {
+            "value": "{var:vendor}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "a13b0002-0000-4000-8000-000000000005",
+      "stepName": "assert: pull totalAmount",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-get-property",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:extracted}"
+          },
+          "propertyName": {
+            "value": "totalAmount"
+          },
+          "resultVariable": {
+            "value": "{var:total}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "invoiceText",
+      "token": "{var:invoiceText}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "Invoice INV-88412 from Acme Corp. Total due: 1,234.56 USD.",
+      "defaultValue": "Invoice INV-88412 from Acme Corp. Total due: 1,234.56 USD.",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "extracted",
+      "token": "{var:extracted}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "json",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "invNum",
+      "token": "{var:invNum}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "vendor",
+      "token": "{var:vendor}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "total",
+      "token": "{var:total}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.176"
+}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>SGT Waits</title></head>
+<body>
+<div id="stays">always here</div>
+<div id="vanishes">will be removed</div>
+<button id="locked" disabled>locked</button>
+<script>
+  setTimeout(() => {
+    const d = document.createElement("div");
+    d.id = "appears";
+    d.textContent = "appeared";
+    document.body.appendChild(d);
+  }, 400);
+  setTimeout(() => {
+    document.getElementById("vanishes").remove();
+  }, 400);
+  setTimeout(() => {
+    document.getElementById("locked").removeAttribute("disabled");
+  }, 400);
+</script>
+</body>
+</html>

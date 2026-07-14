@@ -1,0 +1,146 @@
+{
+  "test": {
+    "id": "tier1-features/web/dialogs",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "handle-dialog",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/dialogs.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 90000
+  },
+  "predictions": [
+    {
+      "id": "acceptall-alert",
+      "kind": "round-trip",
+      "description": "AcceptAll lets alert() return and the handler continue",
+      "expr": {
+        "equals": [
+          {
+            "$var": "alertRes"
+          },
+          "alert-done"
+        ]
+      }
+    },
+    {
+      "id": "acceptall-confirm-true",
+      "kind": "round-trip",
+      "description": "AcceptAll makes confirm() return true",
+      "expr": {
+        "equals": [
+          {
+            "$var": "confirmRes"
+          },
+          "confirm:true"
+        ]
+      }
+    },
+    {
+      "id": "dismissall-confirm-false",
+      "kind": "round-trip",
+      "description": "DismissAll makes confirm() return false",
+      "expr": {
+        "equals": [
+          {
+            "$var": "confirmRes2"
+          },
+          "confirm:false"
+        ]
+      }
+    },
+    {
+      "id": "acceptwithtext-prompt",
+      "kind": "round-trip",
+      "description": "AcceptWithText makes prompt() return the armed text (not the page's default)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "promptRes"
+          },
+          "prompt:sgt-typed-answer"
+        ]
+      }
+    },
+    {
+      "id": "off-dismisses-prompt",
+      "kind": "round-trip",
+      "description": "Off dismisses (prompt returns null) — behavior-identical to no listener",
+      "expr": {
+        "equals": [
+          {
+            "$var": "promptRes2"
+          },
+          "prompt:<null>"
+        ]
+      }
+    },
+    {
+      "id": "last-dialog-message-output",
+      "kind": "round-trip",
+      "description": "handle-dialog reports the most recent dialog's message at arm time",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000b-0000-0000-0000-000000000008",
+                  "name": "lastDialogMessage"
+                }
+              },
+              "sgt-confirm-message"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000b-0000-0000-0000-000000000014",
+                  "name": "lastDialogMessage"
+                }
+              },
+              "sgt-prompt-message"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "first-arm-no-dialog-yet",
+      "kind": "round-trip",
+      "description": "the first arm step reports an empty lastDialogMessage (no dialog has fired yet)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a9e1000b-0000-0000-0000-000000000003",
+              "name": "lastDialogMessage"
+            }
+          },
+          ""
+        ]
+      }
+    }
+  ]
+}

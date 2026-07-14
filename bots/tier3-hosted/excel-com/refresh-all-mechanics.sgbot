@@ -1,0 +1,357 @@
+{
+  "job": {
+    "jobName": "SGT xlcom-refresh-all — mechanics contract on a connectionless workbook: RefreshAll succeeds, SaveCopyAs and write-back both preserve content",
+    "jobGuid": "aa170005-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbF",
+      "token": "{var:wbF}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbF2",
+      "token": "{var:wbF2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "refA",
+      "token": "{var:refA}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "01bc0978-4c91-43a3-b151-20904cb7979d",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b8ce7873-2ca9-4ba2-a299-a4a186db4a2f",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170005-0000-0000-0000-000000000001",
+      "stepName": "xl-create-new-workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": "1"
+          },
+          "storeToVariable": {
+            "value": "{var:wbF}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170005-0000-0000-0000-000000000002",
+      "stepName": "xl-set-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "value": {
+            "value": "refresh-me"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170005-0000-0000-0000-000000000003",
+      "stepName": "xl-save-as-xlsx",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-xlsx",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fresh.xlsx"
+          },
+          "replaceExisting": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170005-0000-0000-0000-000000000004",
+      "stepName": "RefreshAll on the literal path (no connections: pinned no-op success), SaveCopyAs artifact",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xlcom-refresh-all",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fresh.xlsx"
+          },
+          "outputPath": {
+            "value": "{var:_sgtScratchDir}/refreshed.xlsx"
+          },
+          "waitSeconds": {
+            "value": "30"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "srefresh"
+    },
+    {
+      "stepGuid": "aa170005-0000-0000-0000-000000000005",
+      "stepName": "RefreshAll in place on the literal path (no outputPath)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xlcom-refresh-all",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fresh.xlsx"
+          },
+          "waitSeconds": {
+            "value": "30"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "srefreshvar"
+    },
+    {
+      "stepGuid": "aa170005-0000-0000-0000-000000000006",
+      "stepName": "xl-open-existing-workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/refreshed.xlsx"
+          },
+          "storeToVariable": {
+            "value": "{var:wbF2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170005-0000-0000-0000-000000000007",
+      "stepName": "xl-get-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF2}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "storeToVariable": {
+            "value": "{var:refA}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170005-0000-0000-0000-000000000008",
+      "stepName": "xl-save-as-csv",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-csv",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF2}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/refreshed.csv"
+          },
+          "replaceExisting": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

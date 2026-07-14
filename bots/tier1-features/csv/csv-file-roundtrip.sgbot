@@ -1,0 +1,89 @@
+{
+  "job": {
+    "jobName": "SGT csv — file round-trip (write-line, dt-to-csv, get-csv-contents)",
+    "jobGuid": "f3e00002-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "rowList", "token": "{var:rowList}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": ["2", "Bob"], "defaultValue": ["2", "Bob"], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "linesContent", "token": "{var:linesContent}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "csv", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "dt", "token": "{var:dt}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "dataTable", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "dtContent", "token": "{var:dtContent}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "csv", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3e00002-0000-0000-0000-000000000001",
+      "stepName": "write-line creates the file (header record)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-write-line", "actionPropValues": { "csvFile": { "value": "/tmp/sgt-csv-{var:_sgtSessionId}/lines.csv" }, "fields": { "value": ["id", "name"] } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00002-0000-0000-0000-000000000002",
+      "stepName": "write-line appends a record whose cell embeds the delimiter (gets quoted)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-write-line", "actionPropValues": { "csvFile": { "value": "/tmp/sgt-csv-{var:_sgtSessionId}/lines.csv" }, "fields": { "value": ["1", "Ann, A."] } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00002-0000-0000-0000-000000000003",
+      "stepName": "write-line from a Values List variable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-write-line", "actionPropValues": { "csvFile": { "value": "/tmp/sgt-csv-{var:_sgtSessionId}/lines.csv" }, "valuesList": { "value": "{var:rowList}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00002-0000-0000-0000-000000000004",
+      "stepName": "read the accumulated file back",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "get-csv-contents", "actionPropValues": { "filePath": { "value": "/tmp/sgt-csv-{var:_sgtSessionId}/lines.csv" }, "hasHeaders": { "value": true }, "delimiter": { "value": "comma" }, "resultVariable": { "value": "{var:linesContent}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00002-0000-0000-0000-000000000005",
+      "stepName": "build a DataTable in memory",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-read", "actionPropValues": { "csvContent": { "value": "x,y\n7,8" }, "hasHeaders": { "value": true }, "typingMode": { "value": "string" }, "dataTableVariable": { "value": "{var:dt}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00002-0000-0000-0000-000000000006",
+      "stepName": "dt-to-csv writes the table to a new file (with headers)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "dt-to-csv", "actionPropValues": { "csvFile": { "value": "/tmp/sgt-csv-{var:_sgtSessionId}/dt.csv" }, "dataTableVariable": { "value": "{var:dt}" }, "includeHeaders": { "value": true }, "replaceExisting": { "value": false } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00002-0000-0000-0000-000000000007",
+      "stepName": "dt-to-csv again with replaceExisting=false (exists → representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "dt-to-csv", "actionPropValues": { "csvFile": { "value": "/tmp/sgt-csv-{var:_sgtSessionId}/dt.csv" }, "dataTableVariable": { "value": "{var:dt}" }, "includeHeaders": { "value": true }, "replaceExisting": { "value": false } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00002-0000-0000-0000-000000000008",
+      "stepName": "read dt.csv back",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "get-csv-contents", "actionPropValues": { "filePath": { "value": "/tmp/sgt-csv-{var:_sgtSessionId}/dt.csv" }, "hasHeaders": { "value": true }, "delimiter": { "value": "comma" }, "resultVariable": { "value": "{var:dtContent}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00002-0000-0000-0000-000000000009",
+      "stepName": "get-csv-contents on missing file (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "get-csv-contents", "actionPropValues": { "filePath": { "value": "/tmp/sgt-csv-{var:_sgtSessionId}/nope.csv" }, "hasHeaders": { "value": true }, "delimiter": { "value": "comma" }, "resultVariable": { "value": "{var:dtContent}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

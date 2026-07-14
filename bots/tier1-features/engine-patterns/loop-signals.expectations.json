@@ -1,0 +1,57 @@
+{
+  "test": {
+    "id": "tier1-features/engine-patterns/loop-signals",
+    "tier": 1,
+    "synthesizedAt": "2026-07-08T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["loop", "exit-loop", "continue-loop", "if", "set-variable", "add-to-list"],
+      "pipeFns": [],
+      "patterns": ["loop"]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "while-loop-flips-off",
+      "kind": "round-trip",
+      "description": "while loop re-reads {var:keepGoing} each iteration; a child set-variable to 'false' at loopCount 3 ends the loop after exactly 3 iterations (maxIterations=20 backstop untouched)",
+      "expr": { "equals": [ { "$var": "crumbsWhile" }, ["1", "2", "3"] ] }
+    },
+    {
+      "id": "keepgoing-final",
+      "kind": "round-trip",
+      "description": "the while-condition variable holds the flipped value after the loop",
+      "expr": { "equals": [ { "$var": "keepGoing" }, "false" ] }
+    },
+    {
+      "id": "exit-loop-mid-iteration",
+      "kind": "round-trip",
+      "description": "exit-loop fired inside a nested If stops the CURRENT iteration immediately (the sibling step after the If is skipped on iteration 3) and terminates the loop: crumbs show after-if for iterations 1-2 only",
+      "expr": { "equals": [ { "$var": "crumbsExit" }, ["1", "after-if-1", "2", "after-if-2", "3"] ] }
+    },
+    {
+      "id": "continue-loop-skips-rest",
+      "kind": "round-trip",
+      "description": "continue-loop fired inside a nested If skips remaining siblings for that iteration only: crumb for loopCount 3 missing, 4 and 5 present",
+      "expr": { "equals": [ { "$var": "crumbsContinue" }, ["1", "2", "4", "5"] ] }
+    },
+    {
+      "id": "execution-continues-after-loops",
+      "kind": "round-trip",
+      "description": "exit-loop/continue-loop signals are scoped to their loop frame — top-level execution continues normally afterward",
+      "expr": { "equals": [ { "$var": "afterAll" }, "reached" ] }
+    }
+  ]
+}

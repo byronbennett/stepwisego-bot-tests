@@ -1,0 +1,238 @@
+{
+  "job": {
+    "jobName": "SGT scripts — run-script node (temp-file exec, argv passing, stdout capture, exit-3 buried error)",
+    "jobGuid": "a6d10007-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sOut",
+      "token": "{var:sOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sErr",
+      "token": "{var:sErr}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sBack",
+      "token": "{var:sBack}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "0fb336de-2ba4-4e3a-b460-feadb36e8204",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "7b2eaf8e-17ff-4eec-9e4c-b024953dd076",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10007-0000-0000-0000-000000000001",
+      "stepName": "act: node script writes witness file (path via argv) and prints to stdout",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-script",
+        "actionPropValues": {
+          "scriptLanguage": {
+            "value": "node"
+          },
+          "scriptText": {
+            "value": "const fs=require('fs');fs.writeFileSync(process.argv[2],'sgt-t6-script');console.log('script-done');"
+          },
+          "arguments": {
+            "value": "{var:_sgtScratchDir}/script-out.txt"
+          },
+          "timeoutSeconds": {
+            "value": 30
+          },
+          "storeToVariable": {
+            "value": "{var:sOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "rs1"
+    },
+    {
+      "stepGuid": "a6d10007-0000-0000-0000-000000000002",
+      "stepName": "buried error: node script exits 3 — stderr still captured",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-script",
+        "actionPropValues": {
+          "scriptLanguage": {
+            "value": "node"
+          },
+          "scriptText": {
+            "value": "console.error('boom');process.exit(3);"
+          },
+          "timeoutSeconds": {
+            "value": 30
+          },
+          "storeErrorToVariable": {
+            "value": "{var:sErr}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "rs2"
+    },
+    {
+      "stepGuid": "a6d10007-0000-0000-0000-000000000003",
+      "stepName": "in-bot witness: read back the script-written file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/script-out.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:sBack}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

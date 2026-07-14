@@ -1,0 +1,29 @@
+# tier1-features/user-interactions/choose-from-list-headless
+
+## Target
+
+`choose-from-list` — headless contract: unanswerable prompt fails its step
+at the harness's 5s deadline instead of hanging.
+
+## Manifest honesty
+
+Flipped to `pass` on the headless contract alone — **the interactive
+exact-value legs (single selection value, selectMultiple list shape) are
+Tier 3 manual-assisted, not yet witnessed.** Same convention as the ftp
+protocol split. Harness wiring details in `input-dialog-headless.review.md`.
+
+## Permutation matrix
+
+| # | Permutation | Covered by | Check id |
+|---|---|---|---|
+| 1 | prompt times out → step FAILS (not a hang) | baseline | step 1 pinned failed |
+| 2 | store-to variable untouched (SENTINEL) | this triple | prompt-timed-out-not-hung |
+| 3 | run continues past the buried dialog | this triple | run-continued |
+| 4 | interactive selection legs (single value, multi list) | Tier 3 manual-assisted (deferred) | — |
+
+## Expected values derived from
+
+`choose-from-list.runner.ts` (`context.promptUser` with options),
+`step-executor.ts` promptUser deadline.
+
+- 2026-07-13 standalone bootstrap: added a session-bootstrap preflight (require-shared-vars, bootstrap-only mode) + create-folder ahead of the original steps, so this bot is runnable standalone (not only via RunAllRegressionTests). Witnesses and prediction values unchanged.

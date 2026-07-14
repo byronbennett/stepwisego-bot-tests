@@ -1,0 +1,955 @@
+{
+  "job": {
+    "jobName": "SGT files — path metadata (filename, extension, folder-path, file dates, random filename)",
+    "jobGuid": "f4a00003-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "crumbs",
+      "token": "{var:crumbs}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "fname",
+      "token": "{var:fname}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "extCsv",
+      "token": "{var:extCsv}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "extNone",
+      "token": "{var:extNone}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "extDotfile",
+      "token": "{var:extDotfile}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "extTargz",
+      "token": "{var:extTargz}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folderLiteral",
+      "token": "{var:folderLiteral}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folderOfStamp",
+      "token": "{var:folderOfStamp}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dateCreated",
+      "token": "{var:dateCreated}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dateCreated2",
+      "token": "{var:dateCreated2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dateModified1",
+      "token": "{var:dateModified1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dateModified2",
+      "token": "{var:dateModified2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dateMissing",
+      "token": "{var:dateMissing}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "UNTOUCHED",
+      "defaultValue": "UNTOUCHED",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "randCsvA",
+      "token": "{var:randCsvA}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "randCsvB",
+      "token": "{var:randCsvB}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "randDotted",
+      "token": "{var:randDotted}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "randDefault",
+      "token": "{var:randDefault}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "5240328a-2fef-44a1-a272-ef574694fabc",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "094cf6bc-ceb3-4167-aae7-efba876745bd",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000001",
+      "stepName": "get-filename from a multi-dot literal path (pure string op — no file needed)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-filename",
+        "actionPropValues": {
+          "filePath": {
+            "value": "/data/in/report.v2.csv"
+          },
+          "resultVariable": {
+            "value": "{var:fname}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000002",
+      "stepName": "get-file-extension: multi-dot name yields only the LAST extension",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-extension",
+        "actionPropValues": {
+          "filePath": {
+            "value": "/data/in/report.v2.csv"
+          },
+          "resultVariable": {
+            "value": "{var:extCsv}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000003",
+      "stepName": "get-file-extension: extensionless name yields empty string (overwrites SENTINEL)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-extension",
+        "actionPropValues": {
+          "filePath": {
+            "value": "/data/in/README"
+          },
+          "resultVariable": {
+            "value": "{var:extNone}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000004",
+      "stepName": "get-file-extension: dotfile (.gitignore) is a name, not an extension → empty",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-extension",
+        "actionPropValues": {
+          "filePath": {
+            "value": "/data/in/.gitignore"
+          },
+          "resultVariable": {
+            "value": "{var:extDotfile}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000005",
+      "stepName": "get-file-extension: archive.tar.gz yields .gz (not .tar.gz)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-extension",
+        "actionPropValues": {
+          "filePath": {
+            "value": "/data/in/archive.tar.gz"
+          },
+          "resultVariable": {
+            "value": "{var:extTargz}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000006",
+      "stepName": "get-folder-path from the literal path",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-folder-path",
+        "actionPropValues": {
+          "filePath": {
+            "value": "/data/in/report.v2.csv"
+          },
+          "resultVariable": {
+            "value": "{var:folderLiteral}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000007",
+      "stepName": "create a real file for the stat-backed date actions",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/meta/stamp.txt"
+          },
+          "content": {
+            "value": "stamp"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000008",
+      "stepName": "get-folder-path of the scratch file (session-dependent — checked in-bot)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-folder-path",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/meta/stamp.txt"
+          },
+          "resultVariable": {
+            "value": "{var:folderOfStamp}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000009",
+      "stepName": "in-bot check: dirname equals the token-built scratch folder exactly",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:folderOfStamp}",
+                "comparator": "equalsExact",
+                "rightOperand": "{var:_sgtScratchDir}/meta"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "f4a00003-0000-0000-0000-000000000901",
+          "stepName": "crumb: dirname-ok",
+          "parentGuid": "f4a00003-0000-0000-0000-000000000009",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "dirname-ok"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 12,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-00000000000a",
+      "stepName": "get-file-date-created of the fresh file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-date-created",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/meta/stamp.txt"
+          },
+          "resultVariable": {
+            "value": "{var:dateCreated}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-00000000000b",
+      "stepName": "get-file-date-modified of the fresh file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-date-modified",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/meta/stamp.txt"
+          },
+          "resultVariable": {
+            "value": "{var:dateModified1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-00000000000c",
+      "stepName": "touch the file (append) so mtime moves forward",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "append-text-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/meta/stamp.txt"
+          },
+          "text": {
+            "value": "+touch"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-00000000000d",
+      "stepName": "get-file-date-modified again after the touch",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-date-modified",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/meta/stamp.txt"
+          },
+          "resultVariable": {
+            "value": "{var:dateModified2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-00000000000e",
+      "stepName": "get-file-date-created again — birthtime must be stable across writes",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-date-created",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/meta/stamp.txt"
+          },
+          "resultVariable": {
+            "value": "{var:dateCreated2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-00000000000f",
+      "stepName": "in-bot check: mtime ordering + birthtime stability (date comparators)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:dateModified2}",
+                "comparator": "greaterOrEqual",
+                "rightOperand": "{var:dateModified1}"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:dateModified1}",
+                "comparator": "greaterOrEqual",
+                "rightOperand": "{var:dateCreated}"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:dateCreated2}",
+                "comparator": "equalsExact",
+                "rightOperand": "{var:dateCreated}"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "f4a00003-0000-0000-0000-000000000f01",
+          "stepName": "crumb: dates-ordered",
+          "parentGuid": "f4a00003-0000-0000-0000-00000000000f",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "dates-ordered"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 19,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000010",
+      "stepName": "get-file-date-modified on a missing file (error, buried; sentinel untouched)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-date-modified",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/meta/no-such.txt"
+          },
+          "resultVariable": {
+            "value": "{var:dateMissing}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 20,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000011",
+      "stepName": "get-random-filename ext without dot (csv)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-random-filename",
+        "actionPropValues": {
+          "extension": {
+            "value": "csv"
+          },
+          "resultVariable": {
+            "value": "{var:randCsvA}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 21,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000012",
+      "stepName": "get-random-filename second csv draw (uniqueness witness)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-random-filename",
+        "actionPropValues": {
+          "extension": {
+            "value": "csv"
+          },
+          "resultVariable": {
+            "value": "{var:randCsvB}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 22,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000013",
+      "stepName": "get-random-filename ext WITH leading dot (.log — must not double the dot)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-random-filename",
+        "actionPropValues": {
+          "extension": {
+            "value": ".log"
+          },
+          "resultVariable": {
+            "value": "{var:randDotted}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 23,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000014",
+      "stepName": "get-random-filename with extension omitted → default .tmp",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-random-filename",
+        "actionPropValues": {
+          "resultVariable": {
+            "value": "{var:randDefault}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 24,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00003-0000-0000-0000-000000000015",
+      "stepName": "in-bot check: two draws differ (case-sensitive compare)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:randCsvA}",
+                "comparator": "notEqualsExact",
+                "rightOperand": "{var:randCsvB}"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "f4a00003-0000-0000-0000-000000001501",
+          "stepName": "crumb: random-unique",
+          "parentGuid": "f4a00003-0000-0000-0000-000000000015",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "random-unique"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 26,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 25,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

@@ -1,0 +1,236 @@
+{
+  "test": {
+    "id": "tier1-features/excel/data-exchange",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xl-get-range-as-datatable",
+        "xl-write-data-table",
+        "xl-get-sheet-as-jsonl",
+        "xl-get-workbook-as-json",
+        "xl-copy-range-to-range",
+        "xl-copy-to-clipboard",
+        "xl-paste-from-clipboard",
+        "xl-create-new-workbook",
+        "xl-get-values",
+        "xl-get-formula",
+        "csv-read",
+        "dt-get-column-names",
+        "dt-get-row-count",
+        "dt-get-value",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "write-data-table-roundtrip",
+      "kind": "round-trip",
+      "description": "A canonical DataTable (csv-read, dynamic typing) written via xl-write-data-table lands as header row + positional data rows; read back row-major by get-values. qty entered the grid as real NUMBERS (csv typed them) and reads back as their string forms.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "written"
+          },
+          [
+            "name",
+            "qty",
+            "foo",
+            "2",
+            "bar",
+            "10"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "range-to-datatable-headers",
+      "kind": "round-trip",
+      "description": "get-range-as-datatable (includeHeaders default) rebuilds the canonical shape — verified by DataTable-PLUGIN readers (different plugin): columns [name,qty], 2 rows, dt[1].qty = 10. Full circle csv-read → Excel grid → DataTable.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "dt2Cols"
+              },
+              [
+                "name",
+                "qty"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "dt2Rows"
+              },
+              2
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "dt2Cell"
+              },
+              "10"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "range-to-datatable-no-headers",
+      "kind": "round-trip",
+      "description": "includeHeaders=false names columns positionally ('0','1') and the header row becomes a data row (dt[0].'1' = 'qty').",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "noHdrCols"
+              },
+              [
+                "0",
+                "1"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "noHdrCell"
+              },
+              "qty"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "range-to-datatable-expand-region",
+      "kind": "round-trip",
+      "description": "expandToRegion=true from the single anchor cell A1 finds the same 2-data-row table as the explicit range.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "regionRows"
+          },
+          2
+        ]
+      }
+    },
+    {
+      "id": "jsonl-exact",
+      "kind": "round-trip",
+      "description": "sheet-as-jsonl emits one JSON object per data row keyed by the header row, joined with newlines, no trailing newline — exact string pinned.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "jsonl"
+          },
+          "{\"name\":\"foo\",\"qty\":\"2\"}\n{\"name\":\"bar\",\"qty\":\"10\"}"
+        ]
+      }
+    },
+    {
+      "id": "workbook-json-exact",
+      "kind": "round-trip",
+      "description": "workbook-as-json wraps every sheet under {sheets}, 2-space pretty-printed; an empty sheet appears as [] (snapshot taken while Sheet2 was still untouched). All values stringified.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "wbJson"
+          },
+          "{\n  \"sheets\": {\n    \"Sheet1\": [\n      {\n        \"name\": \"foo\",\n        \"qty\": \"2\"\n      },\n      {\n        \"name\": \"bar\",\n        \"qty\": \"10\"\n      }\n    ],\n    \"Sheet2\": []\n  }\n}"
+        ]
+      }
+    },
+    {
+      "id": "copy-range-same-and-cross-workbook",
+      "kind": "round-trip",
+      "description": "copy-range-to-range replicates the block cross-SHEET (Sheet2!C5) and cross-WORKBOOK (a second workbook variable) — both read back identical to the source block.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "copiedSameWb"
+              },
+              [
+                "name",
+                "qty",
+                "foo",
+                "2",
+                "bar",
+                "10"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "copiedCrossWb"
+              },
+              [
+                "name",
+                "qty",
+                "foo",
+                "2",
+                "bar",
+                "10"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "clipboard-bot-scoped-roundtrip",
+      "kind": "round-trip",
+      "description": "xl-copy-to-clipboard → xl-paste-from-clipboard round-trips a 2x2 block through the bot-scoped __xl_clipboard (OS clipboard never touched): values land at the anchor, and the numeric cell stayed a VALUE cell (get-formula on it returns the raw number, proving cell types survived the snapshot).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "pasted"
+              },
+              [
+                "name",
+                "qty",
+                "foo",
+                "2"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "pasteTypeCheck"
+              },
+              "2"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

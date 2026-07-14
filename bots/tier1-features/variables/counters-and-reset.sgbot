@@ -1,0 +1,123 @@
+{
+  "job": {
+    "jobName": "SGT variables — run counters (pass/fail/transaction) + reset-to-default",
+    "jobGuid": "f3b00003-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapPass", "token": "{var:snapPass}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapFail", "token": "{var:snapFail}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapTxn", "token": "{var:snapTxn}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "resettable", "token": "{var:resettable}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "DEFAULT-VALUE", "defaultValue": "DEFAULT-VALUE", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapChanged", "token": "{var:snapChanged}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "resetList", "token": "{var:resetList}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": ["x", "y"], "defaultValue": ["x", "y"], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-000000000001",
+      "stepName": "add to pass count (default amount = 1)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-pass-count", "actionPropValues": {}, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-000000000002",
+      "stepName": "add to pass count (+2)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-pass-count", "actionPropValues": { "amount": { "value": 2 } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-000000000003",
+      "stepName": "add to fail count (+1)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-fail-count", "actionPropValues": { "amount": { "value": 1 } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-000000000004",
+      "stepName": "add to transaction count (+5)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-transaction-count", "actionPropValues": { "amount": { "value": 5 } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-000000000005",
+      "stepName": "snapshot passCount (3)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapPass}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:_sgtSessionId|passCount}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-000000000006",
+      "stepName": "snapshot failCount (1)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapFail}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:_sgtSessionId|failCount}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-000000000007",
+      "stepName": "snapshot transactionCount (5)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapTxn}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:_sgtSessionId|transactionCount}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-000000000008",
+      "stepName": "resettable = changed-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:resettable}" }, "valueSource": { "value": "substitute" }, "value": { "value": "changed-value" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-000000000009",
+      "stepName": "snapshot resettable while changed (proves the set happened before the reset)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapChanged}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:resettable}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-00000000000a",
+      "stepName": "reset resettable to default",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "reset-to-default", "actionPropValues": { "variableToken": { "value": "{var:resettable}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-00000000000b",
+      "stepName": "mutate resetList (add z)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:resetList}" }, "value": { "value": "z" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-00000000000c",
+      "stepName": "reset resetList to default list",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "reset-to-default", "actionPropValues": { "variableToken": { "value": "{var:resetList}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 12, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00003-0000-0000-0000-00000000000d",
+      "stepName": "reset-to-default on missing variable (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "reset-to-default", "actionPropValues": { "variableToken": { "value": "{var:noSuchVar}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 13, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

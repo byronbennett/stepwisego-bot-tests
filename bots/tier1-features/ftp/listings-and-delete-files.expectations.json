@@ -1,0 +1,194 @@
+{
+  "test": {
+    "id": "tier1-features/ftp/listings-and-delete-files",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-script",
+        "get-file-contents",
+        "write-to-file",
+        "ftp-upload-files",
+        "ftp-get-file-names",
+        "set-variable",
+        "ftp-delete-files",
+        "ftp-download-files",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/sftp-server.mjs"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "sftp"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 45000
+  },
+  "predictions": [
+    {
+      "id": "server-launched",
+      "kind": "round-trip",
+      "description": "detached sftp listener up before the bot proceeded",
+      "expr": {
+        "equals": [
+          {
+            "$var": "launchOut"
+          },
+          "server-up"
+        ]
+      }
+    },
+    {
+      "id": "upload-count",
+      "kind": "round-trip",
+      "description": "all three staged files uploaded",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "aa10ff04-0000-0000-0000-000000000006",
+              "name": "uploadedCount"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "wildcard-listings",
+      "kind": "round-trip",
+      "description": "report-* matches both csvs (sorted), *.txt matches exactly notes.txt",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "reportsSorted"
+              },
+              "report-feb.csv,report-jan.csv"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "txtNames"
+              },
+              [
+                "notes.txt"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "delete-files-surviving-set",
+      "kind": "round-trip",
+      "description": "after delete-files report-*, the exact surviving set is [notes.txt]",
+      "expr": {
+        "equals": [
+          {
+            "$var": "afterDelete"
+          },
+          [
+            "notes.txt"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "delete-files-backing",
+      "kind": "external-write",
+      "description": "jail agrees the report files are physically gone",
+      "expr": {
+        "and": [
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/sftp-root/data/report-jan.csv"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/sftp-root/data/report-feb.csv"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "delete-after-download",
+      "kind": "round-trip",
+      "description": "deleteAfterDownload=true: file arrives locally byte-exact, remote copy is gone, final listing empty",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "aa10ff04-0000-0000-0000-000000000012",
+                  "name": "downloadedCount"
+                }
+              },
+              1
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/dl/notes.txt"
+                  }
+                ]
+              },
+              "sgt-notes"
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/sftp-root/data/notes.txt"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "finalNames"
+              },
+              []
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

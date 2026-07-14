@@ -1,0 +1,715 @@
+{
+  "job": {
+    "jobName": "SGT INT-04 — ftp file lifecycle: CRLF/unicode corpus → base64 → zip → sftp upload → download → unzip → base64/text compare + csv parse + remote cleanup by listing",
+    "jobGuid": "aa10ff06-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "launchOut",
+      "token": "{var:launchOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "port",
+      "token": "{var:port}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "b64orig",
+      "token": "{var:b64orig}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "b64back",
+      "token": "{var:b64back}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "csvText",
+      "token": "{var:csvText}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "xferNames",
+      "token": "{var:xferNames}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "finalXfer",
+      "token": "{var:finalXfer}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "csvRows",
+      "token": "{var:csvRows}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "c09751db-22bd-4376-a3f2-dc3e50a44b57",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "de5a1124-8a36-437f-897f-fca7b2a638ba",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000001",
+      "stepName": "arrange: spawn the detached loopback sftp server (ssh2), wait for its port file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-script",
+        "actionPropValues": {
+          "scriptLanguage": {
+            "value": "node"
+          },
+          "scriptText": {
+            "value": "const {spawn}=require('child_process');\nconst fs=require('fs');\nconst dir=process.argv[2];\nconst backstop=process.argv[3]||'45000';\nconst portFile=dir+'/sftp-port.txt';\ntry{fs.unlinkSync(portFile);}catch{}\nconst child=spawn(process.execPath,[dir+'/sftp-server.mjs'],{detached:true,stdio:'ignore',env:{...process.env,SGT_SFTP_ROOT:dir+'/sftp-root',SGT_SFTP_PORT_FILE:portFile,SGT_SFTP_STOP_FILE:dir+'/sftp-stop.txt',SGT_SFTP_BACKSTOP_MS:backstop}});\nchild.unref();\nconst t0=Date.now();\nwhile(!fs.existsSync(portFile)){\n  if(Date.now()-t0>10000){console.error('sftp server never started');process.exit(1);}\n  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,50);\n}\nconsole.log('server-up');"
+          },
+          "arguments": {
+            "value": "{var:_sgtScratchDir} 60000"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          },
+          "storeToVariable": {
+            "value": "{var:launchOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "slaunch"
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000002",
+      "stepName": "arrange: read the ephemeral sftp port",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sftp-port.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:port}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000003",
+      "stepName": "create the fidelity corpus CSV (CRLF line endings, unicode, exact big decimal)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/pack/corpus.csv"
+          },
+          "content": {
+            "value": "id,amount,name\r\n1,10.10,Ünïcødé\r\n2,99999999999999999999.99,漢字\r\n"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000004",
+      "stepName": "hash-equivalent witness: base64 of the original bytes",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-base64",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/pack/corpus.csv"
+          },
+          "resultVariable": {
+            "value": "{var:b64orig}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000005",
+      "stepName": "zip the pack folder",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "zip-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/pack"
+          },
+          "zipPath": {
+            "value": "{var:_sgtScratchDir}/bundle.zip"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000006",
+      "stepName": "upload the zip to /xfer",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-upload-files",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "localPath": {
+            "value": "{var:_sgtScratchDir}/bundle.zip"
+          },
+          "remotePath": {
+            "value": "/xfer"
+          },
+          "onFileExists": {
+            "value": "overwrite"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sup"
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000007",
+      "stepName": "remote listing shows exactly the zip",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-get-file-names",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "remotePath": {
+            "value": "/xfer"
+          },
+          "fileFilter": {
+            "value": "*"
+          },
+          "resultVariable": {
+            "value": "{var:xferNames}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000008",
+      "stepName": "download to a second local path",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-download-files",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "remotePath": {
+            "value": "/xfer"
+          },
+          "fileFilter": {
+            "value": "*"
+          },
+          "localPath": {
+            "value": "{var:_sgtScratchDir}/back"
+          },
+          "overwrite": {
+            "value": true
+          },
+          "deleteAfterDownload": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdl"
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000009",
+      "stepName": "unzip the downloaded bundle",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "unzip-file",
+        "actionPropValues": {
+          "zipPath": {
+            "value": "{var:_sgtScratchDir}/back/bundle.zip"
+          },
+          "destFolder": {
+            "value": "{var:_sgtScratchDir}/unzipped"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000010",
+      "stepName": "base64 of the bytes that survived zip → sftp → unzip",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-base64",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/unzipped/corpus.csv"
+          },
+          "resultVariable": {
+            "value": "{var:b64back}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000011",
+      "stepName": "read the round-tripped CSV text",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/unzipped/corpus.csv"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:csvText}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000012",
+      "stepName": "the corpus is a CSV: parse it post-transfer",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "csv-to-json",
+        "actionPropValues": {
+          "csvContent": {
+            "value": "{var:csvText}"
+          },
+          "hasHeaders": {
+            "value": true
+          },
+          "delimiter": {
+            "value": ","
+          },
+          "resultVariable": {
+            "value": "{var:csvRows}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000013",
+      "stepName": "remote cleanup: delete everything in /xfer",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-delete-files",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "remotePath": {
+            "value": "/xfer"
+          },
+          "fileFilter": {
+            "value": "*"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000014",
+      "stepName": "cleanup verified by listing: /xfer is empty",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-get-file-names",
+        "actionPropValues": {
+          "protocol": {
+            "value": "sftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr10-pass"
+          },
+          "remotePath": {
+            "value": "/xfer"
+          },
+          "fileFilter": {
+            "value": "*"
+          },
+          "resultVariable": {
+            "value": "{var:finalXfer}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff06-0000-0000-0000-000000000015",
+      "stepName": "cleanup: write the stop file — the server watches it and exits",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sftp-stop.txt"
+          },
+          "content": {
+            "value": "stop"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

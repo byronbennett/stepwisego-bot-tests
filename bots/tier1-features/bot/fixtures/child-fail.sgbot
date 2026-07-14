@@ -1,0 +1,30 @@
+{
+  "job": {
+    "jobName": "SGT INT-07 child #3 — fails at runtime (reads a file that never exists)",
+    "jobGuid": "a7d20007-c300-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "sink", "token": "{var:sink}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "SENTINEL", "defaultValue": "SENTINEL", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "a7d20007-c300-0000-0000-000000000001",
+      "stepName": "runtime failure: read a nonexistent file (structurally valid, fails when run)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": { "value": "/nonexistent/sgt-int07-child-fail-witness.txt" },
+          "readAs": { "value": "text" },
+          "encoding": { "value": "utf8" },
+          "resultVariable": { "value": "{var:sink}" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

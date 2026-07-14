@@ -1,0 +1,170 @@
+{
+  "test": {
+    "id": "tier1-features/excel/workbook-lifecycle",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xl-create-new-workbook",
+        "xl-open-existing-workbook",
+        "xl-save",
+        "xl-save-as-xlsx",
+        "xl-close-workbook",
+        "xl-get-sheet-names",
+        "xl-set-value",
+        "xl-get-value",
+        "file-exists",
+        "write-to-file",
+        "create-folder",
+        "if",
+        "add-to-list",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "save-as-exists-calibrated",
+      "kind": "round-trip",
+      "description": "file-exists calibrated on the SAME xlsx path across both polarities: false before anything ran (clean slate), true right after xl-save-as-xlsx — and the harness's own file_exists confirms the binary artifact physically survives the run.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "existsBefore"
+              },
+              false
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "existsAfterSave"
+              },
+              true
+            ]
+          },
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/life/book.xlsx"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fresh-workbook-default-sheets",
+      "kind": "round-trip",
+      "description": "xl-create-new-workbook(numberOfSheets=2) named its sheets Sheet1, Sheet2 — read back by a different action (xl-get-sheet-names) and asserted as an exact array.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "namesAfterCreate"
+          },
+          [
+            "Sheet1",
+            "Sheet2"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "in-bot-crumbs-all-ok",
+      "kind": "round-trip",
+      "description": "The reopened A1 equalsExact check is token-built against {var:_sgtSessionId} (the DSL cannot express that value), so it lives in-bot and reports via the crumbs list.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "crumbs"
+          },
+          [
+            "reopen-a1-ok"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "xlsx-roundtrip-second-sheet",
+      "kind": "round-trip",
+      "description": "Sheet2!B2=42 written before save-as-xlsx came back through an independent xl-open-existing-workbook into a SECOND variable — sheet routing and the numeric cell both survive the binary round-trip.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "readB2"
+          },
+          "42"
+        ]
+      }
+    },
+    {
+      "id": "xl-save-writes-through-to-disk",
+      "kind": "round-trip",
+      "description": "After mutating the reopened workbook (A2) and xl-save (in place — filePath inherited from the open step), a THIRD independent open sees the mutation: xl-save physically rewrote the file, not just the variable.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "readSavedA2"
+          },
+          "saved-by-xl-save"
+        ]
+      }
+    },
+    {
+      "id": "replace-existing-overwrites",
+      "kind": "round-trip",
+      "description": "xl-save-as-xlsx with replaceExisting=true really replaced the file: a fresh open reads the first workbook's new A1 content (the wb2 lineage's A2 write was clobbered along with the rest of that file version).",
+      "expr": {
+        "equals": [
+          {
+            "$var": "readOverwriteA1"
+          },
+          "overwritten-content"
+        ]
+      }
+    },
+    {
+      "id": "csv-open-branch",
+      "kind": "round-trip",
+      "description": "xl-open-existing-workbook on a .csv routes through ExcelJS's csv reader: B2 of the parsed grid is the second field of the second row.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "readCsvB2"
+          },
+          "v2"
+        ]
+      }
+    },
+    {
+      "id": "buried-errors-left-sentinel-untouched",
+      "kind": "round-trip",
+      "description": "Four buried failures fired (xl-save with no filePath, save-as onto an existing file with replaceExisting=false, opening a .xls, reading a CLOSED workbook) — smoke.expectErrorCount=0 proves they were buried, and the closed-workbook read failed BEFORE touching its result variable (sentinel intact). The closed-read failure is also the witness that xl-close-workbook actually cleared the variable.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "readClosed"
+          },
+          "UNTOUCHED"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+{
+  "test": {
+    "id": "tier1-features/sharepoint/select-projection-and-download",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "sp-create-list",
+        "sp-insert-item",
+        "sp-select-items",
+        "sp-download-list",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [
+      "sgt-{var:_sgtSessionId}-proj"
+    ],
+    "requiresEnv": [
+      "SGT_SP_TENANT_ID",
+      "SGT_SP_CLIENT_ID",
+      "SGT_SP_CLIENT_SECRET",
+      "SGT_SP_SITE_URL",
+      "SGT_SP_CERT_FILE",
+      "SGT_SP_CERT_KEY_FILE"
+    ],
+    "exclusive": true
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "pred-subset-projection",
+      "kind": "round-trip",
+      "description": "subset projection returns the ID-prepended column set and every row",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70004-0000-4000-8000-000000000006",
+                  "name": "columns"
+                }
+              },
+              [
+                "ID",
+                "Title",
+                "SgtNum"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70004-0000-4000-8000-000000000006",
+                  "name": "rowCount"
+                }
+              },
+              3
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-all-fields",
+      "kind": "round-trip",
+      "description": "all-fields select sees the three rows (column set from the raw payload; exact membership pinned live)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "51b70004-0000-4000-8000-000000000007",
+              "name": "rowCount"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "pred-system-fields",
+      "kind": "round-trip",
+      "description": "PROVISIONAL: ID + Modified (computed) + Title projection works — the 3-bucket $select model's system-field branch",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70004-0000-4000-8000-000000000008",
+                  "name": "rowCount"
+                }
+              },
+              3
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70004-0000-4000-8000-000000000008",
+                  "name": "columns"
+                }
+              },
+              [
+                "ID",
+                "Modified",
+                "Title"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-filter-gt",
+      "kind": "round-trip",
+      "description": "numeric gt filter matches exactly the SgtNum=15 row",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "51b70004-0000-4000-8000-000000000009",
+              "name": "rowCount"
+            }
+          },
+          1
+        ]
+      }
+    },
+    {
+      "id": "pred-filter-isnull",
+      "kind": "round-trip",
+      "description": "isNull on the Number field matches exactly the never-set row (p-3)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "51b70004-0000-4000-8000-000000000010",
+              "name": "rowCount"
+            }
+          },
+          1
+        ]
+      }
+    },
+    {
+      "id": "pred-zero-match-keeps-columns",
+      "kind": "round-trip",
+      "description": "a zero-match filter yields a 0-row DataTable that still carries its projected columns",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70004-0000-4000-8000-000000000011",
+                  "name": "rowCount"
+                }
+              },
+              0
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70004-0000-4000-8000-000000000011",
+                  "name": "columns"
+                }
+              },
+              [
+                "ID",
+                "Title",
+                "SgtNum"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-download-full",
+      "kind": "round-trip",
+      "description": "sp-download-list returns a raw JSON array with one object per item",
+      "expr": {
+        "equals": [
+          {
+            "size_of": [
+              {
+                "$var": "itemsJson"
+              }
+            ]
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "pred-download-capped",
+      "kind": "round-trip",
+      "description": "maxItems caps the download",
+      "expr": {
+        "equals": [
+          {
+            "size_of": [
+              {
+                "$var": "cappedJson"
+              }
+            ]
+          },
+          2
+        ]
+      }
+    }
+  ]
+}

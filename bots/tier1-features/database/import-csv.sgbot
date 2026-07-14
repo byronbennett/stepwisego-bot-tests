@@ -1,0 +1,372 @@
+{
+  "job": {
+    "jobName": "SGT database — import-to-database (CSV → SQL Server: sourceField + literal maps, schema-validation buried error)",
+    "jobGuid": "a6d10002-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "620b0fa1-39b4-46f9-bcb3-970d3b42ccbe",
+      "stepName": "Require shared variables: sgtDbMssql",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtDbMssql"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "8bccc198-99ee-42be-a767-2e1ef1462578",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10002-0000-0000-0000-000000000001",
+      "stepName": "arrange: destination table (id/customer/amount/source)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "other"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "CREATE TABLE [sgtester].[{var:_sgtSessionId}_imp] (id INT NOT NULL PRIMARY KEY, customer NVARCHAR(100) NULL, amount DECIMAL(10,2) NULL, source NVARCHAR(20) NULL)"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10002-0000-0000-0000-000000000002",
+      "stepName": "arrange: 3-row source csv in scratch",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/orders.csv"
+          },
+          "content": {
+            "value": "id,customer,amount\n1,Alice,10.50\n2,Bob,20.25\n3,Cara,0.75"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10002-0000-0000-0000-000000000003",
+      "stepName": "act: import csv (3 sourceField maps + 1 literal map)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "import-to-database",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "targetTable": {
+            "value": "sgtester.{var:_sgtSessionId}_imp"
+          },
+          "sourceFilePath": {
+            "value": "{var:_sgtScratchDir}/orders.csv"
+          },
+          "hasHeaders": {
+            "value": true
+          },
+          "delimiter": {
+            "value": ","
+          },
+          "batchSize": {
+            "value": 2500
+          },
+          "commandTimeout": {
+            "value": 60
+          },
+          "sourceMap": {
+            "value": {
+              "fileName": "orders.csv",
+              "fields": [
+                {
+                  "fieldName": "[field_000]",
+                  "fieldAlias": "[id]"
+                },
+                {
+                  "fieldName": "[field_001]",
+                  "fieldAlias": "[customer]"
+                },
+                {
+                  "fieldName": "[field_002]",
+                  "fieldAlias": "[amount]"
+                }
+              ]
+            }
+          },
+          "importMap": {
+            "value": {
+              "tableName": "sgtester.{var:_sgtSessionId}_imp",
+              "fields": [
+                {
+                  "fieldName": "id",
+                  "dataType": "int",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_000]"
+                  }
+                },
+                {
+                  "fieldName": "customer",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_001]"
+                  }
+                },
+                {
+                  "fieldName": "amount",
+                  "dataType": "decimal",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_002]"
+                  }
+                },
+                {
+                  "fieldName": "source",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "literal",
+                    "value": "csv-import"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "simp"
+    },
+    {
+      "stepGuid": "a6d10002-0000-0000-0000-000000000004",
+      "stepName": "buried error: importMap names a column the live table lacks → pre-flight schema validation fails",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "import-to-database",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "targetTable": {
+            "value": "sgtester.{var:_sgtSessionId}_imp"
+          },
+          "sourceFilePath": {
+            "value": "{var:_sgtScratchDir}/orders.csv"
+          },
+          "hasHeaders": {
+            "value": true
+          },
+          "delimiter": {
+            "value": ","
+          },
+          "sourceMap": {
+            "value": {
+              "fileName": "orders.csv",
+              "fields": [
+                {
+                  "fieldName": "[field_000]",
+                  "fieldAlias": "[id]"
+                },
+                {
+                  "fieldName": "[field_001]",
+                  "fieldAlias": "[customer]"
+                },
+                {
+                  "fieldName": "[field_002]",
+                  "fieldAlias": "[amount]"
+                }
+              ]
+            }
+          },
+          "importMap": {
+            "value": {
+              "tableName": "sgtester.{var:_sgtSessionId}_imp",
+              "fields": [
+                {
+                  "fieldName": "no_such_column",
+                  "dataType": "int",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_000]"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10002-0000-0000-0000-000000000005",
+      "stepName": "in-bot witness: row id=2 landed with its csv values",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "select"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "SELECT customer, source FROM [sgtester].[{var:_sgtSessionId}_imp] WHERE id = 2"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "chk"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-07-run-bot-as-function-pipeline/failprop",
+    "tier": 2,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-bot-as-function",
+        "add-to-list",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/child-fail.sgbot"
+    ],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "status-false-both-variants",
+      "kind": "round-trip",
+      "description": "statusVariable captured FALSE for both calls (parms default true so a no-write would read as a false pass of this pin).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "statusNoFail"
+              },
+              false
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "statusEndOnFail"
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "propagation-crumbs",
+      "kind": "round-trip",
+      "description": "endOnFail=false: the parent step PASSES and execution continues (after-nofail crumb). endOnFail=true: the parent step FAILS but ignoreErrors buries it, so after-endonfail is still reached and the run completes with errorCount 0 (buried failures don't count — same contract INT-06 pinned).",
+      "expr": {
+        "equals": [
+          {
+            "$var": "crumbs"
+          },
+          [
+            "start",
+            "after-nofail",
+            "after-endonfail"
+          ]
+        ]
+      }
+    }
+  ]
+}

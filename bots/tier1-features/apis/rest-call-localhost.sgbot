@@ -1,0 +1,400 @@
+{
+  "job": {
+    "jobName": "SGT apis — rest-call against a hermetic localhost listener (GET json, POST raw echo, 404 buried, shutdown)",
+    "jobGuid": "a6d10008-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "port",
+      "token": "{var:port}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "launchOut",
+      "token": "{var:launchOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "body1",
+      "token": "{var:body1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "body2",
+      "token": "{var:body2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bodyMiss",
+      "token": "{var:bodyMiss}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bodyDown",
+      "token": "{var:bodyDown}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "db543c4c-d8ae-4a6c-bb45-e2dc7cf7cfce",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b43da6ec-20a3-4b4e-a82e-cb8ad5436150",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10008-0000-0000-0000-000000000001",
+      "stepName": "arrange: node launcher spawns a detached loopback http server, waits for its port file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-script",
+        "actionPropValues": {
+          "scriptLanguage": {
+            "value": "node"
+          },
+          "scriptText": {
+            "value": "const {spawn}=require('child_process');\nconst fs=require('fs');\nconst dir=process.argv[2];\nconst portFile=dir+'/port.txt';\ntry{fs.unlinkSync(portFile);}catch{}\nconst code=[\n\"const http=require('http');\",\n\"const fs=require('fs');\",\n\"const pf=process.env.SGT_T6_PORT_FILE;\",\n\"const srv=http.createServer((req,res)=>{\",\n\"  if(req.url==='/hello'){res.writeHead(200,{'Content-Type':'application/json'});res.end(JSON.stringify({msg:'hello-sgt-t6'}));}\",\n\"  else if(req.url==='/echo'&&req.method==='POST'){let b='';req.on('data',c=>b+=c);req.on('end',()=>{res.writeHead(200,{'Content-Type':'text/plain'});res.end('echo:'+b);});}\",\n\"  else if(req.url==='/shutdown'){res.writeHead(200,{'Content-Type':'text/plain'});res.end('bye');setTimeout(()=>process.exit(0),100);}\",\n\"  else{res.writeHead(404,{'Content-Type':'text/plain'});res.end('nope');}\",\n\"});\",\n\"srv.listen(0,'127.0.0.1',()=>{fs.writeFileSync(pf,String(srv.address().port));});\",\n\"setTimeout(()=>process.exit(0),25000);\"\n].join('\\n');\nconst child=spawn(process.execPath,['-e',code],{detached:true,stdio:'ignore',env:{...process.env,SGT_T6_PORT_FILE:portFile}});\nchild.unref();\nconst t0=Date.now();\nwhile(!fs.existsSync(portFile)){\n  if(Date.now()-t0>10000){console.error('server never started');process.exit(1);}\n  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,50);\n}\nconsole.log('server-up');"
+          },
+          "arguments": {
+            "value": "{var:_sgtScratchDir}"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          },
+          "storeToVariable": {
+            "value": "{var:launchOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "rl"
+    },
+    {
+      "stepGuid": "a6d10008-0000-0000-0000-000000000002",
+      "stepName": "arrange: read the ephemeral port",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/port.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:port}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10008-0000-0000-0000-000000000003",
+      "stepName": "act: GET /hello returns json 200",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "rest-call",
+        "actionPropValues": {
+          "method": {
+            "value": "GET"
+          },
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/hello"
+          },
+          "authType": {
+            "value": "none"
+          },
+          "bodyType": {
+            "value": "none"
+          },
+          "timeout": {
+            "value": 10
+          },
+          "resultVariable": {
+            "value": "{var:body1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "rest1"
+    },
+    {
+      "stepGuid": "a6d10008-0000-0000-0000-000000000004",
+      "stepName": "act: POST /echo raw body round-trips",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "rest-call",
+        "actionPropValues": {
+          "method": {
+            "value": "POST"
+          },
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/echo"
+          },
+          "authType": {
+            "value": "none"
+          },
+          "bodyType": {
+            "value": "raw"
+          },
+          "body": {
+            "value": "ping-sgt-t6"
+          },
+          "timeout": {
+            "value": 10
+          },
+          "resultVariable": {
+            "value": "{var:body2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "rest2"
+    },
+    {
+      "stepGuid": "a6d10008-0000-0000-0000-000000000005",
+      "stepName": "buried error: GET unknown route → HTTP 404 fails the step but still stores body + code",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "rest-call",
+        "actionPropValues": {
+          "method": {
+            "value": "GET"
+          },
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/missing"
+          },
+          "authType": {
+            "value": "none"
+          },
+          "bodyType": {
+            "value": "none"
+          },
+          "timeout": {
+            "value": 10
+          },
+          "resultVariable": {
+            "value": "{var:bodyMiss}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "rest3"
+    },
+    {
+      "stepGuid": "a6d10008-0000-0000-0000-000000000006",
+      "stepName": "cleanup: GET /shutdown stops the listener",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "rest-call",
+        "actionPropValues": {
+          "method": {
+            "value": "GET"
+          },
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/shutdown"
+          },
+          "authType": {
+            "value": "none"
+          },
+          "bodyType": {
+            "value": "none"
+          },
+          "timeout": {
+            "value": 10
+          },
+          "resultVariable": {
+            "value": "{var:bodyDown}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "rest4"
+    }
+  ]
+}

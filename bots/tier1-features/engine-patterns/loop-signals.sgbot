@@ -1,0 +1,255 @@
+{
+  "job": {
+    "jobName": "SGT engine-patterns — loop signals (while, exit-loop, continue-loop)",
+    "jobGuid": "e1a00003-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "keepGoing", "token": "{var:keepGoing}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "true", "defaultValue": "true", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbsWhile", "token": "{var:crumbsWhile}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbsExit", "token": "{var:crumbsExit}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbsContinue", "token": "{var:crumbsContinue}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "afterAll", "token": "{var:afterAll}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "e1a00003-0000-0000-0000-000000000001",
+      "stepName": "While {var:keepGoing} is true",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "slw",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": { "value": "while" },
+          "whileCondition": { "value": "{var:keepGoing}" },
+          "maxIterations": { "value": 20 }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00003-0000-0000-0000-000000000101",
+          "stepName": "record while crumb",
+          "parentGuid": "e1a00003-0000-0000-0000-000000000001",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": { "value": "{var:crumbsWhile}" },
+              "value": { "value": "{slw:loopCount}" },
+              "addPosition": { "value": "end" }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00003-0000-0000-0000-000000000102",
+          "stepName": "If loopCount is 3 stop the while",
+          "parentGuid": "e1a00003-0000-0000-0000-000000000001",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  { "logic": "and", "leftOperand": "{slw:loopCount}", "comparator": "equals", "rightOperand": "3" }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "e1a00003-0000-0000-0000-000000000103",
+              "stepName": "flip keepGoing to false",
+              "parentGuid": "e1a00003-0000-0000-0000-000000000102",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": { "value": "{var:keepGoing}" },
+                  "valueSource": { "value": "substitute" },
+                  "value": { "value": "false" }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            }
+          ],
+          "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00003-0000-0000-0000-000000000002",
+      "stepName": "Loop 100 times, exit at 3",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "slx",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": { "value": "count" },
+          "count": { "value": 100 },
+          "maxIterations": { "value": 1000 }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00003-0000-0000-0000-000000000201",
+          "stepName": "record exit crumb",
+          "parentGuid": "e1a00003-0000-0000-0000-000000000002",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": { "value": "{var:crumbsExit}" },
+              "value": { "value": "{slx:loopCount}" },
+              "addPosition": { "value": "end" }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00003-0000-0000-0000-000000000202",
+          "stepName": "If loopCount is 3 exit loop",
+          "parentGuid": "e1a00003-0000-0000-0000-000000000002",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  { "logic": "and", "leftOperand": "{slx:loopCount}", "comparator": "equals", "rightOperand": "3" }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "e1a00003-0000-0000-0000-000000000203",
+              "stepName": "Exit Loop",
+              "parentGuid": "e1a00003-0000-0000-0000-000000000202",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "exit-loop",
+                "actionPropValues": {},
+                "requiresChildSteps": false
+              },
+              "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            }
+          ],
+          "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00003-0000-0000-0000-000000000204",
+          "stepName": "record after-if crumb (skipped on exit iteration)",
+          "parentGuid": "e1a00003-0000-0000-0000-000000000002",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": { "value": "{var:crumbsExit}" },
+              "value": { "value": "after-if-{slx:loopCount}" },
+              "addPosition": { "value": "end" }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00003-0000-0000-0000-000000000003",
+      "stepName": "Loop 5 times, continue at 3",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "slk",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": { "value": "count" },
+          "count": { "value": 5 },
+          "maxIterations": { "value": 1000 }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00003-0000-0000-0000-000000000301",
+          "stepName": "If loopCount is 3 continue loop",
+          "parentGuid": "e1a00003-0000-0000-0000-000000000003",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  { "logic": "and", "leftOperand": "{slk:loopCount}", "comparator": "equals", "rightOperand": "3" }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "e1a00003-0000-0000-0000-000000000302",
+              "stepName": "Continue Loop",
+              "parentGuid": "e1a00003-0000-0000-0000-000000000301",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "continue-loop",
+                "actionPropValues": {},
+                "requiresChildSteps": false
+              },
+              "children": [], "seq": 12, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            }
+          ],
+          "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00003-0000-0000-0000-000000000303",
+          "stepName": "record continue crumb (skipped on iteration 3)",
+          "parentGuid": "e1a00003-0000-0000-0000-000000000003",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": { "value": "{var:crumbsContinue}" },
+              "value": { "value": "{slk:loopCount}" },
+              "addPosition": { "value": "end" }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 13, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00003-0000-0000-0000-000000000004",
+      "stepName": "prove execution continued after all loops",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": { "value": "{var:afterAll}" },
+          "valueSource": { "value": "substitute" },
+          "value": { "value": "reached" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 14, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

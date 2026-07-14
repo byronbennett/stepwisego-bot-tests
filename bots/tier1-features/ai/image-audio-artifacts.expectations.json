@@ -1,0 +1,94 @@
+{
+  "test": {
+    "id": "tier1-features/ai/image-audio-artifacts",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "ai-image-generate",
+        "ai-audio-generate",
+        "file-exists",
+        "get-file-base64",
+        "set-variable",
+        "require-shared-vars"
+      ],
+      "pipeFns": [
+        "left"
+      ],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_AI_OPENAI_API_KEY"
+    ],
+    "serialGroup": "ai-openai",
+    "engines": [
+      "in-process",
+      "agent"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 120000
+  },
+  "predictions": [
+    {
+      "id": "pred-image-magic",
+      "kind": "round-trip",
+      "description": "generated image artifact exists on disk and carries the PNG magic bytes (base64 iVBORw0KGgo)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "imgExists"
+              },
+              true
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "imgMagic"
+              },
+              "iVBORw0KGgo"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-audio-magic",
+      "kind": "round-trip",
+      "description": "generated audio artifact exists and starts with an MP3 container signature (ID3 tag or MPEG frame sync)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "audExists"
+              },
+              true
+            ]
+          },
+          {
+            "matches_regex": [
+              {
+                "$var": "audMagic"
+              },
+              "^(SUQz|//[a-zA-Z0-9+/])"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

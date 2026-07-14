@@ -1,0 +1,875 @@
+{
+  "job": {
+    "jobName": "SGT INT-06 — error-handler-retry-chain: 500 caught → flag flipped → call-counting /flaky retried to 200 → breadcrumbs exact; ignoreErrors variant buried",
+    "jobGuid": "a7d20006-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "port",
+      "token": "{var:port}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "launchOut",
+      "token": "{var:launchOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "crumbs",
+      "token": "{var:crumbs}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "caught1",
+      "token": "{var:caught1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": false,
+      "defaultValue": false,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "caught2",
+      "token": "{var:caught2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": false,
+      "defaultValue": false,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "body500",
+      "token": "{var:body500}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bodyFlaky1",
+      "token": "{var:bodyFlaky1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bodyFlaky2",
+      "token": "{var:bodyFlaky2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "body503",
+      "token": "{var:body503}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bodyDown",
+      "token": "{var:bodyDown}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "70308c41-4e18-4b31-acb2-f9b5a0ea0b08",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "d71ced99-38f1-4d9d-885a-87387ac0556e",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-000000000001",
+      "stepName": "arrange: launch detached loopback listener with /status/<code>, call-counting /flaky, /shutdown",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-script",
+        "actionPropValues": {
+          "scriptLanguage": {
+            "value": "node"
+          },
+          "scriptText": {
+            "value": "const {spawn}=require('child_process');\nconst fs=require('fs');\nconst dir=process.argv[2];\nconst portFile=dir+'/port.txt';\ntry{fs.unlinkSync(portFile);}catch{}\nconst code=[\n\"const http=require('http');\",\n\"const fs=require('fs');\",\n\"const pf=process.env.SGT_T7_PORT_FILE;\",\n\"let flaky=0;\",\n\"const srv=http.createServer((req,res)=>{\",\n\"  if(req.url.startsWith('/status/')){const c=Number(req.url.slice(8));res.writeHead(c,{'Content-Type':'text/plain'});res.end('code-'+req.url.slice(8));}\",\n\"  else if(req.url==='/flaky'){flaky++;const ok=flaky>1;res.writeHead(ok?200:500,{'Content-Type':'text/plain'});res.end((ok?'flaky-ok-':'flaky-fail-')+flaky);}\",\n\"  else if(req.url==='/shutdown'){res.writeHead(200,{'Content-Type':'text/plain'});res.end('bye');setTimeout(()=>process.exit(0),100);}\",\n\"  else{res.writeHead(404,{'Content-Type':'text/plain'});res.end('nope');}\",\n\"});\",\n\"srv.listen(0,'127.0.0.1',()=>{fs.writeFileSync(pf,String(srv.address().port));});\",\n\"setTimeout(()=>process.exit(0),25000);\"\n].join('\\n');\nconst child=spawn(process.execPath,['-e',code],{detached:true,stdio:'ignore',env:{...process.env,SGT_T7_PORT_FILE:portFile}});\nchild.unref();\nconst t0=Date.now();\nwhile(!fs.existsSync(portFile)){\n  if(Date.now()-t0>10000){console.error('server never started');process.exit(1);}\n  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,50);\n}\nconsole.log('server-up');"
+          },
+          "arguments": {
+            "value": "{var:_sgtScratchDir}"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          },
+          "storeToVariable": {
+            "value": "{var:launchOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "slaunch"
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-000000000002",
+      "stepName": "arrange: read the ephemeral port",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/port.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:port}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-000000000003",
+      "stepName": "crumb: start",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:crumbs}"
+          },
+          "value": {
+            "value": "start"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-000000000004",
+      "stepName": "Error Handler #1: 5xx inside the try block is caught",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "seha",
+      "actionOp": {
+        "actionName": "error-handler",
+        "actionPropValues": {
+          "statusVariable": {
+            "value": "{var:caught1}"
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "a7d20006-0000-0000-0000-000000000401",
+          "stepName": "crumb: try1",
+          "parentGuid": "a7d20006-0000-0000-0000-000000000004",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "try1"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 7,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a7d20006-0000-0000-0000-000000000402",
+          "stepName": "GET /status/500 — fails the step; body + code must still be stored (Tier-1 contract inside a handler frame)",
+          "parentGuid": "a7d20006-0000-0000-0000-000000000004",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "rest-call",
+            "actionPropValues": {
+              "method": {
+                "value": "GET"
+              },
+              "url": {
+                "value": "http://127.0.0.1:{var:port}/status/500"
+              },
+              "authType": {
+                "value": "none"
+              },
+              "bodyType": {
+                "value": "none"
+              },
+              "timeout": {
+                "value": 10
+              },
+              "resultVariable": {
+                "value": "{var:body500}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 8,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "stepPrefix": "sfivehundred"
+        },
+        {
+          "stepGuid": "a7d20006-0000-0000-0000-000000000403",
+          "stepName": "crumb: try1-after (must be SKIPPED — siblings after a caught failure do not run)",
+          "parentGuid": "a7d20006-0000-0000-0000-000000000004",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "try1-after"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 9,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-000000000005",
+      "stepName": "crumb: after-eh1 (execution resumed at the handler's next sibling)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:crumbs}"
+          },
+          "value": {
+            "value": "after-eh1"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-000000000006",
+      "stepName": "If caught1 — the handler flipped the status variable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:caught1}",
+                "comparator": "equals",
+                "rightOperand": "true"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "a7d20006-0000-0000-0000-000000000601",
+          "stepName": "crumb: retry-flagged",
+          "parentGuid": "a7d20006-0000-0000-0000-000000000006",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "retry-flagged"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 12,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-000000000007",
+      "stepName": "Error Handler #2: first /flaky call 500s and is caught",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "sehb",
+      "actionOp": {
+        "actionName": "error-handler",
+        "actionPropValues": {
+          "statusVariable": {
+            "value": "{var:caught2}"
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "a7d20006-0000-0000-0000-000000000701",
+          "stepName": "crumb: try2",
+          "parentGuid": "a7d20006-0000-0000-0000-000000000007",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "try2"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 14,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a7d20006-0000-0000-0000-000000000702",
+          "stepName": "GET /flaky (call #1 → 500, body flaky-fail-1 stored despite failure)",
+          "parentGuid": "a7d20006-0000-0000-0000-000000000007",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "rest-call",
+            "actionPropValues": {
+              "method": {
+                "value": "GET"
+              },
+              "url": {
+                "value": "http://127.0.0.1:{var:port}/flaky"
+              },
+              "authType": {
+                "value": "none"
+              },
+              "bodyType": {
+                "value": "none"
+              },
+              "timeout": {
+                "value": 10
+              },
+              "resultVariable": {
+                "value": "{var:bodyFlaky1}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 15,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "stepPrefix": "sflakya"
+        },
+        {
+          "stepGuid": "a7d20006-0000-0000-0000-000000000703",
+          "stepName": "crumb: try2-after (must be SKIPPED)",
+          "parentGuid": "a7d20006-0000-0000-0000-000000000007",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "try2-after"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 16,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-000000000008",
+      "stepName": "If caught2 — retry the SAME route outside any handler; server has advanced its call count",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:caught2}",
+                "comparator": "equals",
+                "rightOperand": "true"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "a7d20006-0000-0000-0000-000000000801",
+          "stepName": "crumb: retrying",
+          "parentGuid": "a7d20006-0000-0000-0000-000000000008",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "retrying"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 18,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a7d20006-0000-0000-0000-000000000802",
+          "stepName": "GET /flaky (call #2 → 200, body flaky-ok-2 proves the server-side call count)",
+          "parentGuid": "a7d20006-0000-0000-0000-000000000008",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "rest-call",
+            "actionPropValues": {
+              "method": {
+                "value": "GET"
+              },
+              "url": {
+                "value": "http://127.0.0.1:{var:port}/flaky"
+              },
+              "authType": {
+                "value": "none"
+              },
+              "bodyType": {
+                "value": "none"
+              },
+              "timeout": {
+                "value": 10
+              },
+              "resultVariable": {
+                "value": "{var:bodyFlaky2}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 19,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "stepPrefix": "sflakyb"
+        }
+      ],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-000000000009",
+      "stepName": "crumb: success-path",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:crumbs}"
+          },
+          "value": {
+            "value": "success-path"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 20,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-00000000000a",
+      "stepName": "ignoreErrors variant: GET /status/503 buried — code + body recorded, run continues, no handler involved",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "rest-call",
+        "actionPropValues": {
+          "method": {
+            "value": "GET"
+          },
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/status/503"
+          },
+          "authType": {
+            "value": "none"
+          },
+          "bodyType": {
+            "value": "none"
+          },
+          "timeout": {
+            "value": 10
+          },
+          "resultVariable": {
+            "value": "{var:body503}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 21,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sburied"
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-00000000000b",
+      "stepName": "crumb: done",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:crumbs}"
+          },
+          "value": {
+            "value": "done"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 22,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20006-0000-0000-0000-00000000000c",
+      "stepName": "cleanup: GET /shutdown stops the listener",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "rest-call",
+        "actionPropValues": {
+          "method": {
+            "value": "GET"
+          },
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/shutdown"
+          },
+          "authType": {
+            "value": "none"
+          },
+          "bodyType": {
+            "value": "none"
+          },
+          "timeout": {
+            "value": 10
+          },
+          "resultVariable": {
+            "value": "{var:bodyDown}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 23,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdown"
+    }
+  ]
+}

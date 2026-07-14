@@ -1,0 +1,1077 @@
+{
+  "job": {
+    "jobName": "SGT excel — structure (insert/delete row and column, copy-down literal + formula)",
+    "jobGuid": "e5a00007-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbR",
+      "token": "{var:wbR}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "cdValues",
+      "token": "{var:cdValues}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "cdFormula",
+      "token": "{var:cdFormula}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dupValues",
+      "token": "{var:dupValues}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "loneAfter",
+      "token": "{var:loneAfter}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "insA",
+      "token": "{var:insA}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "delA",
+      "token": "{var:delA}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "insRow1",
+      "token": "{var:insRow1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "delRow1",
+      "token": "{var:delRow1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "rangeDelRow1",
+      "token": "{var:rangeDelRow1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "9a7a2df9-75d2-4042-baa4-f5da0270b679",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "797f3f2c-bdd4-4da6-9f83-64ba99f2f64a",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000001",
+      "stepName": "create workbook, 2 sheets (Sheet1: copy-down; Sheet2: splices)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": 2
+          },
+          "storeToVariable": {
+            "value": "{var:wbR}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000002",
+      "stepName": "S1: B2:B4 = 1,2,3 (the reference/data column)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "B2"
+          },
+          "values": {
+            "value": "1;2;3"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000003",
+      "stepName": "S1: C2 = =B2*10 (formula source for the fill)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "C2"
+          },
+          "formula": {
+            "value": "=B2*10"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000004",
+      "stepName": "S1: copy-down C2 → fills C3:C4 against the B-column extent, adjusting row refs",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-copy-down",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "C2"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000005",
+      "stepName": "S1: read C2:C4 → engine computes the three adjusted formulas",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "C2:C4"
+          },
+          "storeToVariable": {
+            "value": "{var:cdValues}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000006",
+      "stepName": "S1: get-formula C4 → =B4*10 (row refs incremented per copied row)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "C4"
+          },
+          "storeToVariable": {
+            "value": "{var:cdFormula}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000007",
+      "stepName": "S1: D2 = dup (literal source)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "D2"
+          },
+          "value": {
+            "value": "dup"
+          },
+          "valueType": {
+            "value": "text"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000008",
+      "stepName": "S1: copy-down D2 → literal replicated against the C-column extent",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-copy-down",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "D2"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000009",
+      "stepName": "S1: read D2:D4 → three dups",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "D2:D4"
+          },
+          "storeToVariable": {
+            "value": "{var:dupValues}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000010",
+      "stepName": "S1: F10 = lone (no adjacent data on either side)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "F10"
+          },
+          "value": {
+            "value": "lone"
+          },
+          "valueType": {
+            "value": "text"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000011",
+      "stepName": "S1: copy-down F10 → PASSES with rowsCopied 0 (nothing to fill against)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-copy-down",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "F10"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000012",
+      "stepName": "S1: read F10:F11 skipEmpty=false → F11 stayed empty",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "F10:F11"
+          },
+          "skipEmptyValues": {
+            "value": false
+          },
+          "storeToVariable": {
+            "value": "{var:loneAfter}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000013",
+      "stepName": "S1: copy-down on EMPTY cell H1 → error, buried",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-copy-down",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "H1"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000014",
+      "stepName": "S2: A1:A5 = r1..r5",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": "r1;r2;r3;r4;r5"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000015",
+      "stepName": "S2: B1:B5 = x1..x5",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "B1"
+          },
+          "values": {
+            "value": "x1;x2;x3;x4;x5"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000016",
+      "stepName": "S2: C1:C5 = c1..c5",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "C1"
+          },
+          "values": {
+            "value": "c1;c2;c3;c4;c5"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000017",
+      "stepName": "S2: insert-row at 2, count=2 → r2..r5 shift down two",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-insert-row",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "rowNumber": {
+            "value": 2
+          },
+          "count": {
+            "value": 2
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 19,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000018",
+      "stepName": "S2: read A1:A7 skipEmpty=false → gap rows visible at 2,3",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A1:A7"
+          },
+          "skipEmptyValues": {
+            "value": false
+          },
+          "storeToVariable": {
+            "value": "{var:insA}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 20,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000019",
+      "stepName": "S2: delete-row at 2, count=2 → exact inverse, column A restored",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-delete-row",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "rowNumber": {
+            "value": 2
+          },
+          "count": {
+            "value": 2
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 21,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000020",
+      "stepName": "S2: column A after the round-trip",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values-for-column",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "columnLetter": {
+            "value": "A"
+          },
+          "storeToVariable": {
+            "value": "{var:delA}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 22,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000021",
+      "stepName": "S2: insert-column at B → x/c columns shift right",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-insert-column",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "columnLetter": {
+            "value": "B"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 23,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000022",
+      "stepName": "S2: row 1 skipEmpty=false → gap at B",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values-for-row",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "rowNumber": {
+            "value": 1
+          },
+          "skipEmptyValues": {
+            "value": false
+          },
+          "storeToVariable": {
+            "value": "{var:insRow1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 24,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000023",
+      "stepName": "S2: delete-column B → exact inverse, row restored",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-delete-column",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "columnLetter": {
+            "value": "B"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 25,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000024",
+      "stepName": "S2: row 1 after the round-trip",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values-for-row",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "rowNumber": {
+            "value": 1
+          },
+          "storeToVariable": {
+            "value": "{var:delRow1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 26,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000025",
+      "stepName": "S2: delete-column RANGE 'B:C' → both data columns removed in one call",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-delete-column",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "columnLetter": {
+            "value": "B:C"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 27,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000026",
+      "stepName": "S2: row 1 after the range delete → only column A left",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values-for-row",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "rowNumber": {
+            "value": 1
+          },
+          "storeToVariable": {
+            "value": "{var:rangeDelRow1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 28,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000027",
+      "stepName": "S2: insert-row rowNumber=0 → invalid, error buried",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-insert-row",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "rowNumber": {
+            "value": 0
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 29,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00007-0000-0000-0000-000000000028",
+      "stepName": "S2: delete-column '5' → invalid letters, error buried",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-delete-column",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "columnLetter": {
+            "value": "5"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 30,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

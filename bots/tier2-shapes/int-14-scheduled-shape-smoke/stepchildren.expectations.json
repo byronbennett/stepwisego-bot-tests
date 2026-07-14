@@ -1,0 +1,135 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-14-scheduled-shape-smoke/stepchildren",
+    "tier": 2,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "set-variable",
+        "if",
+        "loop",
+        "add-to-list",
+        "create-folder",
+        "write-to-file",
+        "get-file-contents",
+        "csv-write-line",
+        "csv-read",
+        "dt-get-value",
+        "db-sql-query",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": [
+        "agent-canary",
+        "run-scope"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [],
+    "engines": [
+      "agent"
+    ],
+    "serialGroup": "sgt_int14_shape"
+  },
+  "run": {
+    "scope": "stepAndChildren",
+    "targetStepGuid": "a7d20014-0000-0000-0000-000000000005"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "crumbs-loop-only",
+      "kind": "round-trip",
+      "description": "stepAndChildren on the Phase A list loop executes exactly that subtree — the 3 iteration crumbs and nothing else (no a:start before, no a:end after, no later phases)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "crumbs"
+          },
+          [
+            "a:item:alpha",
+            "a:item:beta",
+            "a:item:gamma"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "everything-else-untouched",
+      "kind": "round-trip",
+      "description": "no out-of-scope side effects: msg/fContent/cCity keep their SENTINEL defaults (set-variable, file phase, and csv phase never ran). Note the DB phase also never runs — this triple deliberately declares no requiresEnv",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "msg"
+              },
+              "SENTINEL"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "fContent"
+              },
+              "SENTINEL"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "cCity"
+              },
+              "SENTINEL"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "agent-event-csv-subtree",
+      "kind": "round-trip",
+      "description": "the Agent event CSV records the loop-child crumb step completing, and the run completing, under the stepAndChildren scope",
+      "expr": {
+        "and": [
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/agent-events.csv"
+                  }
+                ]
+              },
+              "a7d20014-0000-0000-0000-000000000501"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/agent-events.csv"
+                  }
+                ]
+              },
+              "run-complete"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

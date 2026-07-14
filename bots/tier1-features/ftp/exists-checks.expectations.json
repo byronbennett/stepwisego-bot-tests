@@ -1,0 +1,145 @@
+{
+  "test": {
+    "id": "tier1-features/ftp/exists-checks",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-script",
+        "get-file-contents",
+        "write-to-file",
+        "ftp-check-file-exists",
+        "ftp-create-folder",
+        "ftp-upload-files",
+        "ftp-check-folder-exists",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/sftp-server.mjs"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "sftp"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 45000
+  },
+  "predictions": [
+    {
+      "id": "server-launched",
+      "kind": "round-trip",
+      "description": "detached sftp listener up before the bot proceeded",
+      "expr": {
+        "equals": [
+          {
+            "$var": "launchOut"
+          },
+          "server-up"
+        ]
+      }
+    },
+    {
+      "id": "file-exists-calibrated",
+      "kind": "round-trip",
+      "description": "ftp-check-file-exists calibrated on the SAME path: false before upload, true after",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "existsBefore"
+              },
+              false
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "existsAfter"
+              },
+              true
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "folder-exists-trichotomy",
+      "kind": "round-trip",
+      "description": "check-folder-exists: true for a real dir, false when the path names a FILE",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "folderExists"
+              },
+              true
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "fileAsFolder"
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "file-check-on-dir-quirk",
+      "kind": "round-trip",
+      "description": "PINNED QUIRK: ftp-check-file-exists answers true for a directory at the path (runner tests existence, not file-ness)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "dirAsFile"
+          },
+          true
+        ]
+      }
+    },
+    {
+      "id": "nested-mkdir-backing",
+      "kind": "external-write",
+      "description": "one create-folder call materialized the whole nested path in the jail",
+      "expr": {
+        "file_exists": [
+          {
+            "file": "{var:_sgtScratchDir}/sftp-root/probe/nested/deep"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sentinel-backing-exact",
+      "kind": "external-write",
+      "description": "the uploaded sentinel's backing bytes are exact",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/sftp-root/probe/sentinel.txt"
+              }
+            ]
+          },
+          "sgt-sentinel"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,223 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-14-scheduled-shape-smoke/full",
+    "tier": 2,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "set-variable",
+        "if",
+        "loop",
+        "add-to-list",
+        "create-folder",
+        "write-to-file",
+        "get-file-contents",
+        "csv-write-line",
+        "csv-read",
+        "dt-get-value",
+        "db-sql-query",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": [
+        "agent-canary",
+        "run-scope"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "sgt_int14_shape"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ],
+    "engines": [
+      "agent"
+    ],
+    "serialGroup": "sgt_int14_shape"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "crumbs-full-sequence",
+      "kind": "round-trip",
+      "description": "full-bot scope executes every phase in depth-first order — breadcrumb list exact (a:never absent: the false If's child stayed skipped)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "crumbs"
+          },
+          [
+            "a:start",
+            "a:if-msg",
+            "a:item:alpha",
+            "a:item:beta",
+            "a:item:gamma",
+            "a:end",
+            "b:start",
+            "b:end",
+            "c:start",
+            "c:end",
+            "d:start",
+            "d:row:Ada",
+            "d:row:Bo",
+            "d:row:Cy",
+            "d:end",
+            "e:done"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "file-roundtrip",
+      "kind": "round-trip",
+      "description": "f1.txt round-trips through write-to-file → get-file-contents with the unicode corpus intact",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "fContent"
+              },
+              "line1\nline2 é漢"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/shape/f1.txt"
+                  }
+                ]
+              },
+              "line1\nline2 é漢"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "csv-roundtrip",
+      "kind": "round-trip",
+      "description": "summary.csv written line-by-line, read back, parsed — cell [1].city survives with unicode",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "cCity"
+              },
+              "São Paulo"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/shape/summary.csv"
+                  }
+                ]
+              },
+              "id,city\n1,Oslo\n2,São Paulo"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "db-roundtrip",
+      "kind": "round-trip",
+      "description": "seeded rows selected back in-bot (rowCount) and visible out-of-band (count_rows_in)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a7d20014-0000-0000-0000-000000000017",
+                  "name": "rowCount"
+                }
+              },
+              3
+            ]
+          },
+          {
+            "equals": [
+              {
+                "count_rows_in": [
+                  {
+                    "table": {
+                      "schema": "sgtester",
+                      "table": "sgt_int14_shape"
+                    }
+                  }
+                ]
+              },
+              3
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "agent-event-csv",
+      "kind": "round-trip",
+      "description": "FP-1 harvest: the Agent's per-run CSV event log (copied to scratch as agent-events.csv) records step-complete rows including the final crumb step, and the run-complete row",
+      "expr": {
+        "and": [
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/agent-events.csv"
+                  }
+                ]
+              },
+              "step-complete"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/agent-events.csv"
+                  }
+                ]
+              },
+              "a7d20014-0000-0000-0000-00000000001a"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/agent-events.csv"
+                  }
+                ]
+              },
+              "run-complete"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

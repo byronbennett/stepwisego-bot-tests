@@ -1,0 +1,231 @@
+{
+  "job": {
+    "jobName": "SGT engine-patterns — list ops calibration (breadcrumb witnesses)",
+    "jobGuid": "e1a00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbs", "token": "{var:crumbs}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "sortable", "token": "{var:sortable}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "foundB", "token": "{var:foundB}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": false, "defaultValue": false, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "foundMissing", "token": "{var:foundMissing}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": true, "defaultValue": true, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "foundCaseSensitive", "token": "{var:foundCaseSensitive}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": true, "defaultValue": true, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "foundCaseInsensitive", "token": "{var:foundCaseInsensitive}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": false, "defaultValue": false, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-000000000001",
+      "stepName": "add b (end)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:crumbs}" },
+          "value": { "value": "b" },
+          "addPosition": { "value": "end" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-000000000002",
+      "stepName": "add c (end)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:crumbs}" },
+          "value": { "value": "c" },
+          "addPosition": { "value": "end" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-000000000003",
+      "stepName": "add a (beginning)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:crumbs}" },
+          "value": { "value": "a" },
+          "addPosition": { "value": "beginning" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-000000000004",
+      "stepName": "check b present (default case-insensitive)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "check-value-in-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:crumbs}" },
+          "value": { "value": "b" },
+          "resultVariable": { "value": "{var:foundB}" },
+          "matchCase": { "value": false }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-000000000005",
+      "stepName": "check zzz absent (starts true, must flip false)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "check-value-in-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:crumbs}" },
+          "value": { "value": "zzz" },
+          "resultVariable": { "value": "{var:foundMissing}" },
+          "matchCase": { "value": false }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-000000000006",
+      "stepName": "check B with matchCase=true (must be false)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "check-value-in-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:crumbs}" },
+          "value": { "value": "B" },
+          "resultVariable": { "value": "{var:foundCaseSensitive}" },
+          "matchCase": { "value": true }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-000000000007",
+      "stepName": "check B with matchCase=false (must be true)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "check-value-in-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:crumbs}" },
+          "value": { "value": "B" },
+          "resultVariable": { "value": "{var:foundCaseInsensitive}" },
+          "matchCase": { "value": false }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-000000000008",
+      "stepName": "seed sortable: banana, apple, cherry",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:sortable}" },
+          "value": { "value": "banana" },
+          "addPosition": { "value": "end" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-000000000009",
+      "stepName": "seed sortable: apple",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:sortable}" },
+          "value": { "value": "apple" },
+          "addPosition": { "value": "end" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-00000000000a",
+      "stepName": "seed sortable: cherry",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:sortable}" },
+          "value": { "value": "cherry" },
+          "addPosition": { "value": "end" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-00000000000b",
+      "stepName": "sort sortable ascending",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sort-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:sortable}" },
+          "direction": { "value": "asc" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-00000000000c",
+      "stepName": "remove banana by value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "remove-from-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:sortable}" },
+          "removeBy": { "value": "value" },
+          "value": { "value": "banana" },
+          "removeMode": { "value": "first" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 12, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00001-0000-0000-0000-00000000000d",
+      "stepName": "remove index 0 (apple) — zero-based per action def",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "remove-from-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:sortable}" },
+          "removeBy": { "value": "index" },
+          "index": { "value": 0 }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 13, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "test": {
+    "id": "tier1-features/database/get-schema",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "db-get-schema",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "{var:_sgtSessionId}_sch"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "tables-filter-count",
+      "kind": "round-trip",
+      "description": "tables target with a session-scoped LIKE filter finds exactly the one table this bot created",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10001-0000-0000-0000-000000000002",
+              "name": "itemCount"
+            }
+          },
+          1
+        ]
+      }
+    },
+    {
+      "id": "tables-names-list",
+      "kind": "round-trip",
+      "description": "tableNames (listOfTexts output, tables target only) carries the created table's name (session-prefixed, so asserted via suffix)",
+      "expr": {
+        "ends_with": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10001-0000-0000-0000-000000000002",
+              "name": "tableNames"
+            }
+          },
+          "_sch"
+        ]
+      }
+    },
+    {
+      "id": "columns-count",
+      "kind": "round-trip",
+      "description": "columns target on the created table reports its 3 columns (id, name, amount)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10001-0000-0000-0000-000000000003",
+              "name": "itemCount"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "databases-nonempty",
+      "kind": "round-trip",
+      "description": "databases target lists at least one catalog (the dev DB itself); exact count is server-state, not asserted",
+      "expr": {
+        "greater_than": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10001-0000-0000-0000-000000000004",
+              "name": "itemCount"
+            }
+          },
+          0
+        ]
+      }
+    }
+  ]
+}

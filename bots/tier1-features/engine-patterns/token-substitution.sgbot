@@ -1,0 +1,116 @@
+{
+  "job": {
+    "jobName": "SGT engine-patterns — token substitution (chaining, verbatim, pipes, missing var)",
+    "jobGuid": "e1a00007-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "first", "token": "{var:first}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "World", "defaultValue": "World", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "greeting", "token": "{var:greeting}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "literal", "token": "{var:literal}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "resolvedOnce", "token": "{var:resolvedOnce}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "upperName", "token": "{var:upperName}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "chained", "token": "{var:chained}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "missing", "token": "{var:missing}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "SENTINEL", "defaultValue": "SENTINEL", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "e1a00007-0000-0000-0000-000000000001",
+      "stepName": "greeting = Hello {var:first}!",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": { "value": "{var:greeting}" },
+          "valueSource": { "value": "substitute" },
+          "value": { "value": "Hello {var:first}!" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00007-0000-0000-0000-000000000002",
+      "stepName": "literal = {var:first} stored verbatim (no substitution)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": { "value": "{var:literal}" },
+          "valueSource": { "value": "none" },
+          "value": { "value": "{var:first}" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00007-0000-0000-0000-000000000003",
+      "stepName": "resolvedOnce = {var:literal} — single-pass, must NOT double-resolve",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": { "value": "{var:resolvedOnce}" },
+          "valueSource": { "value": "substitute" },
+          "value": { "value": "{var:literal}" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00007-0000-0000-0000-000000000004",
+      "stepName": "upperName = {var:first|upper}",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": { "value": "{var:upperName}" },
+          "valueSource": { "value": "substitute" },
+          "value": { "value": "{var:first|upper}" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00007-0000-0000-0000-000000000005",
+      "stepName": "chained = {var:first|lower|left:3}",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": { "value": "{var:chained}" },
+          "valueSource": { "value": "substitute" },
+          "value": { "value": "{var:first|lower|left:3}" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00007-0000-0000-0000-000000000006",
+      "stepName": "missing = A{var:doesNotExist}B — pin unknown-token behavior",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": { "value": "{var:missing}" },
+          "valueSource": { "value": "substitute" },
+          "value": { "value": "A{var:doesNotExist}B" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

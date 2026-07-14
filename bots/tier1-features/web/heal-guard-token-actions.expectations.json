@@ -1,0 +1,130 @@
+{
+  "test": {
+    "id": "tier1-features/web/heal-guard-token-actions",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "open-browser-session",
+        "navigate-to-url",
+        "perform-browser-action",
+        "move-mouse-browser",
+        "execute-javascript",
+        "get-web-element",
+        "close-browser-session",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": [
+        "heal-ladder-guard"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/heal.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 90000
+  },
+  "predictions": [
+    {
+      "id": "pba-fresh-token-works",
+      "kind": "round-trip",
+      "description": "perform-browser-action Focus through a fresh Token succeeded and actually focused the element (Track 10 fix — this stringified to [object Object] before)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "aa10ff0c-0000-0000-0000-000000000003",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "focusedId"
+              },
+              "new-name-field"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "mouse-fresh-token-works",
+      "kind": "round-trip",
+      "description": "move-mouse-browser through a fresh Token succeeded and the page's mouseenter counter proves the pointer really entered the element",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "aa10ff0c-0000-0000-0000-000000000005",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "mouseLog"
+              },
+              "1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pba-stale-fails-exact-only",
+      "kind": "round-trip",
+      "description": "guard parity: the stale webElement Hover under exactOnly fails (success=false) — same contract as click-element/send-keys/wait",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "aa10ff0c-0000-0000-0000-000000000007",
+              "name": "success"
+            }
+          },
+          "false"
+        ]
+      }
+    },
+    {
+      "id": "mouse-stale-fails-exact-only",
+      "kind": "round-trip",
+      "description": "guard parity: the stale webElement mouse move under exactOnly fails (success=false)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "aa10ff0c-0000-0000-0000-000000000008",
+              "name": "success"
+            }
+          },
+          "false"
+        ]
+      }
+    }
+  ]
+}

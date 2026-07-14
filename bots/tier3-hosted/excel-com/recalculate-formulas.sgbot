@@ -1,0 +1,464 @@
+{
+  "job": {
+    "jobName": "SGT xlcom-recalculate — real Excel computes a formula the cross-platform save left stale; full and dirty-only paths, literal and variable inputs",
+    "jobGuid": "aa170004-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbR",
+      "token": "{var:wbR}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbR2",
+      "token": "{var:wbR2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbR3",
+      "token": "{var:wbR3}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "recalcAthree",
+      "token": "{var:recalcAthree}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "inplaceAthree",
+      "token": "{var:inplaceAthree}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "443ffb72-29f2-453a-9aca-927b94302f29",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "1f037f9d-6dd8-4f6e-822c-771d178ea815",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170004-0000-0000-0000-000000000001",
+      "stepName": "xl-create-new-workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": "1"
+          },
+          "storeToVariable": {
+            "value": "{var:wbR}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170004-0000-0000-0000-000000000002",
+      "stepName": "xl-set-values",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": "2;3"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170004-0000-0000-0000-000000000003",
+      "stepName": "xl-set-formula",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "A3"
+          },
+          "formula": {
+            "value": "=A1+A2"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170004-0000-0000-0000-000000000004",
+      "stepName": "xl-save-as-xlsx",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-xlsx",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/calc.xlsx"
+          },
+          "replaceExisting": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170004-0000-0000-0000-000000000005",
+      "stepName": "CalculateFull on the literal path, SaveCopyAs to a new artifact",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xlcom-recalculate",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/calc.xlsx"
+          },
+          "full": {
+            "value": true
+          },
+          "outputPath": {
+            "value": "{var:_sgtScratchDir}/recalc.xlsx"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sfull"
+    },
+    {
+      "stepGuid": "aa170004-0000-0000-0000-000000000006",
+      "stepName": "dirty-only Calculate in place on the literal path (wb.Save persists the computed cache)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xlcom-recalculate",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/calc.xlsx"
+          },
+          "full": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdirty"
+    },
+    {
+      "stepGuid": "aa170004-0000-0000-0000-000000000007",
+      "stepName": "xl-open-existing-workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/recalc.xlsx"
+          },
+          "storeToVariable": {
+            "value": "{var:wbR2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170004-0000-0000-0000-000000000008",
+      "stepName": "xl-get-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR2}"
+          },
+          "range": {
+            "value": "A3"
+          },
+          "storeToVariable": {
+            "value": "{var:recalcAthree}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170004-0000-0000-0000-000000000009",
+      "stepName": "reopen the in-place-recalculated original",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/calc.xlsx"
+          },
+          "storeToVariable": {
+            "value": "{var:wbR3}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170004-0000-0000-0000-000000000010",
+      "stepName": "xl-get-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR3}"
+          },
+          "range": {
+            "value": "A3"
+          },
+          "storeToVariable": {
+            "value": "{var:inplaceAthree}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170004-0000-0000-0000-000000000011",
+      "stepName": "xl-save-as-csv",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-csv",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR2}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/recalc.csv"
+          },
+          "replaceExisting": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

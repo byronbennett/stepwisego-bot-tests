@@ -1,0 +1,143 @@
+{
+  "job": {
+    "jobName": "SGT variables — dictionary ops (set/overwrite/remove/clear + pipe witnesses)",
+    "jobGuid": "f3b00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "dictA", "token": "{var:dictA}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "dictionary", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "seedKey", "token": "{var:seedKey}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "gamma", "defaultValue": "gamma", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "seedVal", "token": "{var:seedVal}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "from-token", "defaultValue": "from-token", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapKeysFull", "token": "{var:snapKeysFull}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapAlpha", "token": "{var:snapAlpha}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapHasBeta", "token": "{var:snapHasBeta}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapKeysAfterRemove", "token": "{var:snapKeysAfterRemove}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapHasBetaAfterRemove", "token": "{var:snapHasBetaAfterRemove}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapKeysAfterNoopRemove", "token": "{var:snapKeysAfterNoopRemove}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapCountAfterClear", "token": "{var:snapCountAfterClear}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "SENTINEL", "defaultValue": "SENTINEL", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-000000000001",
+      "stepName": "set dictA[alpha] = 1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-dictionary-value", "actionPropValues": { "dictionaryVariable": { "value": "{var:dictA}" }, "key": { "value": "alpha" }, "value": { "value": "1" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-000000000002",
+      "stepName": "set dictA[beta] = two",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-dictionary-value", "actionPropValues": { "dictionaryVariable": { "value": "{var:dictA}" }, "key": { "value": "beta" }, "value": { "value": "two" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-000000000003",
+      "stepName": "set dictA[alpha] = overwritten (update existing key, no duplicate)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-dictionary-value", "actionPropValues": { "dictionaryVariable": { "value": "{var:dictA}" }, "key": { "value": "alpha" }, "value": { "value": "overwritten" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-000000000004",
+      "stepName": "set dictA[{var:seedKey}] = {var:seedVal} (token key + token value)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-dictionary-value", "actionPropValues": { "dictionaryVariable": { "value": "{var:dictA}" }, "key": { "value": "{var:seedKey}" }, "value": { "value": "{var:seedVal}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-000000000005",
+      "stepName": "snapshot keys (insertion order, alpha not duplicated)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapKeysFull}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:dictA|keys|join:;}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-000000000006",
+      "stepName": "snapshot dictA[alpha] (must be the overwritten value)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapAlpha}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:dictA|key:alpha}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-000000000007",
+      "stepName": "snapshot hasKey beta (True)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapHasBeta}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:dictA|hasKey:beta}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-000000000008",
+      "stepName": "remove beta from dictA",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "remove-from-dictionary", "actionPropValues": { "dictionaryVariable": { "value": "{var:dictA}" }, "key": { "value": "beta" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-000000000009",
+      "stepName": "snapshot keys after remove",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapKeysAfterRemove}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:dictA|keys|join:;}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-00000000000a",
+      "stepName": "snapshot hasKey beta after remove (False)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapHasBetaAfterRemove}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:dictA|hasKey:beta}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-00000000000b",
+      "stepName": "remove missing key (no-op, still passes)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "remove-from-dictionary", "actionPropValues": { "dictionaryVariable": { "value": "{var:dictA}" }, "key": { "value": "no-such-key" } }, "requiresChildSteps": false },
+      "children": [], "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-00000000000c",
+      "stepName": "snapshot keys after no-op remove (unchanged)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapKeysAfterNoopRemove}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:dictA|keys|join:;}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 12, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-00000000000d",
+      "stepName": "clear dictA",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "clear-dictionary", "actionPropValues": { "dictionaryVariable": { "value": "{var:dictA}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 13, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-00000000000e",
+      "stepName": "snapshot key count after clear (0 — sentinel must be overwritten)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapCountAfterClear}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:dictA|keys|count}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 14, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00001-0000-0000-0000-00000000000f",
+      "stepName": "set-dictionary-value on missing variable (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-dictionary-value", "actionPropValues": { "dictionaryVariable": { "value": "{var:noSuchDict}" }, "key": { "value": "k" }, "value": { "value": "v" } }, "requiresChildSteps": false },
+      "children": [], "seq": 15, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

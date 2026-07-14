@@ -1,0 +1,54 @@
+{
+  "test": {
+    "id": "tier1-features/database/insert-then-select",
+    "tier": 1,
+    "synthesizedAt": "2026-05-03T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "db-sql-query",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "{var:_sgtSessionId}_orders"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "pred-rowcount-equals-1",
+      "kind": "round-trip",
+      "description": "SELECT WHERE id=2 should return exactly 1 row",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "11111111-bbbb-bbbb-bbbb-000000000003",
+              "name": "rowCount"
+            }
+          },
+          1
+        ]
+      }
+    }
+  ]
+}

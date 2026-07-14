@@ -1,0 +1,370 @@
+{
+  "job": {
+    "jobName": "SGT xlcom-run-macro — VBA function with args + return value + saveAfter cell write, and a Sub returning empty",
+    "jobGuid": "aa170003-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "macroOut",
+      "token": "{var:macroOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "subOut",
+      "token": "{var:subOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbM",
+      "token": "{var:wbM}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "mB",
+      "token": "{var:mB}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "mC",
+      "token": "{var:mC}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "24a65a6f-1b23-4823-911c-43ec989421db",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "ecb8439d-9946-4603-bda2-50e0cdec5e83",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170003-0000-0000-0000-000000000001",
+      "stepName": "run SgtEcho(ping, pong): writes B1 marker, returns joined args",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xlcom-run-macro",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/macro-echo.xlsm"
+          },
+          "macro": {
+            "value": "SgtEcho"
+          },
+          "args": {
+            "value": [
+              "ping",
+              "pong"
+            ]
+          },
+          "saveAfter": {
+            "value": true
+          },
+          "storeResultToVariable": {
+            "value": "{var:macroOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "smacro"
+    },
+    {
+      "stepGuid": "aa170003-0000-0000-0000-000000000002",
+      "stepName": "run Sub SgtStamp: writes C1 marker, returns nothing (empty string contract)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xlcom-run-macro",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/macro-echo.xlsm"
+          },
+          "macro": {
+            "value": "SgtStamp"
+          },
+          "saveAfter": {
+            "value": true
+          },
+          "storeResultToVariable": {
+            "value": "{var:subOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "ssub"
+    },
+    {
+      "stepGuid": "aa170003-0000-0000-0000-000000000003",
+      "stepName": "reopen the macro-modified xlsm with the cross-platform engine (independent reader)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/macro-echo.xlsm"
+          },
+          "storeToVariable": {
+            "value": "{var:wbM}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170003-0000-0000-0000-000000000004",
+      "stepName": "xl-get-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbM}"
+          },
+          "range": {
+            "value": "B1"
+          },
+          "storeToVariable": {
+            "value": "{var:mB}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170003-0000-0000-0000-000000000005",
+      "stepName": "xl-get-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbM}"
+          },
+          "range": {
+            "value": "C1"
+          },
+          "storeToVariable": {
+            "value": "{var:mC}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170003-0000-0000-0000-000000000006",
+      "stepName": "xl-close-workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-close-workbook",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbM}"
+          },
+          "saveBeforeClose": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170003-0000-0000-0000-000000000007",
+      "stepName": "write-to-file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/macro-out.txt"
+          },
+          "content": {
+            "value": "{var:macroOut}"
+          },
+          "append": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

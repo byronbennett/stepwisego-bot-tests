@@ -1,0 +1,38 @@
+{
+  "test": {
+    "id": "tier1-features/engine-patterns/if-else-comparators",
+    "tier": 1,
+    "synthesizedAt": "2026-07-08T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["if", "else", "add-to-list"],
+      "pipeFns": [],
+      "patterns": ["if-else", "nested-if"]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "comparator-truth-table",
+      "kind": "round-trip",
+      "description": "One breadcrumb per If in bot order pins the whole truth table: numeric greaterThan ('10'>'9' numerically, lexically false); loose equals is numeric ('0.30'=='0.3'), case-insensitive ('CSV'=='csv'), and date-instant ('2/12/2026'=='2026-02-12'); equalsExact is literal ('CSV'!=='csv' → else); isEmpty/hasValue on empty string; multi-row and/or evaluates LEFT-TO-RIGHT with no precedence ((a=a AND b=c) OR x=x → true); contains on a list variable is item-wise case-insensitive membership; nested if runs outer-then then inner-else; isNumber('12.5'); ordering comparators on non-numeric non-date strings are FALSE (no lexical ordering) → else branch",
+      "expr": {
+        "equals": [
+          { "$var": "crumbs" },
+          ["num-gt", "loose-num-eq", "ci-eq", "exact-miss", "date-eq", "empty-yes", "hasvalue-miss", "andor-ltr", "list-contains", "outer-then", "inner-else", "isnum", "str-gt-false"]
+        ]
+      }
+    }
+  ]
+}

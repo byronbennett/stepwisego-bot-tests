@@ -1,0 +1,188 @@
+{
+  "test": {
+    "id": "tier1-features/excel/save-as-text",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xl-save-as-csv",
+        "xl-save-as-tab-delimited",
+        "xl-create-new-workbook",
+        "xl-set-value",
+        "get-file-contents",
+        "create-folder",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "csv-comma-exact-bytes",
+      "kind": "round-trip",
+      "description": "Default comma export, exact bytes (in-bot get-file-contents read before the later semicolon overwrite): delimiter-bearing field quoted, embedded quotes doubled, newline field quoted, number 7 via cell.text, empty row 3 SKIPPED by eachRow, trailing empty cells of the after-gap row padded to columnCount, no trailing newline.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "csvComma"
+          },
+          "plain,\"has,comma\",7\n\"he said \"\"hi\"\"\",\"multi\nline\",x\nafter-gap,,"
+        ]
+      }
+    },
+    {
+      "id": "csv-pipe-exact-bytes",
+      "kind": "round-trip",
+      "description": "delimiter=pipe: comma is no longer special (has,comma unquoted); quote- and newline-bearing fields still quoted. Dual witness: in-bot reader and the harness's own read_value agree on the same physical file.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "csvPipe"
+              },
+              "plain|has,comma|7\n\"he said \"\"hi\"\"\"|\"multi\nline\"|x\nafter-gap||"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/txt/out-pipe.csv"
+                  }
+                ]
+              },
+              {
+                "$var": "csvPipe"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "csv-semicolon-replace-existing",
+      "kind": "round-trip",
+      "description": "replaceExisting=true + delimiter=semicolon really overwrote out.csv (the buried collision attempt just before it did NOT). Out-of-band read_value sees semicolon bytes at end of run, matching the in-bot post-overwrite read.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "csvSemi"
+              },
+              "plain;has,comma;7\n\"he said \"\"hi\"\"\";\"multi\nline\";x\nafter-gap;;"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/txt/out.csv"
+                  }
+                ]
+              },
+              {
+                "$var": "csvSemi"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "tab-sheet1-exact-bytes",
+      "kind": "round-trip",
+      "description": "Tab-delimited never quotes: embedded newline flattened to a space (multi line), commas left alone, gap row skipped, empty cells padded.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "tabS1"
+              },
+              "plain\thas,comma\t7\nhe said \"hi\"\tmulti line\tx\nafter-gap\t\t"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/txt/out.tab"
+                  }
+                ]
+              },
+              {
+                "$var": "tabS1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "tab-sheet2-routing-and-tab-escape",
+      "kind": "round-trip",
+      "description": "sheetName=Sheet2 routed the export (s2-only content — nothing from Sheet1) and the literal tab inside a cell was flattened to a space so it can't corrupt the format.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "tabS2"
+              },
+              "s2-only\ntab here"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/txt/s2.tab"
+                  }
+                ]
+              },
+              {
+                "$var": "tabS2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "buried-failures-wrote-nothing",
+      "kind": "round-trip",
+      "description": "Two buried failures (collision save with replaceExisting=false; sheetName=Nope) fired without side effects: smoke.expectErrorCount=0 buries them, and the Nope export path never came into existence.",
+      "expr": {
+        "not": [
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/txt/nope.tab"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

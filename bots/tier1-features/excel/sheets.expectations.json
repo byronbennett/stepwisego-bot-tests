@@ -1,0 +1,203 @@
+{
+  "test": {
+    "id": "tier1-features/excel/sheets",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xl-add-sheet",
+        "xl-delete-sheet",
+        "xl-rename-sheet",
+        "xl-copy-sheet",
+        "xl-move-sheet",
+        "xl-activate-sheet",
+        "xl-get-sheet-names",
+        "xl-get-sheet-name-at-index",
+        "xl-create-new-workbook",
+        "xl-set-value",
+        "xl-get-value",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "add-positions",
+      "kind": "round-trip",
+      "description": "add-sheet default appends at the end, position=start prepends (orderNo takes effect through the serialize/deserialize round-trip every mutation performs): [Zulu, Sheet1, Alpha].",
+      "expr": {
+        "equals": [
+          {
+            "$var": "namesAfterAdds"
+          },
+          [
+            "Zulu",
+            "Sheet1",
+            "Alpha"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "name-at-index-one-based",
+      "kind": "round-trip",
+      "description": "sheet-name-at-index is 1-based and agrees element-wise with get-sheet-names (two readers over the same order); index 9 errors out-of-range (buried, sentinel untouched).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "idx1"
+              },
+              "Zulu"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "idx3"
+              },
+              "Alpha"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "idxBad"
+              },
+              "UNTOUCHED"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "rename-keeps-content",
+      "kind": "round-trip",
+      "description": "rename-sheet Sheet1→Core preserves cell content: Core!A1 still reads the marker written before the rename.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "coreA1"
+          },
+          "s1"
+        ]
+      }
+    },
+    {
+      "id": "copy-is-deep",
+      "kind": "round-trip",
+      "description": "copy-sheet duplicates cells (CoreCopy!A1 = s1) AND the copy is independent: mutating CoreCopy!A1 leaves Core!A1 untouched.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "copyA1"
+              },
+              "s1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "coreA1After"
+              },
+              "s1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "move-reorders-and-redirects-default",
+      "kind": "round-trip",
+      "description": "move-sheet CoreCopy→position 1 reorders to [CoreCopy, Zulu, Core, Alpha] AND a default-sheet read (no sheetName) now hits the moved sheet — worksheets[0] is what 'default sheet' means in Fast mode.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "namesAfterMove"
+              },
+              [
+                "CoreCopy",
+                "Zulu",
+                "Core",
+                "Alpha"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "defaultA1"
+              },
+              "changed"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "activate-does-not-redirect-fast-reads",
+      "kind": "round-trip",
+      "description": "Pinned quirk: xl-activate-sheet records the active tab in workbook views (visible when the file opens in Excel), but Fast-mode default reads still follow sheet POSITION — after activating Zulu the default read is still CoreCopy's value.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "stillDefaultA1"
+          },
+          "changed"
+        ]
+      }
+    },
+    {
+      "id": "delete-and-last-sheet-guard",
+      "kind": "round-trip",
+      "description": "delete-sheet removes exactly the named sheet ([CoreCopy, Zulu, Core] after deleting Alpha); deleting down to one sheet works; deleting the LAST sheet is refused (buried) — the survivor list proves the guard held.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "namesAfterDelete"
+              },
+              [
+                "CoreCopy",
+                "Zulu",
+                "Core"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "namesFinal"
+              },
+              [
+                "CoreCopy"
+              ]
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

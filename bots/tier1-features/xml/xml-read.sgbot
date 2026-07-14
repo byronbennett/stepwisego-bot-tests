@@ -1,0 +1,111 @@
+{
+  "job": {
+    "jobName": "SGT xml — read (parse, get-node, get-children, get-child-values, get-attribute, to-json, stringify)",
+    "jobGuid": "f3d00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "xdoc", "token": "{var:xdoc}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "xml", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "secondTitle", "token": "{var:secondTitle}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "firstId", "token": "{var:firstId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "bookCount", "token": "{var:bookCount}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "childNames", "token": "{var:childNames}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "childValues", "token": "{var:childValues}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "attrId", "token": "{var:attrId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "jsonView", "token": "{var:jsonView}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "jsonViewText", "token": "{var:jsonViewText}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "serialized", "token": "{var:serialized}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3d00001-0000-0000-0000-000000000001",
+      "stepName": "parse catalog fixture",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-parse", "actionPropValues": { "xmlContent": { "value": "<catalog><book id=\"b1\" lang=\"en\"><title>Dune</title><price>9.99</price></book><book id=\"b2\"><title>Emma</title><price>5.50</price></book></catalog>" }, "resultVariable": { "value": "{var:xdoc}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00001-0000-0000-0000-000000000002",
+      "stepName": "get-node positional path → second book title",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-get-node", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "/catalog/book[2]/title" }, "resultVariable": { "value": "{var:secondTitle}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00001-0000-0000-0000-000000000003",
+      "stepName": "get-node attribute axis → first book @id",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-get-node", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "/catalog/book[1]/@id" }, "resultVariable": { "value": "{var:firstId}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00001-0000-0000-0000-000000000004",
+      "stepName": "get-node with count() function",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-get-node", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "count(/catalog/book)" }, "resultVariable": { "value": "{var:bookCount}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00001-0000-0000-0000-000000000005",
+      "stepName": "get-children of first book → element tag names",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-get-children", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "/catalog/book[1]" }, "resultVariable": { "value": "{var:childNames}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00001-0000-0000-0000-000000000006",
+      "stepName": "get-child-values of first book → text contents",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-get-child-values", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "/catalog/book[1]" }, "resultVariable": { "value": "{var:childValues}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00001-0000-0000-0000-000000000007",
+      "stepName": "get-attribute id from second book",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-get-attribute", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "/catalog/book[2]" }, "attributeName": { "value": "id" }, "resultVariable": { "value": "{var:attrId}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00001-0000-0000-0000-000000000008",
+      "stepName": "get-attribute missing on second book (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-get-attribute", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "/catalog/book[2]" }, "attributeName": { "value": "lang" }, "resultVariable": { "value": "{var:attrId}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00001-0000-0000-0000-000000000009",
+      "stepName": "xml-to-json from literal XML content",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-to-json", "actionPropValues": { "xmlContent": { "value": "<catalog><book id=\"b1\"><title>Dune</title><price>9.99</price></book></catalog>" }, "resultVariable": { "value": "{var:jsonView}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00001-0000-0000-0000-00000000000a",
+      "stepName": "stringify the JSON view (witness for object shape)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-stringify", "actionPropValues": { "jsonVariable": { "value": "{var:jsonView}" }, "pretty": { "value": false }, "resultVariable": { "value": "{var:jsonViewText}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00001-0000-0000-0000-00000000000b",
+      "stepName": "xml-stringify compact round-trips the source",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-stringify", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "pretty": { "value": false }, "resultVariable": { "value": "{var:serialized}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

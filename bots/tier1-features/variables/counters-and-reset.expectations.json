@@ -1,0 +1,62 @@
+{
+  "test": {
+    "id": "tier1-features/variables/counters-and-reset",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["add-to-pass-count", "add-to-fail-count", "add-to-transaction-count", "reset-to-default", "set-variable", "add-to-list"],
+      "pipeFns": ["passCount", "failCount", "transactionCount"],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "pass-count-explicit-plus-engine-auto",
+      "kind": "round-trip",
+      "description": "passCount at snapshot time is 7 = 3 explicit (add-to-pass-count default 1, then +2) + 4 engine auto-increments (the engine bumps passCount for EVERY passing step, and exactly steps 1-4 have completed when the snapshot runs; the snapshot step itself is not yet counted). This pins the coupling between the action and the engine's per-step pass counting.",
+      "expr": { "equals": [ { "$var": "snapPass" }, "7" ] }
+    },
+    {
+      "id": "fail-count-explicit-only",
+      "kind": "round-trip",
+      "description": "failCount is exactly the explicit +1 — no step has failed, so the engine's per-step fail counting contributes nothing.",
+      "expr": { "equals": [ { "$var": "snapFail" }, "1" ] }
+    },
+    {
+      "id": "transaction-count-explicit-only",
+      "kind": "round-trip",
+      "description": "transactionCount is exactly the explicit +5 — the engine never auto-increments transactions.",
+      "expr": { "equals": [ { "$var": "snapTxn" }, "5" ] }
+    },
+    {
+      "id": "reset-text-to-default",
+      "kind": "round-trip",
+      "description": "reset-to-default restores the declared defaultValue after a set-variable changed it; snapChanged holds the pre-reset value 'changed-value', proving the set really happened before the reset (the final DEFAULT-VALUE is not just 'nothing ever ran').",
+      "expr": {
+        "and": [
+          { "equals": [ { "$var": "snapChanged" }, "changed-value" ] },
+          { "equals": [ { "$var": "resettable" }, "DEFAULT-VALUE" ] }
+        ]
+      }
+    },
+    {
+      "id": "reset-list-to-default",
+      "kind": "round-trip",
+      "description": "reset-to-default on a list restores the full default array [x, y] after add-to-list had appended z — reset covers structured values, not just text.",
+      "expr": { "equals": [ { "$var": "resetList" }, ["x", "y"] ] }
+    }
+  ]
+}

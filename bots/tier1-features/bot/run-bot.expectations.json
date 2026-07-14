@@ -1,0 +1,70 @@
+{
+  "test": {
+    "id": "tier1-features/bot/run-bot",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-bot",
+        "error-handler",
+        "add-to-list",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/child-echo.sgbot",
+      "fixtures/child-fail.sgbot"
+    ],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 1,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "flow-crumbs",
+      "kind": "round-trip",
+      "description": "Full control-flow pin: wait-success child passes through, the failing child's nonzero exit fails its step (handler catches → in-handler-after skipped), execution resumes after the handler, and fire-and-forget returns immediately so 'done' is reached.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "crumbs"
+          },
+          [
+            "start",
+            "after-wait-success",
+            "after-handler",
+            "done"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "failure-propagates-to-handler",
+      "kind": "round-trip",
+      "description": "waitForCompletion=true on a failing child sets the parent step to FAIL (exit code contract), proven by the error handler's statusVariable flipping true.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "caught"
+          },
+          true
+        ]
+      }
+    }
+  ]
+}

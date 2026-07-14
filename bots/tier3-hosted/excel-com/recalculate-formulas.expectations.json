@@ -1,0 +1,97 @@
+{
+  "test": {
+    "id": "tier3-hosted/excel-com/recalculate-formulas",
+    "tier": 3,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xlcom-recalculate",
+        "xl-create-new-workbook",
+        "xl-set-values",
+        "xl-set-formula",
+        "xl-save-as-xlsx",
+        "xl-open-existing-workbook",
+        "xl-get-value",
+        "xl-save-as-csv",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ],
+    "serialGroup": "vm-excel-com"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "com-computed-value",
+      "kind": "round-trip",
+      "description": "Real Excel computed =A1+A2 during CalculateFull; the SaveCopyAs artifact carries 5 as the cached formula result.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "recalcAthree"
+          },
+          "5"
+        ]
+      }
+    },
+    {
+      "id": "in-place-computed-value",
+      "kind": "round-trip",
+      "description": "The no-outputPath leg recalculated and saved the original file in place.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "inplaceAthree"
+          },
+          "5"
+        ]
+      }
+    },
+    {
+      "id": "csv-harness-witness",
+      "kind": "round-trip",
+      "description": "Out-of-band: the recalculated column exported to csv reads 2,3,5 down column A.",
+      "expr": {
+        "starts_with": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/recalc.csv"
+              }
+            ]
+          },
+          "2"
+        ]
+      }
+    },
+    {
+      "id": "recalc-artifact-exists",
+      "kind": "round-trip",
+      "description": "SaveCopyAs artifact exists in the pulled-back scratch dir.",
+      "expr": {
+        "file_exists": [
+          {
+            "file": "{var:_sgtScratchDir}/recalc.xlsx"
+          }
+        ]
+      }
+    }
+  ]
+}

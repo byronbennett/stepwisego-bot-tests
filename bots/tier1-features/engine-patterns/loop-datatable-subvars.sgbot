@@ -1,0 +1,122 @@
+{
+  "job": {
+    "jobName": "SGT engine-patterns — DataTable/CSV row loops and column sub-variables",
+    "jobGuid": "e1a00008-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "jsonRows", "token": "{var:jsonRows}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "dt", "token": "{var:dt}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "dataTable", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "csvText", "token": "{var:csvText}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "id,city\n1,Oslo\n2,Lima", "defaultValue": "id,city\n1,Oslo\n2,Lima", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbsRows", "token": "{var:crumbsRows}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbsCsv", "token": "{var:crumbsCsv}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "e1a00008-0000-0000-0000-000000000001",
+      "stepName": "Parse JSON rows",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-parse",
+        "actionPropValues": {
+          "jsonString": { "value": "[{\"name\":\"Alice\",\"amt\":\"10.50\"},{\"name\":\"Bob\",\"amt\":\"3.25\"}]" },
+          "resultVariable": { "value": "{var:jsonRows}" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00008-0000-0000-0000-000000000002",
+      "stepName": "JSON → DataTable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-to-datatable",
+        "actionPropValues": {
+          "jsonVariable": { "value": "{var:jsonRows}" },
+          "columnMode": { "value": "union" },
+          "dataTableVariable": { "value": "{var:dt}" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00008-0000-0000-0000-000000000003",
+      "stepName": "Rows in DataTable: {var:dt}",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "sld",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": { "value": "dataTable" },
+          "dataTableVariable": { "value": "{var:dt}" },
+          "maxIterations": { "value": 1000 }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00008-0000-0000-0000-000000000301",
+          "stepName": "record row crumb via column sub-variables",
+          "parentGuid": "e1a00008-0000-0000-0000-000000000003",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": { "value": "{var:crumbsRows}" },
+              "value": { "value": "{sld:loopCount}:{sld-currentDataRow:name}={sld-currentDataRow:amt}" },
+              "addPosition": { "value": "end" }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00008-0000-0000-0000-000000000004",
+      "stepName": "Rows in CSV (from variable content)",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "slv",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": { "value": "csv" },
+          "csvSource": { "value": "{var:csvText}" },
+          "csvHasHeaders": { "value": true },
+          "csvDelimiter": { "value": "comma" },
+          "csvTypingMode": { "value": "string" },
+          "maxIterations": { "value": 1000 }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00008-0000-0000-0000-000000000401",
+          "stepName": "record csv crumb via column sub-variables",
+          "parentGuid": "e1a00008-0000-0000-0000-000000000004",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": { "value": "{var:crumbsCsv}" },
+              "value": { "value": "{slv:loopCount}:{slv-currentDataRow:id}-{slv-currentDataRow:city}" },
+              "addPosition": { "value": "end" }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "test": {
+    "id": "tier1-features/xml/xml-file-roundtrip",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["xml-parse", "xml-save-document", "xml-open-document", "xml-get-node", "xml-stringify"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "reopened-msg-value",
+      "kind": "round-trip",
+      "description": "The document opened back from disk yields the seeded text at /note/msg — save wrote real content, open parsed it.",
+      "expr": { "equals": [ { "$var": "msgValue" }, "hello" ] }
+    },
+    {
+      "id": "byte-for-byte-roundtrip",
+      "kind": "round-trip",
+      "description": "save → open → stringify reproduces the source XML byte-for-byte (attribute preserved, no declaration added). This also witnesses the replaceExisting=true overwrite (step 4) since the reopen happens after it.",
+      "expr": { "equals": [ { "$var": "roundtripXml" }, "<note lang=\"en\"><msg>hello</msg></note>" ] }
+    },
+    {
+      "id": "reopened-doc-intact-after-failed-open",
+      "kind": "round-trip",
+      "description": "The buried missing-path open (final step) fails BEFORE touching the result variable — 'reopened' still holds the valid document (in-bot witness: msgValue/roundtripXml were read from it; this check pins that the failed open didn't clear it).",
+      "expr": { "not_equals": [ { "$var": "reopened" }, null ] }
+    }
+  ]
+}

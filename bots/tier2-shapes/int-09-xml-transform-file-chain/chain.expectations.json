@@ -1,0 +1,197 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-09-xml-transform-file-chain/chain",
+    "tier": 2,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xml-open-document",
+        "xml-get-node",
+        "xml-update-node",
+        "xml-set-attribute",
+        "xml-save-document",
+        "xml-to-json",
+        "json-get-property",
+        "json-to-csv",
+        "csv-read",
+        "dt-get-value",
+        "write-to-file",
+        "get-file-contents",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "xpath-amount-scale-exact",
+      "kind": "round-trip",
+      "description": "XPath string read of A-1 amount preserves the trailing-zero decimal exactly (\"1234.5600\", not 1234.56)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "amtBefore"
+          },
+          "1234.5600"
+        ]
+      }
+    },
+    {
+      "id": "xpath-bigint-exact",
+      "kind": "round-trip",
+      "description": "XPath string read of A-2 big int (>2^53, odd — would collapse to ...994 under float) is string-exact",
+      "expr": {
+        "equals": [
+          {
+            "$var": "bigBefore"
+          },
+          "9007199254740995"
+        ]
+      }
+    },
+    {
+      "id": "xpath-namespace-entity",
+      "kind": "round-trip",
+      "description": "namespaced aud:note read via local-name() decodes &amp; exactly once",
+      "expr": {
+        "equals": [
+          {
+            "$var": "noteBefore"
+          },
+          "seed & keep"
+        ]
+      }
+    },
+    {
+      "id": "saved-file-raw-bytes",
+      "kind": "round-trip",
+      "description": "OUT-OF-BAND: harness reads the saved file directly — full serialization pinned: XML declaration kept, version attribute updated in place to 2, xmlns:aud declaration + aud:note prefix intact, status now 'posted', entities single-encoded, empty <customer></customer> re-serialized self-closed by xmldom, decimals/big ints/dates byte-identical to the fixture",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/out.xml"
+              }
+            ]
+          },
+          "<?xml version=\"1.0\" encoding=\"UTF-8\"?><invoices xmlns:aud=\"urn:sgt:audit\" version=\"2\"><invoice id=\"A-1\"><customer>Müller &amp; Söhne 漢字 🎯</customer><amount>1234.5600</amount><big>9007199254740993</big><status>posted</status><posted>2028-02-29</posted><aud:note>seed &amp; keep</aud:note></invoice><invoice id=\"A-2\"><customer/><amount>-0.10</amount><big>9007199254740995</big><status>hold</status><posted>2026-12-31T23:59:59</posted></invoice></invoices>"
+        ]
+      }
+    },
+    {
+      "id": "no-double-encoding",
+      "kind": "round-trip",
+      "description": "the save cycle never double-encodes entities (&amp;amp; absent from the saved bytes)",
+      "expr": {
+        "not": [
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/out.xml"
+                  }
+                ]
+              },
+              "&amp;amp;"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "json-unicode-entity",
+      "kind": "round-trip",
+      "description": "xml-to-json decodes the entity once and preserves unicode (umlaut, CJK, emoji) in the customer value",
+      "expr": {
+        "equals": [
+          {
+            "$var": "custJ"
+          },
+          "Müller & Söhne 漢字 🎯"
+        ]
+      }
+    },
+    {
+      "id": "json-bigint-stays-string",
+      "kind": "round-trip",
+      "description": "fast-xml-parser leaves the >2^53 integer as a STRING (strnum precision guard) — no silent ...995 → ...996 collapse at the XML→JSON seam",
+      "expr": {
+        "equals": [
+          {
+            "$var": "bigJ"
+          },
+          "9007199254740995"
+        ]
+      }
+    },
+    {
+      "id": "json-amount-coerced",
+      "kind": "human-approve",
+      "description": "KNOWN-COERCION (TODOS.md 'xml-to-json numeric tag coercion'): xml-to-json hardcodes fast-xml-parser numeric tag parsing — '1234.5600' becomes the NUMBER 1234.56 and the trailing-zero scale is silently lost at this seam. This prediction pins today's behavior as a characterization; Byron must rule whether the action grows a preserve-strings knob (the exactness contract suggests it should).",
+      "expr": {
+        "equals": [
+          {
+            "$var": "amtJ"
+          },
+          1234.56
+        ]
+      }
+    },
+    {
+      "id": "csv-known-vector",
+      "kind": "round-trip",
+      "description": "json-to-csv output is byte-pinned: column union in first-seen order (attributes after elements), number-coerced amount renders 1234.56/-0.1, big ints string-exact, blank customer and missing aud:note both render as empty fields (the CSV seam cannot distinguish blank from missing — pinned)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "csvText"
+          },
+          "customer,amount,big,status,posted,aud:note,@_id\nMüller & Söhne 漢字 🎯,1234.56,9007199254740993,posted,2028-02-29,seed & keep,A-1\n,-0.1,9007199254740995,hold,2026-12-31T23:59:59,,A-2"
+        ]
+      }
+    },
+    {
+      "id": "chain-status-mutation-arrived",
+      "kind": "round-trip",
+      "description": "the draft→posted mutation made in the XML document is visible in the final DataTable cell (whole-chain witness)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "cellStatus"
+          },
+          "posted"
+        ]
+      }
+    },
+    {
+      "id": "chain-bigint-end-to-end",
+      "kind": "round-trip",
+      "description": "the >2^53 big int arrives in the final DataTable string-exact after XML→file→JSON→CSV→DataTable",
+      "expr": {
+        "equals": [
+          {
+            "$var": "cellBig"
+          },
+          "9007199254740995"
+        ]
+      }
+    }
+  ]
+}

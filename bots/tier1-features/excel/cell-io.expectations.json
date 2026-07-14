@@ -1,0 +1,305 @@
+{
+  "test": {
+    "id": "tier1-features/excel/cell-io",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xl-set-value",
+        "xl-get-value",
+        "xl-set-values",
+        "xl-get-values",
+        "xl-clear-values",
+        "xl-get-values-for-row",
+        "xl-get-values-for-column",
+        "xl-create-new-workbook",
+        "set-time-zone",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "excel-faithful-auto-typing",
+      "kind": "round-trip",
+      "description": "Auto typing is Excel's General format: '007' → number 7 (leading zeros stripped); '$1,234.50' → 1234.5 (currency + thousands parsed); '50%' → 0.5; '(123)' → accounting negative -123; 'true' → boolean reading back as 'true'.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "valA1"
+              },
+              "7"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "valD1"
+              },
+              "1234.5"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "valE1"
+              },
+              "0.5"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "valF1"
+              },
+              "-123"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "valC1"
+              },
+              "true"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "text-lock-preserves-zeros",
+      "kind": "round-trip",
+      "description": "valueType=text writes the raw string verbatim with numFmt '@': the SAME literal '007' that auto turned into 7 stays '007' — the typing matrix's control pair.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "valB1"
+          },
+          "007"
+        ]
+      }
+    },
+    {
+      "id": "prevent-formulas-apostrophe",
+      "kind": "round-trip",
+      "description": "preventFormulas=true on '=SUM(1,2)' prepends Excel's own text marker: the cell holds the literal apostrophe-escaped string (no formula was created, nothing computed 3).",
+      "expr": {
+        "equals": [
+          {
+            "$var": "valG1"
+          },
+          "'=SUM(1,2)"
+        ]
+      }
+    },
+    {
+      "id": "offsets-both-directions",
+      "kind": "round-trip",
+      "description": "Write-side rowOffset/columnOffset (H1+1+1 → I2) and read-side offsets agree: a plain read of I2 and an offset read anchored at H1 both see the value.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "valI2"
+              },
+              "offset-landed"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "valOffsetRead"
+              },
+              "offset-landed"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "date-cell-bot-tz-wall-clock",
+      "kind": "round-trip",
+      "description": "valueType=date '2028-02-29' (a real leap day) becomes a Date cell at bot-TZ midnight. The bot pins its zone to UTC up front (set-time-zone) because the write leg stores bot-TZ wall clock as UTC components while the read leg projects the instant back into the bot TZ — symmetric only under UTC, and the two engines default differently (in-process=UTC, agent=machine TZ). Only the prefix is pinned (offset suffix formatting may differ).",
+      "expr": {
+        "starts_with": [
+          {
+            "$var": "valDate"
+          },
+          "2028-02-29T00:00:00"
+        ]
+      }
+    },
+    {
+      "id": "forced-type-fallback-is-soft",
+      "kind": "round-trip",
+      "description": "valueType=number on 'abc' cannot parse: the runner falls back to auto (text), logs a warning, and the step PASSES — proven by errorCount=0 plus the text readback.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "valForcedNum"
+          },
+          "abc"
+        ]
+      }
+    },
+    {
+      "id": "empty-write-is-a-value",
+      "kind": "round-trip",
+      "description": "An empty value (routed through a variable past pre-run validation) writes an empty STRING, not a cleared cell: skipEmptyValues=false read returns one '' element.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "valEmptyList"
+          },
+          [
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "id": "set-values-both-shapes-and-directions",
+      "kind": "round-trip",
+      "description": "set-values semicolon-string went DOWN (A1:A3) and the array literal went RIGHT (B1:D1); the block read A1:D3 comes back row-major with empties dropped (skipEmpty default true).",
+      "expr": {
+        "equals": [
+          {
+            "$var": "listAll"
+          },
+          [
+            "r1",
+            "c1",
+            "c2",
+            "c3",
+            "r2",
+            "r3"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "skip-empty-false-keeps-gaps",
+      "kind": "round-trip",
+      "description": "skipEmptyValues=false over A1:B2 preserves positional gaps: B2 was never written and comes back as ''.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "listAB"
+          },
+          [
+            "r1",
+            "c1",
+            "r2",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "id": "row-and-column-readers",
+      "kind": "round-trip",
+      "description": "get-values-for-row 1 sees the whole first row; get-values-for-column A respects includeHeaders (false starts at row 2; default true reads from row 1). Three different readers agree on the same grid.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "rowVals"
+              },
+              [
+                "r1",
+                "c1",
+                "c2",
+                "c3"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "colNoHdr"
+              },
+              [
+                "r2",
+                "r3"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "colWithHdr"
+              },
+              [
+                "r1",
+                "r2",
+                "r3"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "clear-values-ranged-then-whole-sheet",
+      "kind": "round-trip",
+      "description": "Ranged clear A2:A3 nulls exactly those cells (A1 survives; cleared cells read '' under skipEmpty=false — unlike the empty-string write, these are true nulls); the no-range clear then empties the ENTIRE sheet ([] against a SENTINEL default proves the final read really ran).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "afterClearRange"
+              },
+              [
+                "r1",
+                "",
+                ""
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "afterClearAll"
+              },
+              []
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "buried-missing-sheet-left-sentinel",
+      "kind": "round-trip",
+      "description": "get-value on sheetName=Missing failed (buried, expectErrorCount=0) before touching its result variable.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "valMissingSheet"
+          },
+          "UNTOUCHED"
+        ]
+      }
+    }
+  ]
+}

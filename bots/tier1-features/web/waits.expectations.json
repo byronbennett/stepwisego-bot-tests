@@ -1,0 +1,175 @@
+{
+  "test": {
+    "id": "tier1-features/web/waits",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "wait-for-element",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/waits.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 90000
+  },
+  "predictions": [
+    {
+      "id": "visible-appears-late",
+      "kind": "round-trip",
+      "description": "Visible wait succeeds once the ~400ms timer inserts the element",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a9e1000a-0000-0000-0000-000000000003",
+              "name": "success"
+            }
+          },
+          "true"
+        ]
+      }
+    },
+    {
+      "id": "hidden-satisfied-by-removal",
+      "kind": "round-trip",
+      "description": "Hidden wait succeeds when the element is REMOVED (absence satisfies negative states)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a9e1000a-0000-0000-0000-000000000004",
+              "name": "success"
+            }
+          },
+          "true"
+        ]
+      }
+    },
+    {
+      "id": "enabled-unlocks",
+      "kind": "round-trip",
+      "description": "Enabled wait succeeds once the disabled attribute is removed",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a9e1000a-0000-0000-0000-000000000005",
+              "name": "success"
+            }
+          },
+          "true"
+        ]
+      }
+    },
+    {
+      "id": "attached-immediate",
+      "kind": "round-trip",
+      "description": "Attached wait on an always-present element succeeds fast",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000a-0000-0000-0000-000000000006",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "less_than": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000a-0000-0000-0000-000000000006",
+                  "name": "waitedMs"
+                }
+              },
+              3000
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "detached-times-out-with-outputs",
+      "kind": "round-trip",
+      "description": "Detached on a persistent element times out (buried) but still sets success=false and a ~2s waitedMs",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000a-0000-0000-0000-000000000007",
+                  "name": "success"
+                }
+              },
+              "false"
+            ]
+          },
+          {
+            "greater_than": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000a-0000-0000-0000-000000000007",
+                  "name": "waitedMs"
+                }
+              },
+              1500
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "missing-visible-times-out-with-outputs",
+      "kind": "round-trip",
+      "description": "Visible on a never-existing selector times out (buried) but still sets success=false and a ~2s waitedMs",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000a-0000-0000-0000-000000000008",
+                  "name": "success"
+                }
+              },
+              "false"
+            ]
+          },
+          {
+            "greater_than": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000a-0000-0000-0000-000000000008",
+                  "name": "waitedMs"
+                }
+              },
+              1500
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

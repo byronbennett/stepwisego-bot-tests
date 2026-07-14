@@ -1,0 +1,124 @@
+{
+  "test": {
+    "id": "tier3-hosted/excel-com/run-macro-echo",
+    "tier": 3,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xlcom-run-macro",
+        "xl-open-existing-workbook",
+        "xl-get-value",
+        "xl-close-workbook",
+        "write-to-file",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/macro-echo.xlsm"
+    ],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ],
+    "serialGroup": "vm-excel-com"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "macro-return-value",
+      "kind": "round-trip",
+      "description": "Application.Run returns the VBA function's value: SgtEcho joins its two args.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "macroOut"
+              },
+              "ping|pong"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "aa170003-0000-0000-0000-000000000001",
+                  "name": "macroResult"
+                }
+              },
+              "ping|pong"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "sub-returns-empty",
+      "kind": "round-trip",
+      "description": "A Sub has no return value; the pinned contract is an empty string, not an error.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "subOut"
+          },
+          ""
+        ]
+      }
+    },
+    {
+      "id": "save-after-persists-writes",
+      "kind": "round-trip",
+      "description": "saveAfter=true persisted both macro cell writes: the xlsm reopened via the CROSS-PLATFORM engine (not COM) sees the markers.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "mB"
+              },
+              "SGT-MACRO-RAN:ping"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "mC"
+              },
+              "SGT-SUB-RAN"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "macro-return-harness-witness",
+      "kind": "round-trip",
+      "description": "The macro return value round-trips to a file the harness reads out-of-band.",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/macro-out.txt"
+              }
+            ]
+          },
+          "ping|pong"
+        ]
+      }
+    }
+  ]
+}

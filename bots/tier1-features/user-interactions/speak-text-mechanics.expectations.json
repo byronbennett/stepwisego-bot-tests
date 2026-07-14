@@ -1,0 +1,62 @@
+{
+  "test": {
+    "id": "tier1-features/user-interactions/speak-text-mechanics",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "speak-text",
+        "set-variable",
+        "write-to-file",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "run-completed-past-speech",
+      "kind": "round-trip",
+      "description": "both speak-text steps completed and the run reached its crumb",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "crumb"
+              },
+              "continued-after-speech"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/crumb.txt"
+                  }
+                ]
+              },
+              "crumb continued-after-speech"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

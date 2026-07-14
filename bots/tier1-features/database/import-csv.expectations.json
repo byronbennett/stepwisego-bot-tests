@@ -1,0 +1,155 @@
+{
+  "test": {
+    "id": "tier1-features/database/import-csv",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "import-to-database",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "{var:_sgtSessionId}_imp"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "rows-read",
+      "kind": "round-trip",
+      "description": "all 3 data rows were read from the csv (header excluded)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10002-0000-0000-0000-000000000003",
+              "name": "rowsRead"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "rows-imported",
+      "kind": "round-trip",
+      "description": "all 3 rows were bulk-inserted",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10002-0000-0000-0000-000000000003",
+              "name": "rowsImported"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "inbot-select-row2",
+      "kind": "round-trip",
+      "description": "in-bot witness (db-sql-query, a different Database action): SELECT WHERE id=2 returns exactly 1 row",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10002-0000-0000-0000-000000000005",
+              "name": "rowCount"
+            }
+          },
+          1
+        ]
+      }
+    },
+    {
+      "id": "oob-cell-customer",
+      "kind": "round-trip",
+      "description": "out-of-band witness: harness reads customer for id=2 straight off the table — the sourceField map landed csv column 2",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_imp"
+                }
+              },
+              {
+                "id": 2
+              },
+              "customer"
+            ]
+          },
+          "Bob"
+        ]
+      }
+    },
+    {
+      "id": "oob-cell-literal-map",
+      "kind": "round-trip",
+      "description": "out-of-band witness: the literal-kind map filled 'source' with the constant for every row (spot-check id=3)",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_imp"
+                }
+              },
+              {
+                "id": 3
+              },
+              "source"
+            ]
+          },
+          "csv-import"
+        ]
+      }
+    },
+    {
+      "id": "oob-row-count",
+      "kind": "round-trip",
+      "description": "out-of-band witness: table holds exactly the 3 imported rows (the buried schema-validation failure imported nothing)",
+      "expr": {
+        "equals": [
+          {
+            "count_rows_in": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_imp"
+                }
+              }
+            ]
+          },
+          3
+        ]
+      }
+    }
+  ]
+}

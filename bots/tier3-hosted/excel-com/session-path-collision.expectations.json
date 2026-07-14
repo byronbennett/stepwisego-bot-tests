@@ -1,0 +1,80 @@
+{
+  "test": {
+    "id": "tier3-hosted/excel-com/session-path-collision",
+    "tier": 3,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xlcom-recalculate",
+        "xl-create-new-workbook",
+        "xl-set-values",
+        "xl-set-formula",
+        "xl-save-as-xlsx",
+        "xl-set-value",
+        "xl-get-value",
+        "xl-close-workbook",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ],
+    "serialGroup": "vm-excel-com"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "session-survives-collision-write",
+      "kind": "round-trip",
+      "description": "REGRESSION GUARD (TODOS P2, Track 17/18): a whole-file xlcom op on a literal path the bot ALSO holds open as a live Full-mode session must reuse the session un-owned. Pre-fix, the owned-close killed the session and this post-collision write died with RPC_E_DISCONNECTED.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "aliveVal"
+          },
+          "alive"
+        ]
+      }
+    },
+    {
+      "id": "live-formula-computed",
+      "kind": "round-trip",
+      "description": "The live session's formula reads back computed (real Excel, =A1+B1 over 2 and 5) after the collision op ran CalculateFull against the same workbook.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "calcVal"
+          },
+          "7"
+        ]
+      }
+    },
+    {
+      "id": "rehomed-file-exists",
+      "kind": "round-trip",
+      "description": "The re-homed session file exists in the pulled-back scratch dir (session-save-as gave the live workbook a home; the close persisted it).",
+      "expr": {
+        "file_exists": [
+          {
+            "file": "{var:_sgtScratchDir}/live.xlsx"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-11-vault-and-global-variable-flow/flow",
+    "tier": 2,
+    "synthesizedAt": "2026-07-11T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-script",
+        "get-file-contents",
+        "rest-call",
+        "db-sql-query",
+        "create-folder",
+        "set-variable",
+        "write-to-file",
+        "write-to-log",
+        "csv-write-line",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": [
+        "loopback-listener",
+        "token:gbl-var"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "{var:_sgtSessionId}_int11"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ],
+    "sharedVarSeeds": [
+      {
+        "name": "sgtPathToken",
+        "value": "svar-path-segment"
+      }
+    ],
+    "exclusive": true,
+    "serialGroup": "sgt_int11_vault"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 45000
+  },
+  "predictions": [
+    {
+      "id": "listener-up",
+      "kind": "round-trip",
+      "description": "the launcher confirmed the detached listener wrote its port file",
+      "expr": {
+        "equals": [
+          {
+            "$var": "launchOut"
+          },
+          "server-up"
+        ]
+      }
+    },
+    {
+      "id": "gbl-var-rest-bearer",
+      "kind": "round-trip",
+      "description": "rest-call bearer auth built from {gbl-var:sgtApiKey} — echo server reflects Authorization header",
+      "expr": {
+        "equals": [
+          {
+            "$var": "authEcho"
+          },
+          "auth:Bearer int11-gbl-api-key"
+        ]
+      }
+    },
+    {
+      "id": "gbl-var-db-select",
+      "kind": "round-trip",
+      "description": "in-bot SELECT WHERE marker = {gbl-var:sgtDbMarker} returns exactly 1 row",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a7d20011-0000-0000-0000-000000000005",
+              "name": "rowCount"
+            }
+          },
+          1
+        ]
+      }
+    },
+    {
+      "id": "oob-db-marker",
+      "kind": "round-trip",
+      "description": "out-of-band witness: the gbl-var marker landed in the session table",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int11"
+                }
+              },
+              {
+                "marker": "int11-gbl-db-marker"
+              },
+              "note"
+            ]
+          },
+          "seeded-from-gbl-var"
+        ]
+      }
+    },
+    {
+      "id": "svar-file-path",
+      "kind": "round-trip",
+      "description": "{svar:sgtPathToken} resolved into the marker file path — harness-seeded shared var",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/svar-path-segment/marker.txt"
+              }
+            ]
+          },
+          "marker=int11-gbl-db-marker"
+        ]
+      }
+    },
+    {
+      "id": "audit-row-safe-fields",
+      "kind": "round-trip",
+      "description": "audit.csv carries the gbl-var and svar resolved values (no secret column)",
+      "expr": {
+        "contains": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/audit.csv"
+              }
+            ]
+          },
+          "int11,int11-gbl-api-key,int11-gbl-db-marker,svar-path-segment"
+        ]
+      }
+    },
+    {
+      "id": "secret-absent-from-audit-csv",
+      "kind": "round-trip",
+      "description": "secure-text plaintext must not appear in the audit CSV the bot wrote",
+      "expr": {
+        "not": [
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/audit.csv"
+                  }
+                ]
+              },
+              "SGT_INT11_LEAK_PROBE_7f3a"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "secret-absent-from-agent-csv",
+      "kind": "round-trip",
+      "description": "secure-text plaintext must not appear in the agent event CSV (agent engine only — in-process skips via file_exists guard)",
+      "expr": {
+        "any_of": [
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/agent-events.csv"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "not": [
+              {
+                "contains": [
+                  {
+                    "read_value": [
+                      {
+                        "file": "{var:_sgtScratchDir}/agent-events.csv"
+                      }
+                    ]
+                  },
+                  "SGT_INT11_LEAK_PROBE_7f3a"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

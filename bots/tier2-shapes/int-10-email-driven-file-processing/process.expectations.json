@@ -1,0 +1,137 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-10-email-driven-file-processing",
+    "tier": 2,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "send-email",
+        "get-emails-imap",
+        "csv-read",
+        "loop",
+        "write-to-file",
+        "get-file-contents",
+        "get-file-base64",
+        "write-to-log",
+        "delete-single-email-imap",
+        "if",
+        "set-variable",
+        "delay",
+        "exit-loop",
+        "require-shared-vars"
+      ],
+      "pipeFns": [
+        "subject",
+        "filePaths",
+        "add"
+      ],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_MAIL_SMTP_HOST",
+      "SGT_MAIL_SMTP_PORT",
+      "SGT_MAIL_IMAP_HOST",
+      "SGT_MAIL_IMAP_PORT",
+      "SGT_MAIL_ACCOUNT",
+      "SGT_MAIL_PASSWORD"
+    ],
+    "serialGroup": "mail-gmail"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 180000
+  },
+  "predictions": [
+    {
+      "id": "pred-delivered",
+      "kind": "round-trip",
+      "description": "the CSV-bearing email was sent (SMTP) and fetched back (IMAP) — cross-protocol witness",
+      "expr": {
+        "equals": [
+          {
+            "$var": "found"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-bytes-exact",
+      "kind": "round-trip",
+      "description": "the saved attachment is BYTE-EXACT to the CSV that was sent (base64 compared in-bot)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "bytesOk"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-parsed-rows",
+      "kind": "round-trip",
+      "description": "csv-read parsed exactly the 3 authored data rows out of the DOWNLOADED attachment",
+      "expr": {
+        "equals": [
+          {
+            "$var": "rowCount"
+          },
+          "3"
+        ]
+      }
+    },
+    {
+      "id": "pred-aggregate",
+      "kind": "round-trip",
+      "description": "the loop aggregate equals the hand-computed total (100.25 + 200.50 + 99.25 = 400.00)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "total"
+          },
+          "400"
+        ]
+      }
+    },
+    {
+      "id": "pred-summary-file",
+      "kind": "round-trip",
+      "description": "out-of-band file witness: the summary file on disk carries the row count and total",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/int10-summary.txt"
+              }
+            ]
+          },
+          "rows=3 total=400"
+        ]
+      }
+    },
+    {
+      "id": "pred-mailbox-clean",
+      "kind": "round-trip",
+      "description": "cleanup removed every session-marked message from the mailbox",
+      "expr": {
+        "equals": [
+          {
+            "$var": "afterCount"
+          },
+          "0"
+        ]
+      }
+    }
+  ]
+}

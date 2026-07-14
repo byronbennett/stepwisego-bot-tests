@@ -1,0 +1,110 @@
+{
+  "test": {
+    "id": "tier1-features/web/heal-guard-on",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "click-element",
+        "send-keys-browser",
+        "wait-for-element",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": [
+        "heal-ladder-fuzzy"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/heal.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 90000
+  },
+  "predictions": [
+    {
+      "id": "healed-click-landed",
+      "kind": "round-trip",
+      "description": "under healAutoApprove=always the fuzzy tier heals the drifted button id and the click lands (counter 0→1)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000f-0000-0000-0000-000000000003",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "healClickLog"
+              },
+              "1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "healed-fill-landed",
+      "kind": "round-trip",
+      "description": "the fuzzy tier heals the drifted input id via surviving placeholder/type attrs and the fill lands",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000f-0000-0000-0000-000000000005",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "healFieldVal"
+              },
+              "healed-input"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "healed-wait-succeeds",
+      "kind": "round-trip",
+      "description": "wait-for-element heals the same drifted button and reports the Visible state reached",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a9e1000f-0000-0000-0000-000000000007",
+              "name": "success"
+            }
+          },
+          "true"
+        ]
+      }
+    }
+  ]
+}

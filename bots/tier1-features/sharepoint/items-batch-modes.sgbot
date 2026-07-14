@@ -1,0 +1,540 @@
+{
+  "job": {
+    "jobName": "sharepoint-items-batch-modes",
+    "jobGuid": "51b70003-0000-4000-8000-000000000001",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "ab8024df-10b4-4587-acd2-eb7b3678e6eb",
+      "stepName": "Require shared variables: sgtSharePoint",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtSharePoint"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "51b70003-0000-4000-8000-000000000002",
+      "stepName": "arrange: create session batch list",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-create-list",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "newListName": {
+            "value": "sgt-{var:_sgtSessionId}-batch"
+          },
+          "newIsLibrary": {
+            "value": false
+          },
+          "newListDescription": {
+            "value": "sgtester Track 15 batch-modes list"
+          },
+          "fieldsConfig": {
+            "value": {
+              "fields": [
+                {
+                  "displayName": "SgtKey",
+                  "internalName": "SgtKey",
+                  "fieldType": "Text"
+                },
+                {
+                  "displayName": "SgtVal",
+                  "internalName": "SgtVal",
+                  "fieldType": "Number"
+                }
+              ]
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "scl"
+    },
+    {
+      "stepGuid": "51b70003-0000-4000-8000-000000000003",
+      "stepName": "arrange: keys list element 1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:keysList}"
+          },
+          "value": {
+            "value": "k-1"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": ""
+    },
+    {
+      "stepGuid": "51b70003-0000-4000-8000-000000000004",
+      "stepName": "arrange: keys list element 2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:keysList}"
+          },
+          "value": {
+            "value": "k-2"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": ""
+    },
+    {
+      "stepGuid": "51b70003-0000-4000-8000-000000000005",
+      "stepName": "arrange: keys list element 3",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:keysList}"
+          },
+          "value": {
+            "value": "k-3"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": ""
+    },
+    {
+      "stepGuid": "51b70003-0000-4000-8000-000000000006",
+      "stepName": "act: batch insert one row per key (withList, iteration value into Title+SgtKey)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-batch"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "withList"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "Value"
+                },
+                {
+                  "internalName": "SgtKey",
+                  "displayName": "SgtKey",
+                  "value": "Value"
+                },
+                {
+                  "internalName": "SgtVal",
+                  "displayName": "SgtVal",
+                  "fieldType": "Number",
+                  "value": "7"
+                }
+              ]
+            }
+          },
+          "loopList": {
+            "value": "{var:keysList}"
+          },
+          "loopDataTable": {
+            "value": ""
+          },
+          "batchSize": {
+            "value": 20
+          },
+          "maxIterations": {
+            "value": 1000
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sbl"
+    },
+    {
+      "stepGuid": "51b70003-0000-4000-8000-000000000007",
+      "stepName": "arrange: update payload JSON (k-1/k-2 real, k-9 intentionally unmatched)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-parse",
+        "actionPropValues": {
+          "jsonString": {
+            "value": "[{\"key\":\"k-1\",\"val\":\"10.5\"},{\"key\":\"k-2\",\"val\":\"20.25\"},{\"key\":\"k-9\",\"val\":\"99\"}]"
+          },
+          "resultVariable": {
+            "value": "{var:updJson}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": ""
+    },
+    {
+      "stepGuid": "51b70003-0000-4000-8000-000000000008",
+      "stepName": "arrange: update payload DataTable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-to-datatable",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:updJson}"
+          },
+          "columnMode": {
+            "value": "union"
+          },
+          "dataTableVariable": {
+            "value": "{var:updDT}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": ""
+    },
+    {
+      "stepGuid": "51b70003-0000-4000-8000-000000000009",
+      "stepName": "act: batch update SgtVal from the DataTable (match SgtKey ← column 'key')",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-update-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-batch"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "updateMode": {
+            "value": "withDataTable"
+          },
+          "updateConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "SgtVal",
+                  "displayName": "SgtVal",
+                  "fieldType": "Number",
+                  "value": "val"
+                }
+              ],
+              "matchOnField": "SgtKey",
+              "dataTableMatchField": "key"
+            }
+          },
+          "loopList": {
+            "value": ""
+          },
+          "loopDataTable": {
+            "value": "{var:updDT}"
+          },
+          "ignoreMissingUploadFiles": {
+            "value": false
+          },
+          "disableConcurrency": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sbu"
+    },
+    {
+      "stepGuid": "51b70003-0000-4000-8000-000000000010",
+      "stepName": "arrange: delete-keys list (only k-3)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:delList}"
+          },
+          "value": {
+            "value": "k-3"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": ""
+    },
+    {
+      "stepGuid": "51b70003-0000-4000-8000-000000000011",
+      "stepName": "act: batch delete by list match (k-3 only)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-delete-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-batch"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "deleteMode": {
+            "value": "withList"
+          },
+          "deleteConfig": {
+            "value": {
+              "matchOnField": "SgtKey"
+            }
+          },
+          "loopList": {
+            "value": "{var:delList}"
+          },
+          "loopDataTable": {
+            "value": ""
+          },
+          "recycleBin": {
+            "value": true
+          },
+          "disableConcurrency": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sbd"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "keysList",
+      "token": "{var:keysList}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "delList",
+      "token": "{var:delList}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "updJson",
+      "token": "{var:updJson}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "json",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "updDT",
+      "token": "{var:updDT}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.180"
+}

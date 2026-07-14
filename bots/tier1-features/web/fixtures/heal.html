@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>SGT Heal</title></head>
+<body>
+<div id="card">
+  <span class="hint">Order form</span>
+  <button id="new-submit-id" type="submit">Submit order</button>
+</div>
+<input id="new-name-field" type="text" placeholder="Your name">
+<div id="heal-click-log">0</div>
+<div id="mouse-log">0</div>
+<script>
+  const log = document.getElementById("heal-click-log");
+  document.getElementById("new-submit-id").addEventListener("click", () => {
+    log.textContent = String(Number(log.textContent) + 1);
+  });
+  // Witness for move-mouse-browser (heal-guard-token-actions): entering the
+  // button bumps the counter. Additive — heal-guard-on/off never read it.
+  document.getElementById("new-submit-id").addEventListener("mouseenter", () => {
+    const m = document.getElementById("mouse-log");
+    m.textContent = String(Number(m.textContent) + 1);
+  });
+</script>
+</body>
+</html>

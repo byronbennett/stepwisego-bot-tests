@@ -1,0 +1,121 @@
+{
+  "test": {
+    "id": "tier3-hosted/excel-com/save-as-pdf-export",
+    "tier": 3,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xlcom-save-as-pdf",
+        "xl-create-new-workbook",
+        "xl-set-value",
+        "xl-save-as-xlsx",
+        "get-file-contents",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ],
+    "serialGroup": "vm-excel-com"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "pdf-magic-harness",
+      "kind": "round-trip",
+      "description": "Both PDFs exist in the pulled-back scratch dir and start with the %PDF magic (harness reads the bytes out-of-band). No PDF text extraction exists in the platform yet, so content assertions stop at the header + nonzero size.",
+      "expr": {
+        "and": [
+          {
+            "starts_with": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/all.pdf"
+                  }
+                ]
+              },
+              "%PDF"
+            ]
+          },
+          {
+            "starts_with": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/sheettwo.pdf"
+                  }
+                ]
+              },
+              "%PDF"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pdf-magic-in-bot",
+      "kind": "round-trip",
+      "description": "The in-bot reads agree (dual witness) and are non-trivially sized.",
+      "expr": {
+        "and": [
+          {
+            "starts_with": [
+              {
+                "$var": "pdfAll"
+              },
+              "%PDF"
+            ]
+          },
+          {
+            "starts_with": [
+              {
+                "$var": "pdfSheet"
+              },
+              "%PDF"
+            ]
+          },
+          {
+            "greater_than": [
+              {
+                "size_of": [
+                  {
+                    "$var": "pdfAll"
+                  }
+                ]
+              },
+              500
+            ]
+          },
+          {
+            "greater_than": [
+              {
+                "size_of": [
+                  {
+                    "$var": "pdfSheet"
+                  }
+                ]
+              },
+              500
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

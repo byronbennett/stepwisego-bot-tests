@@ -1,0 +1,122 @@
+{
+  "job": {
+    "jobName": "SGT csv — in-memory (read, to-json, build-line, write-datatable)",
+    "jobGuid": "f3e00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "csvText", "token": "{var:csvText}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "name,qty\n\"Widget, big\",3\nBolt,12", "defaultValue": "name,qty\n\"Widget, big\",3\nBolt,12", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "dt", "token": "{var:dt}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "dataTable", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "roundTrip", "token": "{var:roundTrip}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "dtNoHead", "token": "{var:dtNoHead}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "dataTable", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "noHeadCsv", "token": "{var:noHeadCsv}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "jsonStrings", "token": "{var:jsonStrings}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "jsonStringsText", "token": "{var:jsonStringsText}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "jsonTyped", "token": "{var:jsonTyped}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "jsonTypedText", "token": "{var:jsonTypedText}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "jsonEmpty", "token": "{var:jsonEmpty}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "buildOut", "token": "{var:buildOut}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "notDt", "token": "{var:notDt}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "plain", "defaultValue": "plain", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "emptyText", "token": "{var:emptyText}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-000000000001",
+      "stepName": "csv-read with headers (quoted cell with embedded comma)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-read", "actionPropValues": { "csvContent": { "value": "{var:csvText}" }, "hasHeaders": { "value": true }, "typingMode": { "value": "string" }, "dataTableVariable": { "value": "{var:dt}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-000000000002",
+      "stepName": "csv-write-datatable round-trip (Papa re-quotes the embedded comma)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-write-datatable", "actionPropValues": { "dataTableVariable": { "value": "{var:dt}" }, "includeHeaders": { "value": true }, "resultVariable": { "value": "{var:roundTrip}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-000000000003",
+      "stepName": "csv-read WITHOUT headers → auto Column1/Column2 names",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-read", "actionPropValues": { "csvContent": { "value": "a,b\nc,d" }, "hasHeaders": { "value": false }, "typingMode": { "value": "string" }, "dataTableVariable": { "value": "{var:dtNoHead}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-000000000004",
+      "stepName": "write headerless table back WITH headers (exposes generated names)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-write-datatable", "actionPropValues": { "dataTableVariable": { "value": "{var:dtNoHead}" }, "includeHeaders": { "value": true }, "resultVariable": { "value": "{var:noHeadCsv}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-000000000005",
+      "stepName": "csv-to-json typingMode=string (qty stays text)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-to-json", "actionPropValues": { "csvContent": { "value": "{var:csvText}" }, "hasHeaders": { "value": true }, "typingMode": { "value": "string" }, "resultVariable": { "value": "{var:jsonStrings}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-000000000006",
+      "stepName": "witness jsonStrings",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-stringify", "actionPropValues": { "jsonVariable": { "value": "{var:jsonStrings}" }, "pretty": { "value": false }, "resultVariable": { "value": "{var:jsonStringsText}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-000000000007",
+      "stepName": "csv-to-json typingMode=dynamic (qty becomes number)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-to-json", "actionPropValues": { "csvContent": { "value": "{var:csvText}" }, "hasHeaders": { "value": true }, "typingMode": { "value": "dynamic" }, "resultVariable": { "value": "{var:jsonTyped}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-000000000008",
+      "stepName": "witness jsonTyped",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-stringify", "actionPropValues": { "jsonVariable": { "value": "{var:jsonTyped}" }, "pretty": { "value": false }, "resultVariable": { "value": "{var:jsonTypedText}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-000000000009",
+      "stepName": "csv-to-json on empty content (via token, empty only at runtime) → empty array, still passes",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-to-json", "actionPropValues": { "csvContent": { "value": "{var:emptyText}" }, "hasHeaders": { "value": true }, "resultVariable": { "value": "{var:jsonEmpty}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-00000000000a",
+      "stepName": "csv-build-line first call (values trimmed)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-build-line", "actionPropValues": { "values": { "value": "alpha, beta ,gamma" }, "delimiter": { "value": "," }, "resultVariable": { "value": "{var:buildOut}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-00000000000b",
+      "stepName": "csv-build-line second call appends with newline",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-build-line", "actionPropValues": { "values": { "value": "1,2,3" }, "delimiter": { "value": "," }, "resultVariable": { "value": "{var:buildOut}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3e00001-0000-0000-0000-00000000000c",
+      "stepName": "csv-write-datatable on non-DataTable variable (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-write-datatable", "actionPropValues": { "dataTableVariable": { "value": "{var:notDt}" }, "includeHeaders": { "value": true }, "resultVariable": { "value": "{var:roundTrip}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 12, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

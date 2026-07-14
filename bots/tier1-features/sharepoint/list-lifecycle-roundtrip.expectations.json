@@ -1,0 +1,424 @@
+{
+  "test": {
+    "id": "tier1-features/sharepoint/list-lifecycle-roundtrip",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "sp-create-list",
+        "sp-insert-item",
+        "sp-select-items",
+        "sp-update-item",
+        "sp-delete-item",
+        "loop",
+        "if",
+        "set-variable",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [
+      "sgt-{var:_sgtSessionId}-life"
+    ],
+    "requiresEnv": [
+      "SGT_SP_TENANT_ID",
+      "SGT_SP_CLIENT_ID",
+      "SGT_SP_CLIENT_SECRET",
+      "SGT_SP_SITE_URL",
+      "SGT_SP_CERT_FILE",
+      "SGT_SP_CERT_KEY_FILE"
+    ],
+    "exclusive": true
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "pred-list-created",
+      "kind": "round-trip",
+      "description": "sp-create-list published the new list GUID and created all 7 roster columns",
+      "expr": {
+        "and": [
+          {
+            "not_equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70002-0000-4000-8000-000000000002",
+                  "name": "listId"
+                }
+              },
+              ""
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70002-0000-4000-8000-000000000002",
+                  "name": "fieldsCreated"
+                }
+              },
+              7
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-inserts-published-ids",
+      "kind": "round-trip",
+      "description": "each single insert published a positive itemId",
+      "expr": {
+        "and": [
+          {
+            "greater_than": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70002-0000-4000-8000-000000000003",
+                  "name": "itemId"
+                }
+              },
+              "0"
+            ]
+          },
+          {
+            "greater_than": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70002-0000-4000-8000-000000000004",
+                  "name": "itemId"
+                }
+              },
+              "0"
+            ]
+          },
+          {
+            "greater_than": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70002-0000-4000-8000-000000000005",
+                  "name": "itemId"
+                }
+              },
+              "0"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-select-rowcount",
+      "kind": "round-trip",
+      "description": "the pre-mutation select saw all three rows",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "51b70002-0000-4000-8000-000000000006",
+              "name": "rowCount"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "pred-dt-rendering-row-a",
+      "kind": "round-trip",
+      "description": "The DataTable rendering of row-A's typed cells captured via column sub-variables BEFORE the update (number/currency verbatim, boolean true, choice string, unicode text) — live-pinned 2026-07-12",
+      "expr": {
+        "and": [
+          {
+            "contains": [
+              {
+                "$var": "rowACells"
+              },
+              "num=1234.56"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "$var": "rowACells"
+              },
+              "cur=9876.54"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "$var": "rowACells"
+              },
+              "bool=true"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "$var": "rowACells"
+              },
+              "choice=Green"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "$var": "rowACells"
+              },
+              "text=Ünïcødé 漢字 text"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-update-partial-patch",
+      "kind": "round-trip",
+      "description": "update touched exactly one row, and the Graph raw state shows the new SgtNum with every other row-A field intact (partial-patch contract)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70002-0000-4000-8000-000000000010",
+                  "name": "affectedRows"
+                }
+              },
+              1
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-life"
+                    }
+                  },
+                  {
+                    "Title": "row-A"
+                  },
+                  "SgtNum"
+                ]
+              },
+              2222.25
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-life"
+                    }
+                  },
+                  {
+                    "Title": "row-A"
+                  },
+                  "SgtText"
+                ]
+              },
+              "Ünïcødé 漢字 text"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-life"
+                    }
+                  },
+                  {
+                    "Title": "row-A"
+                  },
+                  "SgtCur"
+                ]
+              },
+              9876.54
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-life"
+                    }
+                  },
+                  {
+                    "Title": "row-A"
+                  },
+                  "SgtBool"
+                ]
+              },
+              true
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-life"
+                    }
+                  },
+                  {
+                    "Title": "row-A"
+                  },
+                  "SgtWhen"
+                ]
+              },
+              "2026-06-01T14:30:00Z"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-life"
+                    }
+                  },
+                  {
+                    "Title": "row-A"
+                  },
+                  "SgtChoice"
+                ]
+              },
+              "Green"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-trichotomy-row-b",
+      "kind": "round-trip",
+      "description": "PROVISIONAL: raw Graph shape of row-B — explicitly-empty text and never-set fields are both ABSENT from the fields payload (pinned live by the FP-4 smoke on the customers list)",
+      "expr": {
+        "equals": [
+          {
+            "read_rows": [
+              {
+                "list": {
+                  "siteId": "",
+                  "listId": "sgt-{var:_sgtSessionId}-life"
+                }
+              },
+              {
+                "Title": "row-B"
+              },
+              [
+                "SgtText",
+                "SgtNum",
+                "SgtBool",
+                "SgtWhen"
+              ]
+            ]
+          },
+          [
+            {}
+          ]
+        ]
+      }
+    },
+    {
+      "id": "pred-delete-exact",
+      "kind": "round-trip",
+      "description": "delete removed exactly row-C (deletedCount 1; Graph confirms absence), and the re-run with the same filter deleted zero without erroring",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70002-0000-4000-8000-000000000011",
+                  "name": "deletedCount"
+                }
+              },
+              1
+            ]
+          },
+          {
+            "equals": [
+              {
+                "size_of": [
+                  {
+                    "read_rows": [
+                      {
+                        "list": {
+                          "siteId": "",
+                          "listId": "sgt-{var:_sgtSessionId}-life"
+                        }
+                      },
+                      {
+                        "Title": "row-C"
+                      }
+                    ]
+                  }
+                ]
+              },
+              0
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70002-0000-4000-8000-000000000012",
+                  "name": "deletedCount"
+                }
+              },
+              0
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-oob-survivor-count",
+      "kind": "round-trip",
+      "description": "exactly two rows survive on the raw list (row-A, row-B) — the witness the harness reaper will delete after this evaluates",
+      "expr": {
+        "equals": [
+          {
+            "count_rows_in": [
+              {
+                "list": {
+                  "siteId": "",
+                  "listId": "sgt-{var:_sgtSessionId}-life"
+                }
+              }
+            ]
+          },
+          2
+        ]
+      }
+    }
+  ]
+}

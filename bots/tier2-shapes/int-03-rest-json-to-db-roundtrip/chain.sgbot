@@ -1,0 +1,742 @@
+{
+  "job": {
+    "jobName": "SGT INT-03 — rest-json-to-db-roundtrip: listener serves fixture JSON → rest-call → json-parse (lossless) → json-get-property → json-to-datatable → import-json-to-database → SELECT back; big-int/decimal/unicode string-exact, {var:leak} lands literally",
+    "jobGuid": "a7d20003-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "leak",
+      "token": "{var:leak}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "LEAKED",
+      "defaultValue": "LEAKED",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "port",
+      "token": "{var:port}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "launchOut",
+      "token": "{var:launchOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "body",
+      "token": "{var:body}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "jroot",
+      "token": "{var:jroot}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "json",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "metaBatch",
+      "token": "{var:metaBatch}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "orders",
+      "token": "{var:orders}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "json",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dtOrders",
+      "token": "{var:dtOrders}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dtAmt",
+      "token": "{var:dtAmt}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dtBig",
+      "token": "{var:dtBig}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bodyDown",
+      "token": "{var:bodyDown}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "0b8ba47a-5526-4969-9ac5-8ac840e80a70",
+      "stepName": "Require shared variables: sgtDbMssql",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtDbMssql"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "83073d91-e66a-4e69-94a8-37b76c88dedd",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-000000000001",
+      "stepName": "arrange: launch detached loopback listener serving the fixture JSON (base64-embedded — exact bytes, token-safe) at /orders.json",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-script",
+        "actionPropValues": {
+          "scriptLanguage": {
+            "value": "node"
+          },
+          "scriptText": {
+            "value": "const {spawn}=require('child_process');\nconst fs=require('fs');\nconst dir=process.argv[2];\nconst portFile=dir+'/port.txt';\ntry{fs.unlinkSync(portFile);}catch{}\nconst code=[\n\"const http=require('http');\",\n\"const fs=require('fs');\",\n\"const pf=process.env.SGT_T7_PORT_FILE;\",\n\"const B64='eyJtZXRhIjp7InNvdXJjZSI6InNndC1pbnQwMyIsImJhdGNoIjoizrItNDIifSwib3JkZXJzIjpbeyJyZWYiOiJSMSIsImN1c3RvbWVyIjoiTcO8bGxlciAmIFPDtmhuZSDmvKLlrZciLCJhbW91bnQiOiIxMjM0LjU2MDAiLCJiaWdpZCI6OTAwNzE5OTI1NDc0MDk5MywidW5pdCI6MTIzLjQ1MDAsIm5vdGUiOiJ7dmFyOmxlYWt9Iiwic2hpcCI6eyJjaXR5IjoiS8O2bG4ifX0seyJyZWYiOiJSMiIsImN1c3RvbWVyIjoiIiwiYW1vdW50IjoiLTAuMTAiLCJiaWdpZCI6OTAwNzE5OTI1NDc0MDk5NSwidW5pdCI6MC4xMDAwMDAwMDAwMDAwMDAwMDU1NTExLCJub3RlIjoicGxhaW4iLCJzaGlwIjp7ImNpdHkiOiJTw6NvIFBhdWxvIn19LHsicmVmIjoiUjMiLCJjdXN0b21lciI6Ik8nSGFyYSBcIlFcIiIsImFtb3VudCI6IjAuMzAiLCJiaWdpZCI6NDIsInVuaXQiOm51bGwsIm5vdGUiOm51bGwsInNoaXAiOnsiY2l0eSI6IiJ9fV19';\",\n\"const body=Buffer.from(B64,'base64');\",\n\"const srv=http.createServer((req,res)=>{\",\n\"  if(req.url==='/orders.json'){res.writeHead(200,{'Content-Type':'application/json; charset=utf-8'});res.end(body);}\",\n\"  else if(req.url==='/shutdown'){res.writeHead(200,{'Content-Type':'text/plain'});res.end('bye');setTimeout(()=>process.exit(0),100);}\",\n\"  else{res.writeHead(404,{'Content-Type':'text/plain'});res.end('nope');}\",\n\"});\",\n\"srv.listen(0,'127.0.0.1',()=>{fs.writeFileSync(pf,String(srv.address().port));});\",\n\"setTimeout(()=>process.exit(0),25000);\"\n].join('\\n');\nconst child=spawn(process.execPath,['-e',code],{detached:true,stdio:'ignore',env:{...process.env,SGT_T7_PORT_FILE:portFile}});\nchild.unref();\nconst t0=Date.now();\nwhile(!fs.existsSync(portFile)){\n  if(Date.now()-t0>10000){console.error('server never started');process.exit(1);}\n  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,50);\n}\nconsole.log('server-up');"
+          },
+          "arguments": {
+            "value": "{var:_sgtScratchDir}"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          },
+          "storeToVariable": {
+            "value": "{var:launchOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "slaunch"
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-000000000002",
+      "stepName": "arrange: read the ephemeral port",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/port.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:port}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-000000000003",
+      "stepName": "act: GET /orders.json — raw response text stored (rest-call stores body as text)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "rest-call",
+        "actionPropValues": {
+          "method": {
+            "value": "GET"
+          },
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/orders.json"
+          },
+          "authType": {
+            "value": "none"
+          },
+          "bodyType": {
+            "value": "none"
+          },
+          "timeout": {
+            "value": 10
+          },
+          "resultVariable": {
+            "value": "{var:body}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "srest"
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-000000000004",
+      "stepName": "act: json-parse the body (lossless — >2^53 bigids and >17-sig-digit decimals revive as exact strings); {var:leak} inside the DATA must survive the single resolution pass literally",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-parse",
+        "actionPropValues": {
+          "jsonString": {
+            "value": "{var:body}"
+          },
+          "resultVariable": {
+            "value": "{var:jroot}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sparse"
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-000000000005",
+      "stepName": "act: json-get-property meta.batch — nested dot-path navigation, unicode value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-get-property",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:jroot}"
+          },
+          "propertyName": {
+            "value": "meta.batch"
+          },
+          "resultVariable": {
+            "value": "{var:metaBatch}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-000000000006",
+      "stepName": "act: json-get-property orders — extract the array for the DT + import legs",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-get-property",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:jroot}"
+          },
+          "propertyName": {
+            "value": "orders"
+          },
+          "resultVariable": {
+            "value": "{var:orders}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-000000000007",
+      "stepName": "act: json-to-datatable (union) — DT seam witness for the lossless strings",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-to-datatable",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:orders}"
+          },
+          "columnMode": {
+            "value": "union"
+          },
+          "dataTableVariable": {
+            "value": "{var:dtOrders}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdt"
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-000000000008",
+      "stepName": "assert: DT cell [0].amount — the JSON-string decimal reached the DataTable untouched",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "dt-get-value",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dtOrders}"
+          },
+          "rowIndex": {
+            "value": "0"
+          },
+          "column": {
+            "value": "amount"
+          },
+          "resultVariable": {
+            "value": "{var:dtAmt}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-000000000009",
+      "stepName": "assert: DT cell [1].bigid — the >2^53 literal was revived as an exact string and reached the DT",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "dt-get-value",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dtOrders}"
+          },
+          "rowIndex": {
+            "value": "1"
+          },
+          "column": {
+            "value": "bigid"
+          },
+          "resultVariable": {
+            "value": "{var:dtBig}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-00000000000a",
+      "stepName": "act: import the orders array into a session table (all-nvarchar target — string-exact transport assertion; ship.city exercises nested-path source aliases)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "import-json-to-database",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "targetTable": {
+            "value": "sgtester.{var:_sgtSessionId}_int03"
+          },
+          "createTableIfMissing": {
+            "value": true
+          },
+          "jsonVariable": {
+            "value": "orders"
+          },
+          "batchSize": {
+            "value": 2500
+          },
+          "commandTimeout": {
+            "value": 60
+          },
+          "sourceMap": {
+            "value": {
+              "fields": [
+                {
+                  "fieldName": "[field_000]",
+                  "fieldAlias": "ref"
+                },
+                {
+                  "fieldName": "[field_001]",
+                  "fieldAlias": "customer"
+                },
+                {
+                  "fieldName": "[field_002]",
+                  "fieldAlias": "amount"
+                },
+                {
+                  "fieldName": "[field_003]",
+                  "fieldAlias": "bigid"
+                },
+                {
+                  "fieldName": "[field_004]",
+                  "fieldAlias": "unit"
+                },
+                {
+                  "fieldName": "[field_005]",
+                  "fieldAlias": "note"
+                },
+                {
+                  "fieldName": "[field_006]",
+                  "fieldAlias": "ship.city"
+                }
+              ]
+            }
+          },
+          "importMap": {
+            "value": {
+              "tableName": "sgtester.{var:_sgtSessionId}_int03",
+              "fields": [
+                {
+                  "fieldName": "ref",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_000]"
+                  }
+                },
+                {
+                  "fieldName": "customer",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_001]"
+                  }
+                },
+                {
+                  "fieldName": "amount",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_002]"
+                  }
+                },
+                {
+                  "fieldName": "bigid",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_003]"
+                  }
+                },
+                {
+                  "fieldName": "unit",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_004]"
+                  }
+                },
+                {
+                  "fieldName": "note",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_005]"
+                  }
+                },
+                {
+                  "fieldName": "ship_city",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_006]"
+                  }
+                },
+                {
+                  "fieldName": "origin",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "literal",
+                    "value": "rest-import"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "simpr"
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-00000000000b",
+      "stepName": "in-bot witness: SELECT WHERE ref='R1' returns exactly 1 row",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "select"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "SELECT bigid, amount FROM [sgtester].[{var:_sgtSessionId}_int03] WHERE ref = 'R1'"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "schk"
+    },
+    {
+      "stepGuid": "a7d20003-0000-0000-0000-00000000000c",
+      "stepName": "cleanup: GET /shutdown stops the listener",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "rest-call",
+        "actionPropValues": {
+          "method": {
+            "value": "GET"
+          },
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/shutdown"
+          },
+          "authType": {
+            "value": "none"
+          },
+          "bodyType": {
+            "value": "none"
+          },
+          "timeout": {
+            "value": 10
+          },
+          "resultVariable": {
+            "value": "{var:bodyDown}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdown"
+    }
+  ]
+}

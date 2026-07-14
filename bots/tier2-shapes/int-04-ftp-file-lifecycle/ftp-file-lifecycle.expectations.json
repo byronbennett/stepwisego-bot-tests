@@ -1,0 +1,176 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-04-ftp-file-lifecycle/ftp-file-lifecycle",
+    "tier": 2,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-script",
+        "get-file-contents",
+        "write-to-file",
+        "get-file-base64",
+        "zip-folder",
+        "ftp-upload-files",
+        "ftp-get-file-names",
+        "ftp-download-files",
+        "unzip-file",
+        "csv-to-json",
+        "ftp-delete-files",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/sftp-server.mjs"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "sftp"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "server-launched",
+      "kind": "round-trip",
+      "description": "detached sftp listener up before the bot proceeded",
+      "expr": {
+        "equals": [
+          {
+            "$var": "launchOut"
+          },
+          "server-up"
+        ]
+      }
+    },
+    {
+      "id": "binary-fidelity-hash-chain",
+      "kind": "round-trip",
+      "description": "base64(original) === base64(after zip → sftp up → sftp down → unzip) — the hash chain proves BINARY fidelity end to end; guard rejects the vacuous both-empty case",
+      "expr": {
+        "and": [
+          {
+            "not_equals": [
+              {
+                "$var": "b64orig"
+              },
+              "SENTINEL"
+            ]
+          },
+          {
+            "not_equals": [
+              {
+                "$var": "b64orig"
+              },
+              ""
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "b64orig"
+              },
+              {
+                "$var": "b64back"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "crlf-unmangled",
+      "kind": "round-trip",
+      "description": "the CRLF corpus survives unmangled (transfer-mode trap): text read is byte-exact including \\r\\n",
+      "expr": {
+        "equals": [
+          {
+            "$var": "csvText"
+          },
+          "id,amount,name\r\n1,10.10,Ünïcødé\r\n2,99999999999999999999.99,漢字\r\n"
+        ]
+      }
+    },
+    {
+      "id": "csv-parses-post-transfer",
+      "kind": "round-trip",
+      "description": "csv-to-json parses the round-tripped file into exactly 2 data rows",
+      "expr": {
+        "equals": [
+          {
+            "length": [
+              {
+                "$var": "csvRows"
+              }
+            ]
+          },
+          2
+        ]
+      }
+    },
+    {
+      "id": "remote-listing-and-cleanup",
+      "kind": "round-trip",
+      "description": "listing pinned exactly [bundle.zip] after upload; empty after cleanup; jail agrees",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "xferNames"
+              },
+              [
+                "bundle.zip"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "finalXfer"
+              },
+              []
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/sftp-root/xfer/bundle.zip"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "download-count",
+      "kind": "round-trip",
+      "description": "exactly one file made the return trip",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "aa10ff06-0000-0000-0000-000000000008",
+              "name": "downloadedCount"
+            }
+          },
+          1
+        ]
+      }
+    }
+  ]
+}

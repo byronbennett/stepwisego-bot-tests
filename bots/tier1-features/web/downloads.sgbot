@@ -1,0 +1,647 @@
+{
+  "job": {
+    "jobName": "SGT web — download-file (direct fetch, overwrite=false skip, 404 buried) + save-download (browser-triggered attachment, empty-queue timeout buried)",
+    "jobGuid": "a9e1000d-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "browser",
+      "token": "{var:browser}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "port",
+      "token": "{var:port}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "launchOut",
+      "token": "{var:launchOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "directContent",
+      "token": "{var:directContent}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "savedContent",
+      "token": "{var:savedContent}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "byeContent",
+      "token": "{var:byeContent}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f947d16f-fc0a-489d-835b-5a4468bf143b",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "ca9bd7ea-9cb8-4767-a62f-37bc10989a05",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000001",
+      "stepName": "arrange: node launcher spawns a detached loopback http server, waits for its port file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-script",
+        "actionPropValues": {
+          "scriptLanguage": {
+            "value": "node"
+          },
+          "scriptText": {
+            "value": "const {spawn}=require('child_process');\nconst fs=require('fs');\nconst dir=process.argv[2];\nconst portFile=dir+'/port.txt';\ntry{fs.unlinkSync(portFile);}catch{}\nconst code=[\n\"const http=require('http');\",\n\"const fs=require('fs');\",\n\"const pf=process.env.SGT_T9_PORT_FILE;\",\n\"const body='sgt-download-payload Ünïcødé 漢字'+String.fromCharCode(10)+'second-line-bytes';\",\n\"const srv=http.createServer((req,res)=>{\",\n\"  if(req.url==='/dl.txt'){res.writeHead(200,{'Content-Type':'text/plain; charset=utf-8','Content-Disposition':'attachment; filename=dl.txt'});res.end(body);}\",\n\"  else if(req.url==='/shutdown'){res.writeHead(200,{'Content-Type':'text/plain'});res.end('bye');setTimeout(()=>process.exit(0),100);}\",\n\"  else{res.writeHead(404,{'Content-Type':'text/plain'});res.end('nope');}\",\n\"});\",\n\"srv.listen(0,'127.0.0.1',()=>{fs.writeFileSync(pf,String(srv.address().port));});\",\n\"setTimeout(()=>process.exit(0),45000);\"\n].join('\\n');\nconst child=spawn(process.execPath,['-e',code],{detached:true,stdio:'ignore',env:{...process.env,SGT_T9_PORT_FILE:portFile}});\nchild.unref();\nconst t0=Date.now();\nwhile(!fs.existsSync(portFile)){\n  if(Date.now()-t0>10000){console.error('server never started');process.exit(1);}\n  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,50);\n}\nconsole.log('server-up');"
+          },
+          "arguments": {
+            "value": "{var:_sgtScratchDir}"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          },
+          "storeToVariable": {
+            "value": "{var:launchOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "slaunch"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000002",
+      "stepName": "arrange: read the ephemeral port",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/port.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:port}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sport"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000003",
+      "stepName": "download-file fetches directly to disk (200)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "download-file",
+        "actionPropValues": {
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/dl.txt"
+          },
+          "savePath": {
+            "value": "{var:_sgtScratchDir}/direct.txt"
+          },
+          "overwrite": {
+            "value": true
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdl1"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000004",
+      "stepName": "read the directly-downloaded bytes",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/direct.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:directContent}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdlread"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000005",
+      "stepName": "overwrite=false on an existing file skips with statusCode 0",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "download-file",
+        "actionPropValues": {
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/dl.txt"
+          },
+          "savePath": {
+            "value": "{var:_sgtScratchDir}/direct.txt"
+          },
+          "overwrite": {
+            "value": false
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdl2"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000006",
+      "stepName": "404 fails the step (buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "download-file",
+        "actionPropValues": {
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/missing"
+          },
+          "savePath": {
+            "value": "{var:_sgtScratchDir}/never.txt"
+          },
+          "overwrite": {
+            "value": true
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdl404"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000007",
+      "stepName": "open headless chromium session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "open-browser-session",
+        "actionPropValues": {
+          "browserType": {
+            "value": "chromium"
+          },
+          "headless": {
+            "value": true
+          },
+          "sessionVariable": {
+            "value": "{var:browser}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sopen"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000008",
+      "stepName": "navigate to the download page with the listener port",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "navigate-to-url",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "url": {
+            "value": "file://{var:_sgtScratchDir}/download-page.html?port={var:port}"
+          },
+          "waitUntil": {
+            "value": "load"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "snav"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000009",
+      "stepName": "click the attachment link — download starts buffering",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "click-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#dl-link"
+          },
+          "clickType": {
+            "value": "Single"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdlclick"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000010",
+      "stepName": "save-download drains the buffered download into a directory (server filename)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "save-download",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "savePath": {
+            "value": "{var:_sgtScratchDir}/saved/"
+          },
+          "timeoutSeconds": {
+            "value": 15
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "ssave"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000011",
+      "stepName": "read the browser-saved bytes",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/saved/dl.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:savedContent}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "ssaveread"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000012",
+      "stepName": "save-download with an empty queue times out (buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "save-download",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "savePath": {
+            "value": "{var:_sgtScratchDir}/none.txt"
+          },
+          "timeoutSeconds": {
+            "value": 2
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "ssaveempty"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000013",
+      "stepName": "close the session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "close-browser-session",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sclose"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000014",
+      "stepName": "teardown: GET /shutdown ends the listener deterministically",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "download-file",
+        "actionPropValues": {
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/shutdown"
+          },
+          "savePath": {
+            "value": "{var:_sgtScratchDir}/bye.txt"
+          },
+          "overwrite": {
+            "value": true
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sshut"
+    },
+    {
+      "stepGuid": "a9e1000d-0000-0000-0000-000000000015",
+      "stepName": "teardown witness: shutdown response body",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/bye.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:byeContent}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sbye"
+    }
+  ]
+}

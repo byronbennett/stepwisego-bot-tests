@@ -1,0 +1,65 @@
+{
+  "job": {
+    "jobName": "SGT logic — wait-until (immediate condition, timeout path)",
+    "jobGuid": "f3a00002-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbs", "token": "{var:crumbs}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "flag", "token": "{var:flag}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "ready", "defaultValue": "ready", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3a00002-0000-0000-0000-000000000001",
+      "stepName": "wait-until condition already true (immediate return)",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "swa",
+      "actionOp": {
+        "actionName": "wait-until",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "{var:flag}", "comparator": "equals", "rightOperand": "ready" } ] },
+          "timeout": { "value": 5 },
+          "checkInterval": { "value": 0.2 }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00002-0000-0000-0000-000000000002",
+      "stepName": "record after-immediate",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "after-immediate" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00002-0000-0000-0000-000000000003",
+      "stepName": "wait-until condition never true (1s timeout — step must still PASS with timedOut=true)",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "swb",
+      "actionOp": {
+        "actionName": "wait-until",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "{var:flag}", "comparator": "equals", "rightOperand": "never-this-value" } ] },
+          "timeout": { "value": 1 },
+          "checkInterval": { "value": 0.3 }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00002-0000-0000-0000-000000000004",
+      "stepName": "record after-timeout",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "after-timeout" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

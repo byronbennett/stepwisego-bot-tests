@@ -1,0 +1,91 @@
+{
+  "test": {
+    "id": "tier1-features/user-interactions/pickers-headless",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "choose-file-dialog",
+        "choose-folder-dialog",
+        "set-variable",
+        "write-to-file",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "in-process"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "pickers-fail-clean",
+      "kind": "round-trip",
+      "description": "both pickers failed WITHOUT storing anything (no host.pickFile on either engine's host) — variables kept their SENTINEL",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "pickedFile"
+              },
+              "SENTINEL"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "pickedFolder"
+              },
+              "SENTINEL"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "run-continued",
+      "kind": "round-trip",
+      "description": "crumb variable + crumb file prove execution continued",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "crumb"
+              },
+              "continued-after-pickers"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/crumb.txt"
+                  }
+                ]
+              },
+              "crumb continued-after-pickers"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

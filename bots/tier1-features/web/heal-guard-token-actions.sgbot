@@ -1,0 +1,695 @@
+{
+  "job": {
+    "jobName": "SGT web — Token (webElement) selectors now work through perform-browser-action and move-mouse-browser (Track 10 fix): fresh tokens act on the page, stale tokens under exactOnly fail like every other guarded runner",
+    "jobGuid": "aa10ff0c-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "browser",
+      "token": "{var:browser}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "freshField",
+      "token": "{var:freshField}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "webElement",
+      "value": {
+        "candidates": [
+          {
+            "strategy": "css",
+            "value": "#new-name-field",
+            "confidence": 0.9
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "role": "textbox",
+          "attrs": {
+            "id": "new-name-field",
+            "placeholder": "Your name",
+            "type": "text"
+          },
+          "parentChain": [
+            "body",
+            "html"
+          ],
+          "nearbyText": [],
+          "coordinates": {
+            "x": 20,
+            "y": 90,
+            "width": 180,
+            "height": 28
+          },
+          "documentUrl": "file:///captured-at-authoring-time"
+        },
+        "capturedAt": "2026-07-10T00:00:00.000Z",
+        "capturedBy": "manual",
+        "pageContext": {
+          "url": "file:///captured-at-authoring-time",
+          "title": "SGT Heal"
+        }
+      },
+      "defaultValue": {
+        "candidates": [
+          {
+            "strategy": "css",
+            "value": "#new-name-field",
+            "confidence": 0.9
+          }
+        ],
+        "fingerprint": {
+          "tag": "input",
+          "role": "textbox",
+          "attrs": {
+            "id": "new-name-field",
+            "placeholder": "Your name",
+            "type": "text"
+          },
+          "parentChain": [
+            "body",
+            "html"
+          ],
+          "nearbyText": [],
+          "coordinates": {
+            "x": 20,
+            "y": 90,
+            "width": 180,
+            "height": 28
+          },
+          "documentUrl": "file:///captured-at-authoring-time"
+        },
+        "capturedAt": "2026-07-10T00:00:00.000Z",
+        "capturedBy": "manual",
+        "pageContext": {
+          "url": "file:///captured-at-authoring-time",
+          "title": "SGT Heal"
+        }
+      },
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "freshBtn",
+      "token": "{var:freshBtn}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "webElement",
+      "value": {
+        "candidates": [
+          {
+            "strategy": "css",
+            "value": "#new-submit-id",
+            "confidence": 0.9
+          }
+        ],
+        "fingerprint": {
+          "tag": "button",
+          "role": "button",
+          "accessibleName": "Submit order",
+          "visibleText": "Submit order",
+          "attrs": {
+            "id": "new-submit-id",
+            "type": "submit"
+          },
+          "parentChain": [
+            "div#card",
+            "body",
+            "html"
+          ],
+          "nearbyText": [
+            "Order form"
+          ],
+          "coordinates": {
+            "x": 20,
+            "y": 40,
+            "width": 120,
+            "height": 32
+          },
+          "documentUrl": "file:///captured-at-authoring-time"
+        },
+        "capturedAt": "2026-07-10T00:00:00.000Z",
+        "capturedBy": "manual",
+        "pageContext": {
+          "url": "file:///captured-at-authoring-time",
+          "title": "SGT Heal"
+        }
+      },
+      "defaultValue": {
+        "candidates": [
+          {
+            "strategy": "css",
+            "value": "#new-submit-id",
+            "confidence": 0.9
+          }
+        ],
+        "fingerprint": {
+          "tag": "button",
+          "role": "button",
+          "accessibleName": "Submit order",
+          "visibleText": "Submit order",
+          "attrs": {
+            "id": "new-submit-id",
+            "type": "submit"
+          },
+          "parentChain": [
+            "div#card",
+            "body",
+            "html"
+          ],
+          "nearbyText": [
+            "Order form"
+          ],
+          "coordinates": {
+            "x": 20,
+            "y": 40,
+            "width": 120,
+            "height": 32
+          },
+          "documentUrl": "file:///captured-at-authoring-time"
+        },
+        "capturedAt": "2026-07-10T00:00:00.000Z",
+        "capturedBy": "manual",
+        "pageContext": {
+          "url": "file:///captured-at-authoring-time",
+          "title": "SGT Heal"
+        }
+      },
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "staleBtn",
+      "token": "{var:staleBtn}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "webElement",
+      "value": {
+        "candidates": [
+          {
+            "strategy": "css",
+            "value": "#old-submit-id",
+            "confidence": 0.9
+          }
+        ],
+        "fingerprint": {
+          "tag": "button",
+          "role": "button",
+          "accessibleName": "Submit order",
+          "visibleText": "Submit order",
+          "attrs": {
+            "id": "old-submit-id",
+            "type": "submit"
+          },
+          "parentChain": [
+            "div#card",
+            "body",
+            "html"
+          ],
+          "nearbyText": [
+            "Order form"
+          ],
+          "coordinates": {
+            "x": 20,
+            "y": 40,
+            "width": 120,
+            "height": 32
+          },
+          "documentUrl": "file:///captured-at-authoring-time"
+        },
+        "capturedAt": "2026-07-10T00:00:00.000Z",
+        "capturedBy": "manual",
+        "pageContext": {
+          "url": "file:///captured-at-authoring-time",
+          "title": "SGT Heal"
+        }
+      },
+      "defaultValue": {
+        "candidates": [
+          {
+            "strategy": "css",
+            "value": "#old-submit-id",
+            "confidence": 0.9
+          }
+        ],
+        "fingerprint": {
+          "tag": "button",
+          "role": "button",
+          "accessibleName": "Submit order",
+          "visibleText": "Submit order",
+          "attrs": {
+            "id": "old-submit-id",
+            "type": "submit"
+          },
+          "parentChain": [
+            "div#card",
+            "body",
+            "html"
+          ],
+          "nearbyText": [
+            "Order form"
+          ],
+          "coordinates": {
+            "x": 20,
+            "y": 40,
+            "width": 120,
+            "height": 32
+          },
+          "documentUrl": "file:///captured-at-authoring-time"
+        },
+        "capturedAt": "2026-07-10T00:00:00.000Z",
+        "capturedBy": "manual",
+        "pageContext": {
+          "url": "file:///captured-at-authoring-time",
+          "title": "SGT Heal"
+        }
+      },
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "focusedId",
+      "token": "{var:focusedId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "mouseLog",
+      "token": "{var:mouseLog}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "2f311e10-232c-4088-959c-f9eadf705c78",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "90d7ca02-84de-46d5-89e7-3907a6ceb8ae",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa10ff0c-0000-0000-0000-000000000001",
+      "stepName": "open headless chromium session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "open-browser-session",
+        "actionPropValues": {
+          "browserType": {
+            "value": "chromium"
+          },
+          "headless": {
+            "value": true
+          },
+          "sessionVariable": {
+            "value": "{var:browser}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sopen"
+    },
+    {
+      "stepGuid": "aa10ff0c-0000-0000-0000-000000000002",
+      "stepName": "navigate to the staged heal.html fixture",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "navigate-to-url",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "url": {
+            "value": "file://{var:_sgtScratchDir}/heal.html"
+          },
+          "waitUntil": {
+            "value": "load"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "snav"
+    },
+    {
+      "stepGuid": "aa10ff0c-0000-0000-0000-000000000003",
+      "stepName": "perform-browser-action Focus via a FRESH Token — the fixed path resolves the webElement parm",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "perform-browser-action",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "action": {
+            "value": "Focus"
+          },
+          "selectorType": {
+            "value": "Token"
+          },
+          "selectorValue": {
+            "value": "{var:freshField}"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "spbafocus"
+    },
+    {
+      "stepGuid": "aa10ff0c-0000-0000-0000-000000000004",
+      "stepName": "read back which element holds focus",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "execute-javascript",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "script": {
+            "value": "document.activeElement.id"
+          },
+          "resultVariable": {
+            "value": "{var:focusedId}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sfocusread"
+    },
+    {
+      "stepGuid": "aa10ff0c-0000-0000-0000-000000000005",
+      "stepName": "move-mouse-browser to Element via a FRESH Token — mouseenter bumps the page's mouse-log",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "move-mouse-browser",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "targetType": {
+            "value": "Element"
+          },
+          "selectorType": {
+            "value": "Token"
+          },
+          "selectorValue": {
+            "value": "{var:freshBtn}"
+          },
+          "steps": {
+            "value": 1
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "smousemove"
+    },
+    {
+      "stepGuid": "aa10ff0c-0000-0000-0000-000000000006",
+      "stepName": "read the mouse-log counter",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-web-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#mouse-log"
+          },
+          "resultVariable": {
+            "value": "{var:mouseLog}"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "smouseread"
+    },
+    {
+      "stepGuid": "aa10ff0c-0000-0000-0000-000000000007",
+      "stepName": "guard parity: perform-browser-action via a STALE Token under exactOnly fails (buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "perform-browser-action",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "action": {
+            "value": "Hover"
+          },
+          "selectorType": {
+            "value": "Token"
+          },
+          "selectorValue": {
+            "value": "{var:staleBtn}"
+          },
+          "timeoutSeconds": {
+            "value": 2
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "spbastale",
+      "resilienceMode": "exactOnly"
+    },
+    {
+      "stepGuid": "aa10ff0c-0000-0000-0000-000000000008",
+      "stepName": "guard parity: move-mouse-browser via a STALE Token under exactOnly fails (buried, fixed 10s budget)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "move-mouse-browser",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "targetType": {
+            "value": "Element"
+          },
+          "selectorType": {
+            "value": "Token"
+          },
+          "selectorValue": {
+            "value": "{var:staleBtn}"
+          },
+          "steps": {
+            "value": 1
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "smousestale",
+      "resilienceMode": "exactOnly"
+    },
+    {
+      "stepGuid": "aa10ff0c-0000-0000-0000-000000000009",
+      "stepName": "close the session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "close-browser-session",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sclose"
+    }
+  ]
+}

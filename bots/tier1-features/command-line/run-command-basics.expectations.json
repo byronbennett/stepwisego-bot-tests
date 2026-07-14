@@ -1,0 +1,130 @@
+{
+  "test": {
+    "id": "tier1-features/command-line/run-command-basics",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-command",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "stdout-captured",
+      "kind": "round-trip",
+      "description": "printf stdout captured verbatim into storeToVariable (no trailing newline — printf emits none and run-command does not trim)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "cmdOut"
+          },
+          "sgt-t6-hello"
+        ]
+      }
+    },
+    {
+      "id": "exit-code-zero",
+      "kind": "round-trip",
+      "description": "successful command stores numeric exit code 0",
+      "expr": {
+        "equals": [
+          {
+            "$var": "cmdExit0"
+          },
+          0
+        ]
+      }
+    },
+    {
+      "id": "exit-code-seven",
+      "kind": "round-trip",
+      "description": "buried sh -c 'exit 7' stores the real exit code 7 (regression: execFile reports it on err.code, not err.status)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "cmdExit7"
+          },
+          7
+        ]
+      }
+    },
+    {
+      "id": "exit-code-seven-stepout",
+      "kind": "round-trip",
+      "description": "the failing step's exitCode output variable carries 7 too",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10006-0000-0000-0000-000000000003",
+              "name": "exitCode"
+            }
+          },
+          7
+        ]
+      }
+    },
+    {
+      "id": "stderr-captured",
+      "kind": "round-trip",
+      "description": "stderr of the failing command captured into storeErrorToVariable (echo appends \\n; not trimmed)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "cmdErr"
+          },
+          "oops\n"
+        ]
+      }
+    },
+    {
+      "id": "inbot-file-witness",
+      "kind": "round-trip",
+      "description": "in-bot witness (get-file-contents, File plugin): the sh -c redirect wrote the file",
+      "expr": {
+        "equals": [
+          {
+            "$var": "fileBack"
+          },
+          "sgt-t6-file"
+        ]
+      }
+    },
+    {
+      "id": "oob-file-witness",
+      "kind": "round-trip",
+      "description": "out-of-band witness: harness fs read of the redirect-written scratch file",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/cmd-out.txt"
+              }
+            ]
+          },
+          "sgt-t6-file"
+        ]
+      }
+    }
+  ]
+}

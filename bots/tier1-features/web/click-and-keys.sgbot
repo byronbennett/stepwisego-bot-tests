@@ -1,0 +1,620 @@
+{
+  "job": {
+    "jobName": "SGT web — click-element (single/double/right) + send-keys-browser (Fill, Type unicode, Press to focused element)",
+    "jobGuid": "a9e10005-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "browser",
+      "token": "{var:browser}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "clickLog",
+      "token": "{var:clickLog}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "fillVal",
+      "token": "{var:fillVal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "typeVal",
+      "token": "{var:typeVal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "enterCount",
+      "token": "{var:enterCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "bddcbe0f-58ff-4063-bead-07347b1ee14f",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "d5446a50-d298-4594-87da-080c0f2d4025",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000001",
+      "stepName": "open headless chromium session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "open-browser-session",
+        "actionPropValues": {
+          "browserType": {
+            "value": "chromium"
+          },
+          "headless": {
+            "value": true
+          },
+          "sessionVariable": {
+            "value": "{var:browser}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sopen"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000002",
+      "stepName": "navigate to the staged interact.html fixture",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "navigate-to-url",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "url": {
+            "value": "file://{var:_sgtScratchDir}/interact.html"
+          },
+          "waitUntil": {
+            "value": "load"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "snav"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000003",
+      "stepName": "single click",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "click-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#clicker"
+          },
+          "clickType": {
+            "value": "Single"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sclick1"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000004",
+      "stepName": "double click (dispatches two clicks + dblclick)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "click-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#clicker"
+          },
+          "clickType": {
+            "value": "Double"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sclick2"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000005",
+      "stepName": "right click (contextmenu only, no click event)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "click-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#clicker"
+          },
+          "clickType": {
+            "value": "Right"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sclick3"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000006",
+      "stepName": "read the click event log",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-web-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#click-log"
+          },
+          "resultVariable": {
+            "value": "{var:clickLog}"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "slog"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000007",
+      "stepName": "Fill mode sets the input value atomically (unicode + emoji)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "send-keys-browser",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#text-in"
+          },
+          "inputMode": {
+            "value": "Fill"
+          },
+          "text": {
+            "value": "filled Ünïcødé 漢字 🎯"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sfill"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000008",
+      "stepName": "read back the filled value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "execute-javascript",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "script": {
+            "value": "document.getElementById('text-in').value"
+          },
+          "resultVariable": {
+            "value": "{var:fillVal}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sfillread"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000009",
+      "stepName": "Type mode keystrokes into the textarea (unicode)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "send-keys-browser",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#area-in"
+          },
+          "inputMode": {
+            "value": "Type"
+          },
+          "text": {
+            "value": "typed Ünïcødé 漢字"
+          },
+          "delayMs": {
+            "value": 0
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "stype"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000010",
+      "stepName": "read back the typed value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "execute-javascript",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "script": {
+            "value": "document.getElementById('area-in').value"
+          },
+          "resultVariable": {
+            "value": "{var:typeVal}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "styperead"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000011",
+      "stepName": "focus the enter-counting input by clicking it",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "click-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#enter-in"
+          },
+          "clickType": {
+            "value": "Single"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sfocusclick"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000012",
+      "stepName": "Press mode sends a named key to the focused element",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "send-keys-browser",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "inputMode": {
+            "value": "Press"
+          },
+          "text": {
+            "value": "Enter"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "spress"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000013",
+      "stepName": "the keydown listener counted exactly one Enter",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-web-element",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          },
+          "selectorType": {
+            "value": "CSS"
+          },
+          "selectorValue": {
+            "value": "#enter-count"
+          },
+          "resultVariable": {
+            "value": "{var:enterCount}"
+          },
+          "timeoutSeconds": {
+            "value": 10
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "senter"
+    },
+    {
+      "stepGuid": "a9e10005-0000-0000-0000-000000000014",
+      "stepName": "close the session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "close-browser-session",
+        "actionPropValues": {
+          "sessionVariable": {
+            "value": "{var:browser}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sclose"
+    }
+  ]
+}

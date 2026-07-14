@@ -1,0 +1,33 @@
+{
+  "test": {
+    "id": "tier1-features/logic/end-bot-pass",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["end-bot", "add-to-list"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "stops-at-end-bot",
+      "kind": "round-trip",
+      "description": "end-bot (endWithFail=false) terminates execution after the current step — the following step never runs (no 'after-end' crumb) — while the run classifies complete with zero errors",
+      "expr": { "equals": [ { "$var": "crumbs" }, ["before-end"] ] }
+    }
+  ]
+}

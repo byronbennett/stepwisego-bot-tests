@@ -1,0 +1,608 @@
+{
+  "job": {
+    "jobName": "SGT INT-11 — vault-and-global-variable-flow: {gbl-var:} + {svar:} resolve into REST bearer, DB marker, file path, log; secure-text masking on audit + agent CSV",
+    "jobGuid": "a7d20011-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "port",
+      "token": "{var:port}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "launchOut",
+      "token": "{var:launchOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "authEcho",
+      "token": "{var:authEcho}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "shutdownOut",
+      "token": "{var:shutdownOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "markerPath",
+      "token": "{var:markerPath}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "markerBody",
+      "token": "{var:markerBody}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "int11Secret",
+      "token": "{var:int11Secret}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "secureText",
+      "value": "SGT_INT11_LEAK_PROBE_7f3a",
+      "defaultValue": "SGT_INT11_LEAK_PROBE_7f3a",
+      "isPrivate": true,
+      "isSecureText": true,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtApiKey",
+      "token": "{gbl-var:sgtApiKey}",
+      "tokenPrefix": "gbl-var",
+      "valueSource": "global",
+      "dataType": "text",
+      "value": "int11-gbl-api-key",
+      "defaultValue": "int11-gbl-api-key",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtDbMarker",
+      "token": "{gbl-var:sgtDbMarker}",
+      "tokenPrefix": "gbl-var",
+      "valueSource": "global",
+      "dataType": "text",
+      "value": "int11-gbl-db-marker",
+      "defaultValue": "int11-gbl-db-marker",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "1c0c4ef6-4ba9-4e85-8772-28ea62616a20",
+      "stepName": "Require shared variables: sgtDbMssql, sgtPathToken",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtDbMssql\nsgtPathToken"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "cba9cd7d-82fa-4190-8fbf-70d83754bb79",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-000000000001",
+      "stepName": "arrange: launch detached loopback listener with /echo-auth (reflects Authorization header)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-script",
+        "actionPropValues": {
+          "scriptLanguage": {
+            "value": "node"
+          },
+          "scriptText": {
+            "value": "const {spawn}=require('child_process');\nconst fs=require('fs');\nconst dir=process.argv[2];\nconst portFile=dir+'/port.txt';\ntry{fs.unlinkSync(portFile);}catch{}\nconst code=[\n\"const http=require('http');\",\n\"const fs=require('fs');\",\n\"const pf=process.env.SGT_T11_PORT_FILE;\",\n\"const srv=http.createServer((req,res)=>{\",\n\"  if(req.url==='/echo-auth'){const auth=req.headers['authorization']||'';res.writeHead(200,{'Content-Type':'text/plain'});res.end('auth:'+auth);}\",\n\"  else if(req.url==='/shutdown'){res.writeHead(200,{'Content-Type':'text/plain'});res.end('bye');setTimeout(()=>process.exit(0),100);}\",\n\"  else{res.writeHead(404,{'Content-Type':'text/plain'});res.end('nope');}\",\n\"});\",\n\"srv.listen(0,'127.0.0.1',()=>{fs.writeFileSync(pf,String(srv.address().port));});\",\n\"setTimeout(()=>process.exit(0),25000);\"\n].join('\\n');\nconst child=spawn(process.execPath,['-e',code],{detached:true,stdio:'ignore',env:{...process.env,SGT_T11_PORT_FILE:portFile}});\nchild.unref();\nconst t0=Date.now();\nwhile(!fs.existsSync(portFile)){\n  if(Date.now()-t0>10000){console.error('server never started');process.exit(1);}\n  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,50);\n}\nconsole.log('server-up');"
+          },
+          "arguments": {
+            "value": "{var:_sgtScratchDir}"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          },
+          "storeToVariable": {
+            "value": "{var:launchOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "slaunch"
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-000000000002",
+      "stepName": "arrange: read the ephemeral port",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/port.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:port}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-000000000003",
+      "stepName": "act: GET /echo-auth with bearer built from {gbl-var:sgtApiKey}",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "rest-call",
+        "actionPropValues": {
+          "method": {
+            "value": "GET"
+          },
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/echo-auth"
+          },
+          "authType": {
+            "value": "bearer"
+          },
+          "bearerToken": {
+            "value": "{gbl-var:sgtApiKey}"
+          },
+          "bodyType": {
+            "value": "none"
+          },
+          "timeout": {
+            "value": 10
+          },
+          "resultVariable": {
+            "value": "{var:authEcho}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "srest"
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-000000000004",
+      "stepName": "act: create session table + seed row keyed by {gbl-var:sgtDbMarker}",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "other"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "CREATE TABLE [sgtester].[{var:_sgtSessionId}_int11] (marker NVARCHAR(100) NOT NULL PRIMARY KEY, note NVARCHAR(200) NOT NULL); INSERT INTO [sgtester].[{var:_sgtSessionId}_int11] (marker, note) VALUES ('{gbl-var:sgtDbMarker}', 'seeded-from-gbl-var')"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sseed"
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-000000000005",
+      "stepName": "act: in-bot SELECT WHERE marker = {gbl-var:sgtDbMarker}",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "select"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "SELECT marker, note FROM [sgtester].[{var:_sgtSessionId}_int11] WHERE marker = '{gbl-var:sgtDbMarker}'"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "ssel"
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-000000000006",
+      "stepName": "act: create folder under scratch using {svar:sgtPathToken} in the path",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/{svar:sgtPathToken}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-000000000007",
+      "stepName": "act: write marker file whose path uses {svar:sgtPathToken} and content echoes {gbl-var:sgtDbMarker}",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:markerPath}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{var:_sgtScratchDir}/{svar:sgtPathToken}/marker.txt"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-000000000008",
+      "stepName": "act: compose marker body from gbl-var",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:markerBody}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "marker={gbl-var:sgtDbMarker}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-000000000009",
+      "stepName": "act: write marker file to the svar-scoped path",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:markerPath}"
+          },
+          "content": {
+            "value": "{var:markerBody}"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-00000000000a",
+      "stepName": "act: write-to-log with secure parm + gbl-var marker (masking witness)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-log",
+        "actionPropValues": {
+          "message": {
+            "value": "marker={gbl-var:sgtDbMarker} secret={var:int11Secret}"
+          },
+          "logLevel": {
+            "value": "info"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "slog"
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-00000000000b",
+      "stepName": "audit: append safe row (no secret plaintext) to audit.csv",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "csv-write-line",
+        "actionPropValues": {
+          "csvFile": {
+            "value": "{var:_sgtScratchDir}/audit.csv"
+          },
+          "fields": {
+            "value": [
+              "int11",
+              "{gbl-var:sgtApiKey}",
+              "{gbl-var:sgtDbMarker}",
+              "{svar:sgtPathToken}"
+            ]
+          },
+          "delimiter": {
+            "value": ","
+          },
+          "quoteAllFields": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20011-0000-0000-0000-00000000000c",
+      "stepName": "cleanup: GET /shutdown stops the listener",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "rest-call",
+        "actionPropValues": {
+          "method": {
+            "value": "GET"
+          },
+          "url": {
+            "value": "http://127.0.0.1:{var:port}/shutdown"
+          },
+          "authType": {
+            "value": "none"
+          },
+          "bodyType": {
+            "value": "none"
+          },
+          "timeout": {
+            "value": 10
+          },
+          "resultVariable": {
+            "value": "{var:shutdownOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sdown"
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "test": {
+    "id": "tier3-hosted/excel-com/print-to-file-port",
+    "tier": 3,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xlcom-print",
+        "xl-create-new-workbook",
+        "xl-set-value",
+        "delay",
+        "move-file",
+        "get-file-contents",
+        "file-exists",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ],
+    "serialGroup": "vm-excel-com"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "print-produced-pdf-harness",
+      "kind": "round-trip",
+      "description": "The spooled output is a PDF (harness reads the pulled-back artifact). VM-bound: requires the one-time SGT-PDF printer bound to the {svar:sgtHostedPrintDir}\\out.pdf port.",
+      "expr": {
+        "starts_with": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/printed.pdf"
+              }
+            ]
+          },
+          "%PDF"
+        ]
+      }
+    },
+    {
+      "id": "print-produced-pdf-in-bot",
+      "kind": "round-trip",
+      "description": "In-bot read agrees and the spool file is non-trivial.",
+      "expr": {
+        "and": [
+          {
+            "starts_with": [
+              {
+                "$var": "prText"
+              },
+              "%PDF"
+            ]
+          },
+          {
+            "greater_than": [
+              {
+                "size_of": [
+                  {
+                    "$var": "prText"
+                  }
+                ]
+              },
+              500
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "bad-printer-fails-loudly",
+      "kind": "round-trip",
+      "description": "An unknown printer name fails the step (buried via ignoreErrors) and spools NOTHING — guards the fixed sidecar contract; the old code silently printed to the DEFAULT printer (real hardware).",
+      "expr": {
+        "equals": [
+          {
+            "$var": "portFileAfterBad"
+          },
+          false
+        ]
+      }
+    }
+  ]
+}

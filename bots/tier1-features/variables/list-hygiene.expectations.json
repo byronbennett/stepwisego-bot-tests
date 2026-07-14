@@ -1,0 +1,51 @@
+{
+  "test": {
+    "id": "tier1-features/variables/list-hygiene",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["remove-empty-values", "clear-list", "sort-email-list", "set-variable"],
+      "pipeFns": ["itemIndex", "subject"],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "remove-empty-keeps-falsy-string-zero",
+      "kind": "round-trip",
+      "description": "remove-empty-values drops empty string, whitespace-only, and null — but keeps '0' (emptiness is about absence of text, not JS falsiness) and preserves survivor order.",
+      "expr": { "equals": [ { "$var": "messy" }, ["keep-1", "keep-2", "0"] ] }
+    },
+    {
+      "id": "clear-list-empties",
+      "kind": "round-trip",
+      "description": "clear-list leaves an empty array (not null, not a missing parm).",
+      "expr": { "equals": [ { "$var": "clearable" }, [] ] }
+    },
+    {
+      "id": "sort-by-subject-asc-case-insensitive",
+      "kind": "round-trip",
+      "description": "sort-email-list by subject ascending is case-insensitive: 'alpha digest' sorts before 'Middle memo' before 'Zeta report' (a strict ASCII sort would have put the capitalized subjects first).",
+      "expr": { "equals": [ { "$var": "snapSubjectOrder" }, "alpha digest;Middle memo;Zeta report" ] }
+    },
+    {
+      "id": "sort-by-date-desc",
+      "kind": "round-trip",
+      "description": "sort-email-list by dateReceived descending orders third (Feb 28) > second (08:00:01) > first (08:00:00) — a 1-second timestamp difference is enough to decide the order.",
+      "expr": { "equals": [ { "$var": "snapDateOrder" }, "third;second;first" ] }
+    }
+  ]
+}

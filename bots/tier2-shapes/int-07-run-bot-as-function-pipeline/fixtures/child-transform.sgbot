@@ -1,0 +1,82 @@
+{
+  "job": {
+    "jobName": "SGT INT-07 child #1 — transform: upper-case each inbound list item, echo the exact decimal, audit row, gbl-var probe",
+    "jobGuid": "a7d20007-c100-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "inList", "token": "{var:inList}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "outList", "token": "{var:outList}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "amount", "token": "{var:amount}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "CHILD-DEFAULT-AMOUNT", "defaultValue": "CHILD-DEFAULT-AMOUNT", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "computed", "token": "{var:computed}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "CHILD-DEFAULT-COMPUTED", "defaultValue": "CHILD-DEFAULT-COMPUTED", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "gblSeen", "token": "{var:gblSeen}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "CHILD-DEFAULT-GBLSEEN", "defaultValue": "CHILD-DEFAULT-GBLSEEN", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "auditPath", "token": "{var:auditPath}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "CHILD-DEFAULT-AUDITPATH", "defaultValue": "CHILD-DEFAULT-AUDITPATH", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "sgtGlobal", "token": "{gbl-var:sgtGlobal}", "tokenPrefix": "gbl-var", "valueSource": "global", "dataType": "text", "value": "child-default", "defaultValue": "child-default", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "a7d20007-c100-0000-0000-000000000001",
+      "stepName": "loop inbound list, upper-case each item into outList",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "sloop",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": { "loopType": { "value": "list" }, "listVariable": { "value": "{var:inList}" } },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "a7d20007-c100-0000-0000-000000000101",
+          "stepName": "append {sloop:loopItem|upper} to outList",
+          "parentGuid": "a7d20007-c100-0000-0000-000000000001",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": { "listVariable": { "value": "{var:outList}" }, "value": { "value": "{sloop:loopItem|upper}" }, "addPosition": { "value": "end" } },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-c100-0000-0000-000000000002",
+      "stepName": "copy the exact inbound decimal into computed (returned to the parent bothWays)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": { "variableToken": { "value": "{var:computed}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:amount}" } },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-c100-0000-0000-000000000003",
+      "stepName": "probe: what does this child see for {gbl-var:sgtGlobal}?",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": { "variableToken": { "value": "{var:gblSeen}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{gbl-var:sgtGlobal}" } },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-c100-0000-0000-000000000004",
+      "stepName": "audit: append child1 row (exact decimal + gbl-var view) to the shared audit CSV",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "csv-write-line",
+        "actionPropValues": { "csvFile": { "value": "{var:auditPath}" }, "fields": { "value": ["child1", "{var:amount}", "{gbl-var:sgtGlobal}"] }, "delimiter": { "value": "," }, "quoteAllFields": { "value": false } },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

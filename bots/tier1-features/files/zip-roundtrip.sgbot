@@ -1,0 +1,701 @@
+{
+  "job": {
+    "jobName": "SGT files — zip roundtrip (zip-files, zip-folder, unzip-file)",
+    "jobGuid": "f4a00007-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "crumbs",
+      "token": "{var:crumbs}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "zipList",
+      "token": "{var:zipList}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "zipExists",
+      "token": "{var:zipExists}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readF1",
+      "token": "{var:readF1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readF2",
+      "token": "{var:readF2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readF3",
+      "token": "{var:readF3}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "outFolderFiles",
+      "token": "{var:outFolderFiles}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f5c8fa25-16e0-4fd6-9b8d-d07e297562c0",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "912a8654-2eda-4d5a-8b94-f3f1218c786a",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-000000000001",
+      "stepName": "seed zip/src/f1.txt (session-scoped content)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/zip/src/f1.txt"
+          },
+          "content": {
+            "value": "zip-one {var:_sgtSessionId}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-000000000002",
+      "stepName": "seed zip/src/f2.txt",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/zip/src/f2.txt"
+          },
+          "content": {
+            "value": "zip-two"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-000000000003",
+      "stepName": "seed zip/src/nest/f3.txt (subfolder — zip-folder must preserve it)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/zip/src/nest/f3.txt"
+          },
+          "content": {
+            "value": "zip-three"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-000000000004",
+      "stepName": "get-files non-recursive collects the 2 top-level files to zip",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-files",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/zip/src"
+          },
+          "recursive": {
+            "value": false
+          },
+          "resultVariable": {
+            "value": "zipList"
+          },
+          "keepExistingItems": {
+            "value": false
+          },
+          "maxFiles": {
+            "value": 0
+          },
+          "fileConditions": {
+            "value": []
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-000000000005",
+      "stepName": "zip-files the collected list (fresh path, replaceExisting=false)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "zip-files",
+        "actionPropValues": {
+          "filesVariable": {
+            "value": "{var:zipList}"
+          },
+          "zipPath": {
+            "value": "{var:_sgtScratchDir}/zip/files.zip"
+          },
+          "replaceExisting": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-000000000006",
+      "stepName": "zip archive exists (in-bot witness)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-exists",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/zip/files.zip"
+          },
+          "resultVariable": {
+            "value": "{var:zipExists}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-000000000007",
+      "stepName": "zip-files onto the existing archive, replaceExisting=false (error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "zip-files",
+        "actionPropValues": {
+          "filesVariable": {
+            "value": "{var:zipList}"
+          },
+          "zipPath": {
+            "value": "{var:_sgtScratchDir}/zip/files.zip"
+          },
+          "replaceExisting": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-000000000008",
+      "stepName": "zip-files replaceExisting=true overwrites the archive cleanly",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "zip-files",
+        "actionPropValues": {
+          "filesVariable": {
+            "value": "{var:zipList}"
+          },
+          "zipPath": {
+            "value": "{var:_sgtScratchDir}/zip/files.zip"
+          },
+          "replaceExisting": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-000000000009",
+      "stepName": "unzip-file the files archive (dest auto-created; entries are FLAT basenames)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "unzip-file",
+        "actionPropValues": {
+          "zipPath": {
+            "value": "{var:_sgtScratchDir}/zip/files.zip"
+          },
+          "destFolder": {
+            "value": "{var:_sgtScratchDir}/zip/out-files"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-00000000000a",
+      "stepName": "read extracted f1 (compression roundtrip, session content)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/zip/out-files/f1.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:readF1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-00000000000b",
+      "stepName": "read extracted f2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/zip/out-files/f2.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:readF2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-00000000000c",
+      "stepName": "in-bot: extracted f1 equals its token-built original (compression is lossless)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:readF1}",
+                "comparator": "equalsExact",
+                "rightOperand": "zip-one {var:_sgtSessionId}"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "f4a00007-0000-0000-0000-000000000c01",
+          "stepName": "crumb: zip-files-roundtrip-ok",
+          "parentGuid": "f4a00007-0000-0000-0000-00000000000c",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "zip-files-roundtrip-ok"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 15,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-00000000000d",
+      "stepName": "zip-folder the whole src tree (subfolders preserved, no root prefix)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "zip-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/zip/src"
+          },
+          "zipPath": {
+            "value": "{var:_sgtScratchDir}/zip/folder.zip"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-00000000000e",
+      "stepName": "unzip-file the folder archive into a fresh dest",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "unzip-file",
+        "actionPropValues": {
+          "zipPath": {
+            "value": "{var:_sgtScratchDir}/zip/folder.zip"
+          },
+          "destFolder": {
+            "value": "{var:_sgtScratchDir}/zip/out-folder"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-00000000000f",
+      "stepName": "read the NESTED extracted file (structure preservation witness)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/zip/out-folder/nest/f3.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:readF3}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-000000000010",
+      "stepName": "get-files recursive over the extracted tree → all 3 files came out",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-files",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/zip/out-folder"
+          },
+          "recursive": {
+            "value": true
+          },
+          "resultVariable": {
+            "value": "outFolderFiles"
+          },
+          "keepExistingItems": {
+            "value": false
+          },
+          "maxFiles": {
+            "value": 0
+          },
+          "fileConditions": {
+            "value": []
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 19,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00007-0000-0000-0000-000000000011",
+      "stepName": "unzip-file on a missing archive (error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "unzip-file",
+        "actionPropValues": {
+          "zipPath": {
+            "value": "{var:_sgtScratchDir}/zip/ghost.zip"
+          },
+          "destFolder": {
+            "value": "{var:_sgtScratchDir}/zip/out-ghost"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 20,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

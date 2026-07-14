@@ -1,0 +1,114 @@
+{
+  "job": {
+    "jobName": "SGT engine-patterns — error machinery (ignoreErrors, error-handler)",
+    "jobGuid": "e1a00005-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbs", "token": "{var:crumbs}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "errHappened", "token": "{var:errHappened}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": false, "defaultValue": false, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "errClean", "token": "{var:errClean}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": true, "defaultValue": true, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "e1a00005-0000-0000-0000-000000000001",
+      "stepName": "record start",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "start" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00005-0000-0000-0000-000000000002",
+      "stepName": "failing step with Continue on Error (missing list variable)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:noSuchList}" }, "value": { "value": "never" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00005-0000-0000-0000-000000000003",
+      "stepName": "record after-ignored",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "after-ignored" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00005-0000-0000-0000-000000000004",
+      "stepName": "Error Handler (Try / Catch)",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "seh",
+      "actionOp": {
+        "actionName": "error-handler",
+        "actionPropValues": {
+          "statusVariable": { "value": "{var:errHappened}" }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00005-0000-0000-0000-000000000401",
+          "stepName": "record in-handler-before",
+          "parentGuid": "e1a00005-0000-0000-0000-000000000004",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "in-handler-before" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00005-0000-0000-0000-000000000402",
+          "stepName": "failing step inside handler (missing list variable)",
+          "parentGuid": "e1a00005-0000-0000-0000-000000000004",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:noSuchList}" }, "value": { "value": "never" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00005-0000-0000-0000-000000000403",
+          "stepName": "record in-handler-after (must be skipped)",
+          "parentGuid": "e1a00005-0000-0000-0000-000000000004",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "in-handler-after" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00005-0000-0000-0000-000000000005",
+      "stepName": "record after-handler",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "after-handler" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00005-0000-0000-0000-000000000006",
+      "stepName": "Error Handler with no error (status must stay false)",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "sec",
+      "actionOp": {
+        "actionName": "error-handler",
+        "actionPropValues": {
+          "statusVariable": { "value": "{var:errClean}" }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00005-0000-0000-0000-000000000601",
+          "stepName": "record clean-handler-ran",
+          "parentGuid": "e1a00005-0000-0000-0000-000000000006",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "clean-handler-ran" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

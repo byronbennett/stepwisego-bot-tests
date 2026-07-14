@@ -1,0 +1,169 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-14-scheduled-shape-smoke/runfrom",
+    "tier": 2,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "set-variable",
+        "if",
+        "loop",
+        "add-to-list",
+        "create-folder",
+        "write-to-file",
+        "get-file-contents",
+        "csv-write-line",
+        "csv-read",
+        "dt-get-value",
+        "db-sql-query",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": [
+        "agent-canary",
+        "run-scope"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "sgt_int14_shape"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ],
+    "engines": [
+      "agent"
+    ],
+    "serialGroup": "sgt_int14_shape"
+  },
+  "run": {
+    "scope": "runFromStep",
+    "targetStepGuid": "a7d20014-0000-0000-0000-000000000007"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "crumbs-from-b",
+      "kind": "round-trip",
+      "description": "RunFromStep at 'crumb: b:start' executes exactly Phase B through E — no Phase A breadcrumbs at all",
+      "expr": {
+        "equals": [
+          {
+            "$var": "crumbs"
+          },
+          [
+            "b:start",
+            "b:end",
+            "c:start",
+            "c:end",
+            "d:start",
+            "d:row:Ada",
+            "d:row:Bo",
+            "d:row:Cy",
+            "d:end",
+            "e:done"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "phase-a-untouched",
+      "kind": "round-trip",
+      "description": "the skipped Phase A never ran: msg keeps its SENTINEL default (set-variable at seq 2 was before the entry point)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "msg"
+          },
+          "SENTINEL"
+        ]
+      }
+    },
+    {
+      "id": "downstream-phases-real",
+      "kind": "round-trip",
+      "description": "phases after the entry point do full real work: file round-trip + DB rows land",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "fContent"
+              },
+              "line1\nline2 é漢"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "cCity"
+              },
+              "São Paulo"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "count_rows_in": [
+                  {
+                    "table": {
+                      "schema": "sgtester",
+                      "table": "sgt_int14_shape"
+                    }
+                  }
+                ]
+              },
+              3
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "agent-event-csv-scope",
+      "kind": "round-trip",
+      "description": "the Agent event CSV shows the run reached the final step and completed under the runFromStep scope",
+      "expr": {
+        "and": [
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/agent-events.csv"
+                  }
+                ]
+              },
+              "a7d20014-0000-0000-0000-00000000001a"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/agent-events.csv"
+                  }
+                ]
+              },
+              "run-complete"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

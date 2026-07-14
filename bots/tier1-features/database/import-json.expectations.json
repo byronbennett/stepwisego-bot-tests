@@ -1,0 +1,155 @@
+{
+  "test": {
+    "id": "tier1-features/database/import-json",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "import-json-to-database",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "{var:_sgtSessionId}_impj"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "rows-read",
+      "kind": "round-trip",
+      "description": "all 3 json items were materialized as source rows",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10003-0000-0000-0000-000000000001",
+              "name": "rowsRead"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "rows-imported",
+      "kind": "round-trip",
+      "description": "all 3 items were bulk-inserted into the auto-created table",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10003-0000-0000-0000-000000000001",
+              "name": "rowsImported"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "inbot-select-c3",
+      "kind": "round-trip",
+      "description": "in-bot witness (db-sql-query): SELECT WHERE sku='C-3' returns exactly 1 row",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10003-0000-0000-0000-000000000003",
+              "name": "rowCount"
+            }
+          },
+          1
+        ]
+      }
+    },
+    {
+      "id": "oob-cell-qty",
+      "kind": "round-trip",
+      "description": "out-of-band witness: qty for sku C-3 round-trips (auto-create maps int family → BIGINT; the mssql driver returns BIGINT as a string — numeric compare via between)",
+      "expr": {
+        "between": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_impj"
+                }
+              },
+              {
+                "sku": "C-3"
+              },
+              "qty"
+            ]
+          },
+          12,
+          12
+        ]
+      }
+    },
+    {
+      "id": "oob-cell-literal-map",
+      "kind": "round-trip",
+      "description": "out-of-band witness: the literal-kind map filled 'origin' (spot-check sku B-2, the qty=0 item)",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_impj"
+                }
+              },
+              {
+                "sku": "B-2"
+              },
+              "origin"
+            ]
+          },
+          "json-import"
+        ]
+      }
+    },
+    {
+      "id": "oob-row-count",
+      "kind": "round-trip",
+      "description": "out-of-band witness: exactly 3 rows (the buried validation failure imported nothing)",
+      "expr": {
+        "equals": [
+          {
+            "count_rows_in": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_impj"
+                }
+              }
+            ]
+          },
+          3
+        ]
+      }
+    }
+  ]
+}

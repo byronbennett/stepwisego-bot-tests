@@ -1,0 +1,306 @@
+{
+  "job": {
+    "jobName": "SGT INT-07 — child-failure propagation: endOnFail=false continues clean; endOnFail=true fails the step (buried with ignoreErrors); status captured false both ways",
+    "jobGuid": "a7d20007-f000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "statusNoFail",
+      "token": "{var:statusNoFail}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": true,
+      "defaultValue": true,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "statusEndOnFail",
+      "token": "{var:statusEndOnFail}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": true,
+      "defaultValue": true,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "crumbs",
+      "token": "{var:crumbs}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "d6d45c7d-11ae-4077-906c-7373a8017c3f",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aca76d2c-ddb5-4099-bef5-857bf3a00767",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-f000-0000-0000-000000000001",
+      "stepName": "crumb: start",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:crumbs}"
+          },
+          "value": {
+            "value": "start"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-f000-0000-0000-000000000002",
+      "stepName": "child fails, endOnFail=false — parent STEP passes, status captured false, run continues",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "snofail",
+      "actionOp": {
+        "actionName": "run-bot-as-function",
+        "actionPropValues": {
+          "botSource": {
+            "value": "file"
+          },
+          "botFilePath": {
+            "value": "{var:_sgtScratchDir}/child-fail.sgbot"
+          },
+          "endOnFail": {
+            "value": false
+          },
+          "statusVariable": {
+            "value": "{var:statusNoFail}"
+          },
+          "isolateProcess": {
+            "value": false
+          },
+          "childMachineControl": {
+            "value": "no"
+          },
+          "variableMappings": {
+            "value": []
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-f000-0000-0000-000000000003",
+      "stepName": "crumb: after-nofail (reached because endOnFail=false absorbed the child failure)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:crumbs}"
+          },
+          "value": {
+            "value": "after-nofail"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-f000-0000-0000-000000000004",
+      "stepName": "child fails, endOnFail=true — parent step FAILS; ignoreErrors buries it so the run still completes",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "sendonfail",
+      "actionOp": {
+        "actionName": "run-bot-as-function",
+        "actionPropValues": {
+          "botSource": {
+            "value": "file"
+          },
+          "botFilePath": {
+            "value": "{var:_sgtScratchDir}/child-fail.sgbot"
+          },
+          "endOnFail": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:statusEndOnFail}"
+          },
+          "isolateProcess": {
+            "value": false
+          },
+          "childMachineControl": {
+            "value": "no"
+          },
+          "variableMappings": {
+            "value": []
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-f000-0000-0000-000000000005",
+      "stepName": "crumb: after-endonfail (reached only because ignoreErrors buried the failed step)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:crumbs}"
+          },
+          "value": {
+            "value": "after-endonfail"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

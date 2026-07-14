@@ -1,0 +1,265 @@
+{
+  "job": {
+    "jobName": "ai-text-prompt-mechanics",
+    "jobGuid": "a13b0001-0000-4000-8000-000000000001",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "70cc2aaf-b5ee-4ecf-86ab-cad5542aaa48",
+      "stepName": "Require shared variables: sgtAiOpenAi",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtAiOpenAi"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a13b0001-0000-4000-8000-000000000002",
+      "stepName": "act: forced-output APPLE (temperature 0)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ai-text-prompt",
+        "actionPropValues": {
+          "credential": {
+            "value": "sgtAiOpenAi"
+          },
+          "systemPrompt": {
+            "value": ""
+          },
+          "prompt": {
+            "value": "Reply with exactly the word APPLE and nothing else."
+          },
+          "outputType": {
+            "value": "text"
+          },
+          "resultVariable": {
+            "value": "{var:out1}"
+          },
+          "model": {
+            "value": ""
+          },
+          "temperature": {
+            "value": 0
+          },
+          "maxTokens": {
+            "value": 16
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sap1"
+    },
+    {
+      "stepGuid": "a13b0001-0000-4000-8000-000000000003",
+      "stepName": "act: token substitution echo",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ai-text-prompt",
+        "actionPropValues": {
+          "credential": {
+            "value": "sgtAiOpenAi"
+          },
+          "systemPrompt": {
+            "value": ""
+          },
+          "prompt": {
+            "value": "Reply with exactly this string and nothing else: {var:echoMarker}"
+          },
+          "outputType": {
+            "value": "text"
+          },
+          "resultVariable": {
+            "value": "{var:out2}"
+          },
+          "model": {
+            "value": ""
+          },
+          "temperature": {
+            "value": 0
+          },
+          "maxTokens": {
+            "value": 24
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sap2"
+    },
+    {
+      "stepGuid": "a13b0001-0000-4000-8000-000000000004",
+      "stepName": "act: invalid model → pinned provider error (ignoreErrors)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ai-text-prompt",
+        "actionPropValues": {
+          "credential": {
+            "value": "sgtAiOpenAi"
+          },
+          "systemPrompt": {
+            "value": ""
+          },
+          "prompt": {
+            "value": "hi"
+          },
+          "outputType": {
+            "value": "text"
+          },
+          "resultVariable": {
+            "value": "{var:out3}"
+          },
+          "model": {
+            "value": "sgt-no-such-model"
+          },
+          "temperature": {
+            "value": 0
+          },
+          "maxTokens": {
+            "value": 8
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sap3"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "echoMarker",
+      "token": "{var:echoMarker}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "sgt-echo-9174",
+      "defaultValue": "sgt-echo-9174",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "out1",
+      "token": "{var:out1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "out2",
+      "token": "{var:out2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "out3",
+      "token": "{var:out3}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.176"
+}

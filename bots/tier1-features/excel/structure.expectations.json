@@ -1,0 +1,193 @@
+{
+  "test": {
+    "id": "tier1-features/excel/structure",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xl-insert-row",
+        "xl-delete-row",
+        "xl-insert-column",
+        "xl-delete-column",
+        "xl-copy-down",
+        "xl-create-new-workbook",
+        "xl-set-value",
+        "xl-set-values",
+        "xl-set-formula",
+        "xl-get-values",
+        "xl-get-formula",
+        "xl-get-values-for-row",
+        "xl-get-values-for-column",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "copy-down-formula-adjusts-rows",
+      "kind": "round-trip",
+      "description": "copy-down on a formula source fills to the adjacent (left) column's data extent, incrementing relative ROW references per copied row: C2 (=B2*10) fills C3/C4 as =B3*10/=B4*10, computing 10/20/30 against B=1/2/3; the C4 formula text confirms the rewrite.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "cdValues"
+              },
+              [
+                "10",
+                "20",
+                "30"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "cdFormula"
+              },
+              "=B4*10"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "copy-down-literal-replicates",
+      "kind": "round-trip",
+      "description": "copy-down on a literal source replicates the value verbatim down the adjacent extent (D2 'dup' → D3/D4 'dup').",
+      "expr": {
+        "equals": [
+          {
+            "$var": "dupValues"
+          },
+          [
+            "dup",
+            "dup",
+            "dup"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "copy-down-nothing-adjacent-is-noop",
+      "kind": "round-trip",
+      "description": "copy-down with NO adjacent data PASSES with rowsCopied 0 (soft no-op — F11 verified still empty), while copy-down on an EMPTY source cell is a hard error (buried).",
+      "expr": {
+        "equals": [
+          {
+            "$var": "loneAfter"
+          },
+          [
+            "lone",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "id": "insert-delete-row-inverse-pair",
+      "kind": "round-trip",
+      "description": "insert-row(2, count=2) shifts r2..r5 down two (gap rows visible under skipEmpty=false), and delete-row(2, count=2) is its exact inverse — column A restored element-for-element.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "insA"
+              },
+              [
+                "r1",
+                "",
+                "",
+                "r2",
+                "r3",
+                "r4",
+                "r5"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "delA"
+              },
+              [
+                "r1",
+                "r2",
+                "r3",
+                "r4",
+                "r5"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "insert-delete-column-inverse-pair",
+      "kind": "round-trip",
+      "description": "insert-column(B) shifts the x/c columns right (gap at B in row 1), and delete-column(B) restores the row exactly.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "insRow1"
+              },
+              [
+                "r1",
+                "",
+                "x1",
+                "c1"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "delRow1"
+              },
+              [
+                "r1",
+                "x1",
+                "c1"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "delete-column-range-form",
+      "kind": "round-trip",
+      "description": "delete-column accepts a letter RANGE ('B:C') and removes both columns in one splice — only column A survives in row 1.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "rangeDelRow1"
+          },
+          [
+            "r1"
+          ]
+        ]
+      }
+    }
+  ]
+}

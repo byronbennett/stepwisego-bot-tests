@@ -1,0 +1,206 @@
+{
+  "test": {
+    "id": "tier1-features/excel/formulas",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xl-set-formula",
+        "xl-get-formula",
+        "xl-get-value",
+        "xl-get-values",
+        "xl-set-value",
+        "xl-set-values",
+        "xl-create-new-workbook",
+        "xl-open-existing-workbook",
+        "save-bundled-file",
+        "create-folder",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "formualizer-proven-set",
+      "kind": "round-trip",
+      "description": "The four live-Agent-proven formulas (SUM/IF/UPPER/VLOOKUP) compute IN-PROCESS via the registered formualizer engine — no cached results exist (ExcelJS never computes), so every value here is engine output.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "fSum"
+              },
+              "42"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "fIf"
+              },
+              "big"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "fUpper"
+              },
+              "HELLO"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "fVlookup"
+              },
+              "v2"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "two-readers-agree",
+      "kind": "round-trip",
+      "description": "A second reader (xl-get-values over C1:C4) computes the same four values through the same engine path — block reads resolve formulas identically to scalar reads.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "fBlock"
+          },
+          [
+            "42",
+            "big",
+            "HELLO",
+            "v2"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "formula-offsets",
+      "kind": "round-trip",
+      "description": "set-formula and get-value both honor rowOffset: a formula anchored at C5+1 landed at C6 and reads back computed (=A1*2 → 20) through the same offset.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "fOffset"
+          },
+          "20"
+        ]
+      }
+    },
+    {
+      "id": "get-formula-normalizes-equals",
+      "kind": "round-trip",
+      "description": "xl-set-formula accepts both '=SUM(…)' and bare 'IF(…)' (leading = stripped for ExcelJS storage); xl-get-formula always prepends '=' on readback — both spellings normalize to the same shape.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "gSum"
+              },
+              "=SUM(A1:A2)"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "gIf"
+              },
+              "=IF(A1>5,\"big\",\"small\")"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "get-formula-non-formula-cells",
+      "kind": "round-trip",
+      "description": "Pinned quirk: xl-get-formula on a plain value cell returns the raw value as a string ('10'), and on an empty cell returns '' (SENTINEL default proves the read ran).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "gNonFormula"
+              },
+              "10"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "gEmptyCell"
+              },
+              ""
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cached-result-always-wins",
+      "kind": "round-trip",
+      "description": "THE cached-first pin (H-1: never overwrite Excel's cached value): the bundled fixture's A1 holds formula =1+1 with a deliberately WRONG cached result 99. If the engine were consulted it would say 2 — the read must return 99. Both branches calibrated: sibling A2 (same fixture, NO cached result) goes to the engine and returns 20.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "cachedVal"
+              },
+              "99"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "engineVal"
+              },
+              "20"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "cachedFormula"
+              },
+              "=1+1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fixture-physically-unpacked",
+      "kind": "round-trip",
+      "description": "OUT-OF-BAND: the bundled fixture really landed on disk (save-bundled-file) — the cached-first evidence came through a genuine file open, not a variable shortcut.",
+      "expr": {
+        "file_exists": [
+          {
+            "file": "{var:_sgtScratchDir}/fx/cached.xlsx"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "test": {
+    "id": "tier1-features/csv/csv-file-roundtrip",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["csv-write-line", "dt-to-csv", "get-csv-contents", "csv-read"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "write-line-accumulates-file",
+      "kind": "round-trip",
+      "description": "Three csv-write-line calls (inline fields ×2 + valuesList variable) accumulate one record per call: first write creates the file with NO trailing newline, later writes prepend the record separator; the embedded-comma cell is quoted. get-csv-contents returns the raw file text.",
+      "expr": { "equals": [ { "$var": "linesContent" }, "id,name\n1,\"Ann, A.\"\n2,Bob" ] }
+    },
+    {
+      "id": "dt-to-csv-file-roundtrip",
+      "kind": "round-trip",
+      "description": "dt-to-csv (includeHeaders=true, new path) writes exactly the header + rows with \\n endings; the read-back proves the write. The second dt-to-csv with replaceExisting=false failed (buried) and did NOT clobber the file — this value is also the witness for that.",
+      "expr": { "equals": [ { "$var": "dtContent" }, "x,y\n7,8" ] }
+    }
+  ]
+}

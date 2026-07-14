@@ -1,0 +1,211 @@
+{
+  "test": {
+    "id": "tier1-features/sharepoint/library-files-folders",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "sp-manage-folder",
+        "sp-upload-file",
+        "write-to-file",
+        "loop",
+        "if",
+        "set-variable",
+        "error-handler",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_SP_TENANT_ID",
+      "SGT_SP_CLIENT_ID",
+      "SGT_SP_CLIENT_SECRET",
+      "SGT_SP_SITE_URL"
+    ],
+    "exclusive": true
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 2,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "pred-folder-created",
+      "kind": "round-trip",
+      "description": "sp-manage-folder Create published success=true and a folder URL containing the session folder name",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70001-0000-4000-8000-000000000003",
+                  "name": "success"
+                }
+              },
+              true
+            ]
+          },
+          {
+            "contains": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70001-0000-4000-8000-000000000003",
+                  "name": "folderUrl"
+                }
+              },
+              "-fld"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-upload-published-id",
+      "kind": "round-trip",
+      "description": "single upload published a non-empty driveItem id and a webUrl into the session folder",
+      "expr": {
+        "and": [
+          {
+            "not_equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70001-0000-4000-8000-000000000004",
+                  "name": "itemId"
+                }
+              },
+              ""
+            ]
+          },
+          {
+            "contains": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70001-0000-4000-8000-000000000004",
+                  "name": "fileUrl"
+                }
+              },
+              "/Shared%20Documents/"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-overwrite-replaces-in-place",
+      "kind": "round-trip",
+      "description": "overwrite=true re-upload lands on the SAME driveItem id — replacement, not a duplicate",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "51b70001-0000-4000-8000-000000000006",
+              "name": "itemId"
+            }
+          },
+          {
+            "$stepOut": {
+              "stepGuid": "51b70001-0000-4000-8000-000000000004",
+              "name": "itemId"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-conflict-is-specific",
+      "kind": "round-trip",
+      "description": "overwrite=false against an existing name fails with the upload-conflict contract (Upload failed (409)), not a silent success",
+      "expr": {
+        "contains": [
+          {
+            "$stepOut": {
+              "stepGuid": "51b70001-0000-4000-8000-000000000007",
+              "name": "errorMessage"
+            }
+          },
+          "Upload failed (409)"
+        ]
+      }
+    },
+    {
+      "id": "pred-folder-visible-in-list",
+      "kind": "round-trip",
+      "description": "sp-manage-folder List over the library root surfaced the session folder (scanned via DataTable loop)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "foundFld"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-delete-succeeded",
+      "kind": "round-trip",
+      "description": "folder delete reported success",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "51b70001-0000-4000-8000-000000000013",
+              "name": "success"
+            }
+          },
+          true
+        ]
+      }
+    },
+    {
+      "id": "pred-double-delete-not-found",
+      "kind": "round-trip",
+      "description": "deleting the already-deleted folder reports the pinned not-found contract",
+      "expr": {
+        "contains": [
+          {
+            "$stepOut": {
+              "stepGuid": "51b70001-0000-4000-8000-000000000014",
+              "name": "errorMessage"
+            }
+          },
+          "Folder not found"
+        ]
+      }
+    },
+    {
+      "id": "pred-oob-folder-gone",
+      "kind": "round-trip",
+      "description": "out-of-band witness: no Documents item carries the session folder's name after cleanup (Graph reader; absence pin — presence was witnessed in-bot by the List step)",
+      "expr": {
+        "equals": [
+          {
+            "read_rows": [
+              {
+                "list": {
+                  "siteId": "",
+                  "listId": "Documents"
+                }
+              },
+              {
+                "FileLeafRef": "sgt-{var:_sgtSessionId}-fld"
+              }
+            ]
+          },
+          []
+        ]
+      }
+    }
+  ]
+}

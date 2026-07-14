@@ -1,0 +1,75 @@
+{
+  "test": {
+    "id": "tier1-features/xml/xml-read",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["xml-parse", "xml-get-node", "xml-get-children", "xml-get-child-values", "xml-get-attribute", "xml-to-json", "xml-stringify", "json-stringify"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "get-node-positional",
+      "kind": "round-trip",
+      "description": "Positional XPath /catalog/book[2]/title selects the SECOND book's title (1-based XPath indexing).",
+      "expr": { "equals": [ { "$var": "secondTitle" }, "Emma" ] }
+    },
+    {
+      "id": "get-node-attribute-axis",
+      "kind": "round-trip",
+      "description": "get-node works on the attribute axis (@id) — the string() wrap returns the attribute value.",
+      "expr": { "equals": [ { "$var": "firstId" }, "b1" ] }
+    },
+    {
+      "id": "get-node-xpath-function",
+      "kind": "round-trip",
+      "description": "get-node accepts XPath functions: count(/catalog/book) stringifies to '2'.",
+      "expr": { "equals": [ { "$var": "bookCount" }, "2" ] }
+    },
+    {
+      "id": "children-are-tag-names",
+      "kind": "round-trip",
+      "description": "xml-get-children returns child ELEMENT tag names in document order (text nodes excluded).",
+      "expr": { "equals": [ { "$var": "childNames" }, ["title", "price"] ] }
+    },
+    {
+      "id": "child-values-are-text",
+      "kind": "round-trip",
+      "description": "xml-get-child-values returns child elements' text contents in document order — including '9.99' as TEXT (no numeric coercion).",
+      "expr": { "equals": [ { "$var": "childValues" }, ["Dune", "9.99"] ] }
+    },
+    {
+      "id": "get-attribute-value",
+      "kind": "round-trip",
+      "description": "xml-get-attribute reads @id from the element the XPath selects. The follow-up read of the MISSING @lang on book[2] fails loudly (buried) and must NOT overwrite this value.",
+      "expr": { "equals": [ { "$var": "attrId" }, "b2" ] }
+    },
+    {
+      "id": "to-json-shape",
+      "kind": "round-trip",
+      "description": "xml-to-json (fast-xml-parser, defaults): elements become nested keys, @_-prefixed attributes kept, parseAttributeValue leaves 'b1' a string but element text '9.99' becomes JSON number 9.99, single child stays an object (no forced array).",
+      "expr": { "equals": [ { "$var": "jsonViewText" }, "{\"catalog\":{\"book\":{\"title\":\"Dune\",\"price\":9.99,\"@_id\":\"b1\"}}}" ] }
+    },
+    {
+      "id": "stringify-round-trip",
+      "kind": "round-trip",
+      "description": "xml-stringify (pretty=false) reproduces the parsed source byte-for-byte — no added declaration, attribute order and '5.50' text preserved.",
+      "expr": { "equals": [ { "$var": "serialized" }, "<catalog><book id=\"b1\" lang=\"en\"><title>Dune</title><price>9.99</price></book><book id=\"b2\"><title>Emma</title><price>5.50</price></book></catalog>" ] }
+    }
+  ]
+}

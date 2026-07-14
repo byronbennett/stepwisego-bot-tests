@@ -1,0 +1,300 @@
+{
+  "job": {
+    "jobName": "SGT engine-patterns — loop basics (count, fromTo, list, empty, nested, maxIterations)",
+    "jobGuid": "e1a00002-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbsCount", "token": "{var:crumbsCount}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbsFromTo", "token": "{var:crumbsFromTo}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "srcList", "token": "{var:srcList}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "emptyList", "token": "{var:emptyList}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbsList", "token": "{var:crumbsList}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbsEmpty", "token": "{var:crumbsEmpty}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbsNested", "token": "{var:crumbsNested}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbsMax", "token": "{var:crumbsMax}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "e1a00002-0000-0000-0000-000000000001",
+      "stepName": "Loop 3 times (count)",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "slc",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": { "value": "count" },
+          "count": { "value": 3 },
+          "maxIterations": { "value": 1000 }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00002-0000-0000-0000-000000000101",
+          "stepName": "record count crumb",
+          "parentGuid": "e1a00002-0000-0000-0000-000000000001",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": { "value": "{var:crumbsCount}" },
+              "value": { "value": "{slc:loopCount}:{slc:loopIndex}:{slc:loopItem}" },
+              "addPosition": { "value": "end" }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00002-0000-0000-0000-000000000002",
+      "stepName": "Loop from 10 to 2 by -4",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "slf",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": { "value": "fromTo" },
+          "fromNumber": { "value": 10 },
+          "toNumber": { "value": 2 },
+          "incrementBy": { "value": -4 },
+          "maxIterations": { "value": 1000 }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00002-0000-0000-0000-000000000201",
+          "stepName": "record fromTo crumb",
+          "parentGuid": "e1a00002-0000-0000-0000-000000000002",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": { "value": "{var:crumbsFromTo}" },
+              "value": { "value": "{slf:loopItem}" },
+              "addPosition": { "value": "end" }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00002-0000-0000-0000-000000000003",
+      "stepName": "seed srcList x",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:srcList}" },
+          "value": { "value": "x" },
+          "addPosition": { "value": "end" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00002-0000-0000-0000-000000000004",
+      "stepName": "seed srcList y",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:srcList}" },
+          "value": { "value": "y" },
+          "addPosition": { "value": "end" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00002-0000-0000-0000-000000000005",
+      "stepName": "seed srcList z",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": { "value": "{var:srcList}" },
+          "value": { "value": "z" },
+          "addPosition": { "value": "end" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00002-0000-0000-0000-000000000006",
+      "stepName": "Loop items in srcList",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "sll",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": { "value": "list" },
+          "listVariable": { "value": "{var:srcList}" },
+          "maxIterations": { "value": 1000 }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00002-0000-0000-0000-000000000601",
+          "stepName": "record list crumb",
+          "parentGuid": "e1a00002-0000-0000-0000-000000000006",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": { "value": "{var:crumbsList}" },
+              "value": { "value": "{sll:loopIndex}={sll:loopItem}" },
+              "addPosition": { "value": "end" }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00002-0000-0000-0000-000000000007",
+      "stepName": "Loop items in emptyList (0 iterations)",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "sle",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": { "value": "list" },
+          "listVariable": { "value": "{var:emptyList}" },
+          "maxIterations": { "value": 1000 }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00002-0000-0000-0000-000000000701",
+          "stepName": "must never run",
+          "parentGuid": "e1a00002-0000-0000-0000-000000000007",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": { "value": "{var:crumbsEmpty}" },
+              "value": { "value": "SHOULD-NOT-RUN" },
+              "addPosition": { "value": "end" }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00002-0000-0000-0000-000000000008",
+      "stepName": "Outer loop 2 times",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "slo",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": { "value": "count" },
+          "count": { "value": 2 },
+          "maxIterations": { "value": 1000 }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00002-0000-0000-0000-000000000801",
+          "stepName": "Inner loop 2 times",
+          "parentGuid": "e1a00002-0000-0000-0000-000000000008",
+          "actionType": "action",
+          "stepPrefix": "sli",
+          "actionOp": {
+            "actionName": "loop",
+            "actionPropValues": {
+              "loopType": { "value": "count" },
+              "count": { "value": 2 },
+              "maxIterations": { "value": 1000 }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "e1a00002-0000-0000-0000-000000000811",
+              "stepName": "record nested crumb",
+              "parentGuid": "e1a00002-0000-0000-0000-000000000801",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "add-to-list",
+                "actionPropValues": {
+                  "listVariable": { "value": "{var:crumbsNested}" },
+                  "value": { "value": "{slo:loopCount}.{sli:loopCount}" },
+                  "addPosition": { "value": "end" }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [], "seq": 14, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            }
+          ],
+          "seq": 13, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 12, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00002-0000-0000-0000-000000000009",
+      "stepName": "Loop 10 times capped at maxIterations 4",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "slm",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": { "value": "count" },
+          "count": { "value": 10 },
+          "maxIterations": { "value": 4 }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00002-0000-0000-0000-000000000901",
+          "stepName": "record maxIterations crumb",
+          "parentGuid": "e1a00002-0000-0000-0000-000000000009",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": { "value": "{var:crumbsMax}" },
+              "value": { "value": "{slm:loopCount}" },
+              "addPosition": { "value": "end" }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 16, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 15, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

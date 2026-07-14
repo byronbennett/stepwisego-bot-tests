@@ -1,0 +1,63 @@
+{
+  "test": {
+    "id": "tier1-features/json/json-transform",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["json-parse", "json-filter", "json-to-csv", "json-to-xml", "json-stringify"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "filter-where-orderby-preserves-originals",
+      "kind": "round-trip",
+      "description": "where dept='eng' AND score>5 keeps Alice+Cara (numeric comparison, not string), order by score ascending puts Cara(9) before Alice(42), and matched rows are the ORIGINAL objects — Alice's nested {x:1} survives even though the DataTable view used for filtering flattens it.",
+      "expr": { "equals": [ { "$var": "filteredJson" }, "[{\"name\":\"Cara\",\"dept\":\"eng\",\"score\":9},{\"name\":\"Alice\",\"dept\":\"eng\",\"score\":42,\"nested\":{\"x\":1}}]" ] }
+    },
+    {
+      "id": "orderby-only-desc",
+      "kind": "round-trip",
+      "description": "Empty where + 'score DESC' keeps all three rows and sorts 42 > 17 > 9.",
+      "expr": { "equals": [ { "$var": "sortedDescJson" }, "[{\"name\":\"Alice\",\"dept\":\"eng\",\"score\":42,\"nested\":{\"x\":1}},{\"name\":\"Bob\",\"dept\":\"ops\",\"score\":17},{\"name\":\"Cara\",\"dept\":\"eng\",\"score\":9}]" ] }
+    },
+    {
+      "id": "csv-default-union-columns",
+      "kind": "round-trip",
+      "description": "json-to-csv defaults: comma delimiter, header row, columns are the UNION of keys across ragged objects (a,b,c) with blank cells where a row lacks a key, \\n line endings, no trailing newline.",
+      "expr": { "equals": [ { "$var": "csvDefault" }, "a,b,c\n1,x,\n2,,y" ] }
+    },
+    {
+      "id": "csv-semicolon-no-header",
+      "kind": "round-trip",
+      "description": "delimiter keyword 'semicolon' maps to ';' and includeHeaders=false drops the header row (column union still applies).",
+      "expr": { "equals": [ { "$var": "csvSemiNoHeader" }, "1;x;\n2;;y" ] }
+    },
+    {
+      "id": "csv-empty-array-empty-string",
+      "kind": "round-trip",
+      "description": "json-to-csv on an empty array PASSES and stores an empty string — the SENTINEL seed proves the write happened.",
+      "expr": { "equals": [ { "$var": "csvEmpty" }, "" ] }
+    },
+    {
+      "id": "xml-attribute-text-repeat",
+      "kind": "round-trip",
+      "description": "json-to-xml (pretty=false): '@_' -prefixed keys become attributes, '#text' becomes element text, an array value repeats its element — exact single-line output.",
+      "expr": { "equals": [ { "$var": "xmlOut" }, "<root id=\"7\"><note>hi</note><item>a</item><item>b</item></root>" ] }
+    }
+  ]
+}

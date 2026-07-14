@@ -1,0 +1,129 @@
+{
+  "job": {
+    "jobName": "SGT json — transform (filter, to-csv, to-xml)",
+    "jobGuid": "f3c00002-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "people", "token": "{var:people}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "filtered", "token": "{var:filtered}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "filteredJson", "token": "{var:filteredJson}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "sortedDescJson", "token": "{var:sortedDescJson}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "flat", "token": "{var:flat}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "csvDefault", "token": "{var:csvDefault}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "SENTINEL", "defaultValue": "SENTINEL", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "csvSemiNoHeader", "token": "{var:csvSemiNoHeader}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "emptyArr", "token": "{var:emptyArr}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "csvEmpty", "token": "{var:csvEmpty}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "SENTINEL", "defaultValue": "SENTINEL", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "xmlDoc", "token": "{var:xmlDoc}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "json", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "xmlOut", "token": "{var:xmlOut}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "notArray", "token": "{var:notArray}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "scalar", "defaultValue": "scalar", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-000000000001",
+      "stepName": "parse people array (Alice has a nested object the filter must preserve)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-parse", "actionPropValues": { "jsonString": { "value": "[{\"name\":\"Alice\",\"dept\":\"eng\",\"score\":42,\"nested\":{\"x\":1}},{\"name\":\"Bob\",\"dept\":\"ops\",\"score\":17},{\"name\":\"Cara\",\"dept\":\"eng\",\"score\":9}]" }, "resultVariable": { "value": "{var:people}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-000000000002",
+      "stepName": "filter where dept='eng' AND score>5, order by score asc",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-filter", "actionPropValues": { "jsonVariable": { "value": "{var:people}" }, "whereStatement": { "value": "dept = 'eng' AND score > 5" }, "orderBy": { "value": "score" }, "resultVariable": { "value": "{var:filtered}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-000000000003",
+      "stepName": "stringify filtered (order + original-object fidelity witness)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-stringify", "actionPropValues": { "jsonVariable": { "value": "{var:filtered}" }, "pretty": { "value": false }, "resultVariable": { "value": "{var:filteredJson}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-000000000004",
+      "stepName": "filter with orderBy only (no where): score DESC keeps all rows",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-filter", "actionPropValues": { "jsonVariable": { "value": "{var:people}" }, "whereStatement": { "value": "" }, "orderBy": { "value": "score DESC" }, "resultVariable": { "value": "{var:filtered}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-000000000005",
+      "stepName": "stringify desc-sorted result",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-stringify", "actionPropValues": { "jsonVariable": { "value": "{var:filtered}" }, "pretty": { "value": false }, "resultVariable": { "value": "{var:sortedDescJson}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-000000000006",
+      "stepName": "parse flat array with ragged keys (column union fixture)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-parse", "actionPropValues": { "jsonString": { "value": "[{\"a\":\"1\",\"b\":\"x\"},{\"a\":\"2\",\"c\":\"y\"}]" }, "resultVariable": { "value": "{var:flat}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-000000000007",
+      "stepName": "to-csv defaults (comma + headers; ragged keys become blank cells)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-to-csv", "actionPropValues": { "jsonVariable": { "value": "{var:flat}" }, "resultVariable": { "value": "{var:csvDefault}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-000000000008",
+      "stepName": "to-csv semicolon delimiter, no headers",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-to-csv", "actionPropValues": { "jsonVariable": { "value": "{var:flat}" }, "delimiter": { "value": "semicolon" }, "includeHeaders": { "value": false }, "resultVariable": { "value": "{var:csvSemiNoHeader}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-000000000009",
+      "stepName": "parse empty array",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-parse", "actionPropValues": { "jsonString": { "value": "[]" }, "resultVariable": { "value": "{var:emptyArr}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-00000000000a",
+      "stepName": "to-csv on empty array passes and stores empty string (sentinel overwritten)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-to-csv", "actionPropValues": { "jsonVariable": { "value": "{var:emptyArr}" }, "resultVariable": { "value": "{var:csvEmpty}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-00000000000b",
+      "stepName": "parse XML-shaped JSON (@_ attribute + #text node)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-parse", "actionPropValues": { "jsonString": { "value": "{\"root\":{\"@_id\":\"7\",\"note\":{\"#text\":\"hi\"},\"item\":[\"a\",\"b\"]}}" }, "resultVariable": { "value": "{var:xmlDoc}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-00000000000c",
+      "stepName": "to-xml compact (pretty=false): attribute, text node, repeated element",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-to-xml", "actionPropValues": { "jsonVariable": { "value": "{var:xmlDoc}" }, "pretty": { "value": false }, "resultVariable": { "value": "{var:xmlOut}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 12, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3c00002-0000-0000-0000-00000000000d",
+      "stepName": "filter on non-array variable (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-filter", "actionPropValues": { "jsonVariable": { "value": "{var:notArray}" }, "whereStatement": { "value": "a = 1" }, "orderBy": { "value": "" }, "resultVariable": { "value": "{var:filtered}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 13, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

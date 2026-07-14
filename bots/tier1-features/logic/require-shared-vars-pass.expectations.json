@@ -1,0 +1,43 @@
+{
+  "test": {
+    "id": "tier1-features/logic/require-shared-vars-pass",
+    "tier": 1,
+    "synthesizedAt": "2026-07-13T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["require-shared-vars", "add-to-list"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "sharedVarSeeds": [
+      { "name": "sgtGateAlpha", "value": "alpha-value" },
+      { "name": "sgtGateBeta", "value": "beta-value" }
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "gate-passes-and-continues",
+      "kind": "round-trip",
+      "description": "with every listed shared variable seeded, the gate passes and the following step runs (after-gate crumb present)",
+      "expr": { "equals": [ { "$var": "crumbs" }, ["after-gate"] ] }
+    },
+    {
+      "id": "status-ok",
+      "kind": "round-trip",
+      "description": "the status variable records 'ok' when all shared variables are configured",
+      "expr": { "equals": [ { "$var": "sgtPreflight" }, "ok" ] }
+    }
+  ]
+}

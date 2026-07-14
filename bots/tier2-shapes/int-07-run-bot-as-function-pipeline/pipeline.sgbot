@@ -1,0 +1,451 @@
+{
+  "job": {
+    "jobName": "SGT INT-07 — run-bot-as-function pipeline: seed → child1 transforms list (outputs mapped back) → child2 writes CSV → parent verifies file + values + shared audit trail",
+    "jobGuid": "a7d20007-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "inputList",
+      "token": "{var:inputList}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "alpha",
+        "Beta",
+        "gamma"
+      ],
+      "defaultValue": [
+        "alpha",
+        "Beta",
+        "gamma"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "resultList",
+      "token": "{var:resultList}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "amount",
+      "token": "{var:amount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "9007199254740993.117",
+      "defaultValue": "9007199254740993.117",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "amountBack",
+      "token": "{var:amountBack}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "gblSeen",
+      "token": "{var:gblSeen}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "gblParent",
+      "token": "{var:gblParent}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "child1Status",
+      "token": "{var:child1Status}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": false,
+      "defaultValue": false,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "child2Status",
+      "token": "{var:child2Status}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": false,
+      "defaultValue": false,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtGlobal",
+      "token": "{gbl-var:sgtGlobal}",
+      "tokenPrefix": "gbl-var",
+      "valueSource": "global",
+      "dataType": "text",
+      "value": "parent-value",
+      "defaultValue": "parent-value",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "00a902da-fd7f-41d5-8ef3-afb0761e61ff",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "308dc200-dd84-426c-960b-d9a56e6f5e0c",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-0000-0000-0000-000000000001",
+      "stepName": "audit: parent,start (audit path is an inbound parm to every child — the multi-bot audit pattern)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "csv-write-line",
+        "actionPropValues": {
+          "csvFile": {
+            "value": "{var:_sgtScratchDir}/audit.csv"
+          },
+          "fields": {
+            "value": [
+              "parent",
+              "start"
+            ]
+          },
+          "delimiter": {
+            "value": ","
+          },
+          "quoteAllFields": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-0000-0000-0000-000000000002",
+      "stepName": "probe: parent's own view of {gbl-var:sgtGlobal}",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:gblParent}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{gbl-var:sgtGlobal}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-0000-0000-0000-000000000003",
+      "stepName": "run child #1 as function: list in, transformed list + exact decimal + gbl-var probe out (bothWays)",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "schilda",
+      "actionOp": {
+        "actionName": "run-bot-as-function",
+        "actionPropValues": {
+          "botSource": {
+            "value": "file"
+          },
+          "botFilePath": {
+            "value": "{var:_sgtScratchDir}/child-transform.sgbot"
+          },
+          "endOnFail": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:child1Status}"
+          },
+          "isolateProcess": {
+            "value": false
+          },
+          "childMachineControl": {
+            "value": "no"
+          },
+          "variableMappings": {
+            "value": [
+              {
+                "target": "{var:inList}",
+                "source": "{var:inputList}",
+                "bothWays": false
+              },
+              {
+                "target": "{var:outList}",
+                "source": "{var:resultList}",
+                "bothWays": true
+              },
+              {
+                "target": "{var:amount}",
+                "source": "{var:amount}",
+                "bothWays": false
+              },
+              {
+                "target": "{var:computed}",
+                "source": "{var:amountBack}",
+                "bothWays": true
+              },
+              {
+                "target": "{var:gblSeen}",
+                "source": "{var:gblSeen}",
+                "bothWays": true
+              },
+              {
+                "target": "{var:auditPath}",
+                "source": "{var:_sgtScratchDir}/audit.csv",
+                "bothWays": false
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-0000-0000-0000-000000000004",
+      "stepName": "run child #2 as function: mapped-back list in, writes the pipeline output CSV",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "schildb",
+      "actionOp": {
+        "actionName": "run-bot-as-function",
+        "actionPropValues": {
+          "botSource": {
+            "value": "file"
+          },
+          "botFilePath": {
+            "value": "{var:_sgtScratchDir}/child-write-csv.sgbot"
+          },
+          "endOnFail": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:child2Status}"
+          },
+          "isolateProcess": {
+            "value": false
+          },
+          "childMachineControl": {
+            "value": "no"
+          },
+          "variableMappings": {
+            "value": [
+              {
+                "target": "{var:rows}",
+                "source": "{var:resultList}",
+                "bothWays": false
+              },
+              {
+                "target": "{var:outPath}",
+                "source": "{var:_sgtScratchDir}/pipeline-out.csv",
+                "bothWays": false
+              },
+              {
+                "target": "{var:auditPath}",
+                "source": "{var:_sgtScratchDir}/audit.csv",
+                "bothWays": false
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-0000-0000-0000-000000000005",
+      "stepName": "audit: parent,end (closes the shared trail: parent → child1 → child2 → parent)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "csv-write-line",
+        "actionPropValues": {
+          "csvFile": {
+            "value": "{var:_sgtScratchDir}/audit.csv"
+          },
+          "fields": {
+            "value": [
+              "parent",
+              "end"
+            ]
+          },
+          "delimiter": {
+            "value": ","
+          },
+          "quoteAllFields": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

@@ -1,0 +1,812 @@
+{
+  "job": {
+    "jobName": "int-01-sp-to-excel-report",
+    "jobGuid": "51b80001-0000-4000-8000-000000000001",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "1e9f170a-c585-4e80-83aa-40fa04b2d1cd",
+      "stepName": "Require shared variables: sgtSharePoint",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtSharePoint"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e8f3344f-244c-400b-8000-cf31a740c18c",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "51b80001-0000-4000-8000-000000000002",
+      "stepName": "arrange: create report source list",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-create-list",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "newListName": {
+            "value": "sgt-{var:_sgtSessionId}-rpt"
+          },
+          "newIsLibrary": {
+            "value": false
+          },
+          "newListDescription": {
+            "value": "sgtester INT-01 report source"
+          },
+          "fieldsConfig": {
+            "value": {
+              "fields": [
+                {
+                  "displayName": "SgtAmt",
+                  "internalName": "SgtAmt",
+                  "fieldType": "Number"
+                },
+                {
+                  "displayName": "SgtWhen",
+                  "internalName": "SgtWhen",
+                  "fieldType": "DateTime"
+                }
+              ]
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "scl"
+    },
+    {
+      "stepGuid": "51b80001-0000-4000-8000-000000000003",
+      "stepName": "arrange: seed r-1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-rpt"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "r-1"
+                },
+                {
+                  "internalName": "SgtAmt",
+                  "displayName": "SgtAmt",
+                  "fieldType": "Number",
+                  "value": "1234.56"
+                },
+                {
+                  "internalName": "SgtWhen",
+                  "displayName": "SgtWhen",
+                  "fieldType": "DateTime",
+                  "value": "2026-06-01T00:00:00Z"
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sia"
+    },
+    {
+      "stepGuid": "51b80001-0000-4000-8000-000000000004",
+      "stepName": "arrange: seed r-2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-rpt"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "r-2"
+                },
+                {
+                  "internalName": "SgtAmt",
+                  "displayName": "SgtAmt",
+                  "fieldType": "Number",
+                  "value": "0.1"
+                },
+                {
+                  "internalName": "SgtWhen",
+                  "displayName": "SgtWhen",
+                  "fieldType": "DateTime",
+                  "value": "2026-12-31T23:00:00Z"
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sib"
+    },
+    {
+      "stepGuid": "51b80001-0000-4000-8000-000000000005",
+      "stepName": "arrange: seed r-3",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-rpt"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "r-3"
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sic"
+    },
+    {
+      "stepGuid": "51b80001-0000-4000-8000-000000000006",
+      "stepName": "select report rows (ordered)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-select-items",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-rpt"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "queryConfig": {
+            "value": {
+              "selectedFields": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title"
+                },
+                {
+                  "internalName": "SgtAmt",
+                  "displayName": "SgtAmt",
+                  "fieldType": "Number"
+                },
+                {
+                  "internalName": "SgtWhen",
+                  "displayName": "SgtWhen",
+                  "fieldType": "DateTime"
+                }
+              ],
+              "orderBy": [
+                {
+                  "field": "Title",
+                  "direction": "asc"
+                }
+              ]
+            }
+          },
+          "maxItems": 50,
+          "includeSubfolders": {
+            "value": false
+          },
+          "folderPath": {
+            "value": ""
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sela"
+    },
+    {
+      "stepGuid": "51b80001-0000-4000-8000-000000000007",
+      "stepName": "new report workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": 1
+          },
+          "storeToVariable": {
+            "value": "{var:wbR}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sxln"
+    },
+    {
+      "stepGuid": "51b80001-0000-4000-8000-000000000008",
+      "stepName": "report loop: one Excel row per SharePoint row (column sub-variables)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "dataTable"
+          },
+          "dataTableVariable": {
+            "value": "{sela:resultDT}"
+          },
+          "maxIterations": {
+            "value": 100
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "51b80001-0000-4000-8000-000000000009",
+          "stepName": "report cell A{row} ← Title",
+          "parentGuid": "51b80001-0000-4000-8000-000000000008",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "xl-set-value",
+            "actionPropValues": {
+              "workbookVariable": {
+                "value": "{var:wbR}"
+              },
+              "sheetName": {
+                "value": ""
+              },
+              "range": {
+                "value": "A{srpt:loopCount}"
+              },
+              "rowOffset": {
+                "value": 0
+              },
+              "columnOffset": {
+                "value": 0
+              },
+              "value": {
+                "value": "{srpt-currentDataRow:Title}"
+              },
+              "valueType": {
+                "value": "auto"
+              },
+              "preventFormulas": {
+                "value": false
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 10,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": ""
+        },
+        {
+          "stepGuid": "51b80001-0000-4000-8000-000000000010",
+          "stepName": "report cell B{row} ← SgtAmt",
+          "parentGuid": "51b80001-0000-4000-8000-000000000008",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "xl-set-value",
+            "actionPropValues": {
+              "workbookVariable": {
+                "value": "{var:wbR}"
+              },
+              "sheetName": {
+                "value": ""
+              },
+              "range": {
+                "value": "B{srpt:loopCount}"
+              },
+              "rowOffset": {
+                "value": 0
+              },
+              "columnOffset": {
+                "value": 0
+              },
+              "value": {
+                "value": "{srpt-currentDataRow:SgtAmt}"
+              },
+              "valueType": {
+                "value": "auto"
+              },
+              "preventFormulas": {
+                "value": false
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 11,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": ""
+        },
+        {
+          "stepGuid": "51b80001-0000-4000-8000-000000000011",
+          "stepName": "report cell C{row} ← SgtWhen",
+          "parentGuid": "51b80001-0000-4000-8000-000000000008",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "xl-set-value",
+            "actionPropValues": {
+              "workbookVariable": {
+                "value": "{var:wbR}"
+              },
+              "sheetName": {
+                "value": ""
+              },
+              "range": {
+                "value": "C{srpt:loopCount}"
+              },
+              "rowOffset": {
+                "value": 0
+              },
+              "columnOffset": {
+                "value": 0
+              },
+              "value": {
+                "value": "{srpt-currentDataRow:SgtWhen}"
+              },
+              "valueType": {
+                "value": "auto"
+              },
+              "preventFormulas": {
+                "value": false
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 12,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": ""
+        },
+        {
+          "stepGuid": "51b80001-0000-4000-8000-000000000012",
+          "stepName": "amt breadcrumb (per-iteration freshness)",
+          "parentGuid": "51b80001-0000-4000-8000-000000000008",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:amtCrumbs}"
+              },
+              "value": {
+                "value": "{srpt:loopCount}:{srpt-currentDataRow:Title}={srpt-currentDataRow:SgtAmt}"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 13,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": ""
+        }
+      ],
+      "stepPrefix": "srpt"
+    },
+    {
+      "stepGuid": "51b80001-0000-4000-8000-000000000013",
+      "stepName": "re-read the written region",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "range": {
+            "value": "A1:C3"
+          },
+          "storeToVariable": {
+            "value": "{var:reread}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sxlr"
+    },
+    {
+      "stepGuid": "51b80001-0000-4000-8000-000000000014",
+      "stepName": "save XLSX artifact",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-xlsx",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/int01-report.xlsx"
+          },
+          "replaceExisting": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssvx"
+    },
+    {
+      "stepGuid": "51b80001-0000-4000-8000-000000000015",
+      "stepName": "save CSV artifact",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-csv",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbR}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/int01-report.csv"
+          },
+          "replaceExisting": {
+            "value": true
+          },
+          "sheetName": {
+            "value": ""
+          },
+          "delimiter": {
+            "value": ","
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssvc"
+    },
+    {
+      "stepGuid": "51b80001-0000-4000-8000-000000000016",
+      "stepName": "raw CSV readback",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/int01-report.csv"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:csvRaw}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sgfc"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "amtCrumbs",
+      "token": "{var:amtCrumbs}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbR",
+      "token": "{var:wbR}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "reread",
+      "token": "{var:reread}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "json",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "csvRaw",
+      "token": "{var:csvRaw}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.180"
+}

@@ -1,0 +1,81 @@
+{
+  "test": {
+    "id": "tier1-features/json/json-navigation",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["json-parse", "json-get-property", "json-get-values", "json-get-children", "json-stringify"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "dot-path-scalar",
+      "kind": "round-trip",
+      "description": "json-get-property navigates a two-level dot path (user.address.city) to the leaf scalar.",
+      "expr": { "equals": [ { "$var": "city" }, "Oslo" ] }
+    },
+    {
+      "id": "missing-path-null-and-passes",
+      "kind": "round-trip",
+      "description": "A path that dead-ends mid-way (user.missing.deep) PASSES and stores null — not an error, not the untouched sentinel.",
+      "expr": { "equals": [ { "$var": "missingProp" }, null ] }
+    },
+    {
+      "id": "get-values-single-unwraps",
+      "kind": "round-trip",
+      "description": "json-get-values with exactly one JSONPath match unwraps to the bare scalar instead of a 1-element array.",
+      "expr": { "equals": [ { "$var": "nameValue" }, "Ada" ] }
+    },
+    {
+      "id": "get-values-multi-is-array",
+      "kind": "round-trip",
+      "description": "json-get-values with multiple matches ($.tags[*]) keeps the array, in document order.",
+      "expr": { "equals": [ { "$var": "tagValues" }, ["red", "green", "blue"] ] }
+    },
+    {
+      "id": "children-of-object-are-keys",
+      "kind": "round-trip",
+      "description": "json-get-children on an object node returns its key NAMES in declaration order.",
+      "expr": { "equals": [ { "$var": "rootKeys" }, ["user", "tags", "active", "count"] ] }
+    },
+    {
+      "id": "children-of-array-are-elements",
+      "kind": "round-trip",
+      "description": "json-get-children on an array node returns the elements themselves.",
+      "expr": { "equals": [ { "$var": "tagChildren" }, ["red", "green", "blue"] ] }
+    },
+    {
+      "id": "children-of-primitive-empty",
+      "kind": "round-trip",
+      "description": "json-get-children on a primitive node ($.count) passes and stores an empty list — the SENTINEL seed proves the write happened.",
+      "expr": { "equals": [ { "$var": "primChildren" }, [] ] }
+    },
+    {
+      "id": "stringify-compact-exact",
+      "kind": "round-trip",
+      "description": "Compact stringify reproduces the seed document byte-for-byte (key order preserved from parse; true/3 stay native JSON types because the variables were never piped).",
+      "expr": { "equals": [ { "$var": "compactJson" }, "{\"user\":{\"name\":\"Ada\",\"address\":{\"city\":\"Oslo\",\"zip\":\"0150\"}},\"tags\":[\"red\",\"green\",\"blue\"],\"active\":true,\"count\":3}" ] }
+    },
+    {
+      "id": "stringify-pretty-exact",
+      "kind": "round-trip",
+      "description": "Pretty stringify uses 2-space indentation and newlines (JSON.stringify(obj, null, 2) contract) over the object json-get-property extracted.",
+      "expr": { "equals": [ { "$var": "prettyAddr" }, "{\n  \"city\": \"Oslo\",\n  \"zip\": \"0150\"\n}" ] }
+    }
+  ]
+}

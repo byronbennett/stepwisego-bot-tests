@@ -1,0 +1,1355 @@
+{
+  "job": {
+    "jobName": "StepwiseGO Bot Tests \u2014 Run All",
+    "jobGuid": "a6b00000-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtSuiteFolder",
+      "token": "{var:sgtSuiteFolder}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "suiteRunDir",
+      "token": "{var:suiteRunDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "resultsCsv",
+      "token": "{var:resultsCsv}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "testFiles",
+      "token": "{var:testFiles}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "childPass",
+      "token": "{var:childPass}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "trueFalse",
+      "value": false,
+      "defaultValue": false,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "childPreflight",
+      "token": "{var:childPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "childSession",
+      "token": "{var:childSession}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "childScratch",
+      "token": "{var:childScratch}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "passCount",
+      "token": "{var:passCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": 0,
+      "defaultValue": 0,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "failCount",
+      "token": "{var:failCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": 0,
+      "defaultValue": 0,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "skipCount",
+      "token": "{var:skipCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": 0,
+      "defaultValue": 0,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "failedList",
+      "token": "{var:failedList}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "outcome",
+      "token": "{var:outcome}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "a6b00000-0000-0000-0000-000000000010",
+      "stepName": "SETUP \u2014 locate suite, prepare results",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "section",
+        "actionPropValues": {
+          "sectionName": {
+            "value": "Setup"
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "a6b00000-0000-0000-0000-000000000002",
+          "stepName": "default suite folder to this bot's folder",
+          "parentGuid": null,
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:sgtSuiteFolder}",
+                    "comparator": "isEmpty",
+                    "rightOperand": ""
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "a6b00000-0000-0000-0000-900000000001",
+              "stepName": "suite folder = injected scratch dir (harness runs)",
+              "parentGuid": null,
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "if",
+                "actionPropValues": {
+                  "conditions": {
+                    "value": [
+                      {
+                        "logic": "and",
+                        "leftOperand": "{var:_sgtScratchDir}",
+                        "comparator": "hasValue",
+                        "rightOperand": ""
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": true
+              },
+              "children": [
+                {
+                  "stepGuid": "a6b00000-0000-0000-0000-900000000002",
+                  "stepName": "suite folder = scratch dir",
+                  "parentGuid": null,
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:sgtSuiteFolder}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{var:_sgtScratchDir}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "children": [],
+                  "seq": 4,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null
+                },
+                {
+                  "stepGuid": "a6b00000-0000-0000-0000-900000000003",
+                  "stepName": "suite folder = this bot's folder",
+                  "parentGuid": null,
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "else",
+                    "actionPropValues": {},
+                    "requiresChildSteps": true
+                  },
+                  "children": [
+                    {
+                      "stepGuid": "a6b00000-0000-0000-0000-000000000001",
+                      "stepName": "suite folder = current bot folder",
+                      "parentGuid": null,
+                      "actionType": "action",
+                      "actionOp": {
+                        "actionName": "set-variable",
+                        "actionPropValues": {
+                          "variableToken": {
+                            "value": "{var:sgtSuiteFolder}"
+                          },
+                          "valueSource": {
+                            "value": "substitute"
+                          },
+                          "value": {
+                            "value": "{var:_|currentBotFolder}"
+                          }
+                        },
+                        "requiresChildSteps": false
+                      },
+                      "children": [],
+                      "seq": 6,
+                      "status": "enabled",
+                      "isBreakpoint": false,
+                      "ignoreErrors": false,
+                      "comments": "",
+                      "backgroundColor": null
+                    }
+                  ],
+                  "seq": 5,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null
+                }
+              ],
+              "seq": 3,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            }
+          ],
+          "seq": 2,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a6b00000-0000-0000-0000-000000000004",
+          "stepName": "default scratch dir for standalone runs",
+          "parentGuid": null,
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:_sgtScratchDir}",
+                    "comparator": "isEmpty",
+                    "rightOperand": ""
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "a6b00000-0000-0000-0000-000000000003",
+              "stepName": "scratch dir = <suite>/.runs/<guid>",
+              "parentGuid": null,
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:_sgtScratchDir}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:sgtSuiteFolder}/.runs/{var:_|newGuid}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 8,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            }
+          ],
+          "seq": 7,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a6b00000-0000-0000-0000-000000000005",
+          "stepName": "suite run dir",
+          "parentGuid": null,
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "set-variable",
+            "actionPropValues": {
+              "variableToken": {
+                "value": "{var:suiteRunDir}"
+              },
+              "valueSource": {
+                "value": "substitute"
+              },
+              "value": {
+                "value": "{var:_sgtScratchDir}/suite"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 9,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a6b00000-0000-0000-0000-000000000006",
+          "stepName": "ensure suite run dir exists",
+          "parentGuid": null,
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "create-folder",
+            "actionPropValues": {
+              "folderPath": {
+                "value": "{var:suiteRunDir}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 10,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a6b00000-0000-0000-0000-000000000007",
+          "stepName": "results csv path",
+          "parentGuid": null,
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "set-variable",
+            "actionPropValues": {
+              "variableToken": {
+                "value": "{var:resultsCsv}"
+              },
+              "valueSource": {
+                "value": "substitute"
+              },
+              "value": {
+                "value": "{var:suiteRunDir}/results.csv"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 11,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a6b00000-0000-0000-0000-000000000008",
+          "stepName": "write results header",
+          "parentGuid": null,
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "csv-write-line",
+            "actionPropValues": {
+              "csvFile": {
+                "value": "{var:resultsCsv}"
+              },
+              "fields": {
+                "value": [
+                  "botFile",
+                  "outcome",
+                  "preflightStatus"
+                ]
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 12,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a6b00000-0000-0000-0000-000000000009",
+          "stepName": "discover test bots",
+          "parentGuid": null,
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "get-files",
+            "actionPropValues": {
+              "folderPath": {
+                "value": "{var:sgtSuiteFolder}"
+              },
+              "recursive": {
+                "value": true
+              },
+              "resultVariable": {
+                "value": "testFiles"
+              },
+              "keepExistingItems": {
+                "value": false
+              },
+              "maxFiles": {
+                "value": 0
+              },
+              "fileConditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftSide": "",
+                    "rightSide": "sgbot",
+                    "comparator": "equals",
+                    "caseSensitive": false,
+                    "isActive": true,
+                    "dataType": "fileAttribute.extension"
+                  },
+                  {
+                    "logic": "and",
+                    "leftSide": "",
+                    "rightSide": "bot.sgbot",
+                    "comparator": "notEquals",
+                    "caseSensitive": false,
+                    "isActive": true,
+                    "dataType": "fileAttribute.fileName"
+                  },
+                  {
+                    "logic": "and",
+                    "leftSide": "",
+                    "rightSide": "RunAllRegressionTests.sgbot",
+                    "comparator": "notEquals",
+                    "caseSensitive": false,
+                    "isActive": true,
+                    "dataType": "fileAttribute.fileName"
+                  },
+                  {
+                    "logic": "and",
+                    "leftSide": "",
+                    "rightSide": "runall.sgbot",
+                    "comparator": "notEquals",
+                    "caseSensitive": false,
+                    "isActive": true,
+                    "dataType": "fileAttribute.fileName"
+                  },
+                  {
+                    "logic": "and",
+                    "leftSide": "",
+                    "rightSide": "fixtures",
+                    "comparator": "notContains",
+                    "caseSensitive": false,
+                    "isActive": true,
+                    "dataType": "fileAttribute.path"
+                  },
+                  {
+                    "logic": "and",
+                    "leftSide": "",
+                    "rightSide": ".runs",
+                    "comparator": "notContains",
+                    "caseSensitive": false,
+                    "isActive": true,
+                    "dataType": "fileAttribute.path"
+                  },
+                  {
+                    "logic": "and",
+                    "leftSide": "",
+                    "rightSide": "tier3-hosted",
+                    "comparator": "notContains",
+                    "caseSensitive": false,
+                    "isActive": true,
+                    "dataType": "fileAttribute.path"
+                  },
+                  {
+                    "logic": "and",
+                    "leftSide": "",
+                    "rightSide": "int-14-scheduled-shape-smoke",
+                    "comparator": "notContains",
+                    "caseSensitive": false,
+                    "isActive": true,
+                    "dataType": "fileAttribute.path"
+                  },
+                  {
+                    "logic": "and",
+                    "leftSide": "",
+                    "rightSide": "choose-from-list-headless.sgbot",
+                    "comparator": "notEquals",
+                    "caseSensitive": false,
+                    "isActive": true,
+                    "dataType": "fileAttribute.fileName"
+                  },
+                  {
+                    "logic": "and",
+                    "leftSide": "",
+                    "rightSide": "confirm-dialog-headless.sgbot",
+                    "comparator": "notEquals",
+                    "caseSensitive": false,
+                    "isActive": true,
+                    "dataType": "fileAttribute.fileName"
+                  },
+                  {
+                    "logic": "and",
+                    "leftSide": "",
+                    "rightSide": "input-dialog-headless.sgbot",
+                    "comparator": "notEquals",
+                    "caseSensitive": false,
+                    "isActive": true,
+                    "dataType": "fileAttribute.fileName"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 13,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6b00000-0000-0000-0000-000000000030",
+      "stepName": "RUN \u2014 every discovered test",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "section",
+        "actionPropValues": {
+          "sectionName": {
+            "value": "Run tests"
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "a6b00000-0000-0000-0000-000000000029",
+          "stepName": "for each test bot",
+          "parentGuid": null,
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "loop",
+            "actionPropValues": {
+              "loopType": {
+                "value": "list"
+              },
+              "listVariable": {
+                "value": "{var:testFiles}"
+              },
+              "maxIterations": {
+                "value": 1000
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "a6b00000-0000-0000-0000-000000000023",
+              "stepName": "fresh child session id",
+              "parentGuid": null,
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:childSession}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:_|newGuid}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 16,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            },
+            {
+              "stepGuid": "a6b00000-0000-0000-0000-000000000024",
+              "stepName": "child scratch dir",
+              "parentGuid": null,
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:childScratch}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:suiteRunDir}/{var:childSession}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 17,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            },
+            {
+              "stepGuid": "a6b00000-0000-0000-0000-000000000025",
+              "stepName": "ensure child scratch exists",
+              "parentGuid": null,
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "create-folder",
+                "actionPropValues": {
+                  "folderPath": {
+                    "value": "{var:childScratch}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 18,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            },
+            {
+              "stepGuid": "a6b00000-0000-0000-0000-000000000026",
+              "stepName": "reset preflight status",
+              "parentGuid": null,
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:childPreflight}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": ""
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 19,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            },
+            {
+              "stepGuid": "a6b00000-0000-0000-0000-000000000027",
+              "stepName": "run test bot as function",
+              "parentGuid": null,
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "run-bot-as-function",
+                "actionPropValues": {
+                  "botSource": {
+                    "value": "file"
+                  },
+                  "botFilePath": {
+                    "value": "{sml:loopItem}"
+                  },
+                  "endOnFail": {
+                    "value": false
+                  },
+                  "statusVariable": {
+                    "value": "{var:childPass}"
+                  },
+                  "isolateProcess": {
+                    "value": true
+                  },
+                  "childMachineControl": {
+                    "value": "auto"
+                  },
+                  "variableMappings": {
+                    "value": [
+                      {
+                        "target": "{var:_sgtSessionId}",
+                        "source": "{var:childSession}",
+                        "bothWays": false
+                      },
+                      {
+                        "target": "{var:_sgtScratchDir}",
+                        "source": "{var:childScratch}",
+                        "bothWays": false
+                      },
+                      {
+                        "target": "{var:sgtPreflight}",
+                        "source": "{var:childPreflight}",
+                        "bothWays": true
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 20,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            },
+            {
+              "stepGuid": "a6b00000-0000-0000-0000-000000000015",
+              "stepName": "classify: FAIL",
+              "parentGuid": null,
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "if",
+                "actionPropValues": {
+                  "conditions": {
+                    "value": [
+                      {
+                        "logic": "and",
+                        "leftOperand": "{var:childPass}",
+                        "comparator": "equals",
+                        "rightOperand": "false"
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": true
+              },
+              "children": [
+                {
+                  "stepGuid": "a6b00000-0000-0000-0000-000000000011",
+                  "stepName": "outcome = FAIL",
+                  "parentGuid": null,
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:outcome}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "FAIL"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "children": [],
+                  "seq": 22,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null
+                },
+                {
+                  "stepGuid": "a6b00000-0000-0000-0000-000000000012",
+                  "stepName": "failCount + 1",
+                  "parentGuid": null,
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:failCount}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{var:failCount|add:1}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "children": [],
+                  "seq": 23,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null
+                },
+                {
+                  "stepGuid": "a6b00000-0000-0000-0000-000000000013",
+                  "stepName": "append to failed list",
+                  "parentGuid": null,
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:failedList}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{var:failedList}{sml:loopItem}; "
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "children": [],
+                  "seq": 24,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null
+                },
+                {
+                  "stepGuid": "a6b00000-0000-0000-0000-000000000014",
+                  "stepName": "log failure",
+                  "parentGuid": null,
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "write-to-log",
+                    "actionPropValues": {
+                      "message": {
+                        "value": "Test FAILED: {sml:loopItem}"
+                      },
+                      "logLevel": {
+                        "value": "warning"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "children": [],
+                  "seq": 25,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null
+                },
+                {
+                  "stepGuid": "a6b00000-0000-0000-0000-000000000022",
+                  "stepName": "classify: SKIPPED or PASS",
+                  "parentGuid": null,
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "else",
+                    "actionPropValues": {},
+                    "requiresChildSteps": true
+                  },
+                  "children": [
+                    {
+                      "stepGuid": "a6b00000-0000-0000-0000-000000000018",
+                      "stepName": "classify: SKIPPED",
+                      "parentGuid": null,
+                      "actionType": "action",
+                      "actionOp": {
+                        "actionName": "if",
+                        "actionPropValues": {
+                          "conditions": {
+                            "value": [
+                              {
+                                "logic": "and",
+                                "leftOperand": "{var:childPreflight}",
+                                "comparator": "startsWith",
+                                "rightOperand": "skipped"
+                              }
+                            ]
+                          }
+                        },
+                        "requiresChildSteps": true
+                      },
+                      "children": [
+                        {
+                          "stepGuid": "a6b00000-0000-0000-0000-000000000016",
+                          "stepName": "outcome = SKIPPED",
+                          "parentGuid": null,
+                          "actionType": "action",
+                          "actionOp": {
+                            "actionName": "set-variable",
+                            "actionPropValues": {
+                              "variableToken": {
+                                "value": "{var:outcome}"
+                              },
+                              "valueSource": {
+                                "value": "substitute"
+                              },
+                              "value": {
+                                "value": "SKIPPED"
+                              }
+                            },
+                            "requiresChildSteps": false
+                          },
+                          "children": [],
+                          "seq": 28,
+                          "status": "enabled",
+                          "isBreakpoint": false,
+                          "ignoreErrors": false,
+                          "comments": "",
+                          "backgroundColor": null
+                        },
+                        {
+                          "stepGuid": "a6b00000-0000-0000-0000-000000000017",
+                          "stepName": "skipCount + 1",
+                          "parentGuid": null,
+                          "actionType": "action",
+                          "actionOp": {
+                            "actionName": "set-variable",
+                            "actionPropValues": {
+                              "variableToken": {
+                                "value": "{var:skipCount}"
+                              },
+                              "valueSource": {
+                                "value": "substitute"
+                              },
+                              "value": {
+                                "value": "{var:skipCount|add:1}"
+                              }
+                            },
+                            "requiresChildSteps": false
+                          },
+                          "children": [],
+                          "seq": 29,
+                          "status": "enabled",
+                          "isBreakpoint": false,
+                          "ignoreErrors": false,
+                          "comments": "",
+                          "backgroundColor": null
+                        },
+                        {
+                          "stepGuid": "a6b00000-0000-0000-0000-000000000021",
+                          "stepName": "classify: PASS",
+                          "parentGuid": null,
+                          "actionType": "action",
+                          "actionOp": {
+                            "actionName": "else",
+                            "actionPropValues": {},
+                            "requiresChildSteps": true
+                          },
+                          "children": [
+                            {
+                              "stepGuid": "a6b00000-0000-0000-0000-000000000019",
+                              "stepName": "outcome = PASS",
+                              "parentGuid": null,
+                              "actionType": "action",
+                              "actionOp": {
+                                "actionName": "set-variable",
+                                "actionPropValues": {
+                                  "variableToken": {
+                                    "value": "{var:outcome}"
+                                  },
+                                  "valueSource": {
+                                    "value": "substitute"
+                                  },
+                                  "value": {
+                                    "value": "PASS"
+                                  }
+                                },
+                                "requiresChildSteps": false
+                              },
+                              "children": [],
+                              "seq": 31,
+                              "status": "enabled",
+                              "isBreakpoint": false,
+                              "ignoreErrors": false,
+                              "comments": "",
+                              "backgroundColor": null
+                            },
+                            {
+                              "stepGuid": "a6b00000-0000-0000-0000-000000000020",
+                              "stepName": "passCount + 1",
+                              "parentGuid": null,
+                              "actionType": "action",
+                              "actionOp": {
+                                "actionName": "set-variable",
+                                "actionPropValues": {
+                                  "variableToken": {
+                                    "value": "{var:passCount}"
+                                  },
+                                  "valueSource": {
+                                    "value": "substitute"
+                                  },
+                                  "value": {
+                                    "value": "{var:passCount|add:1}"
+                                  }
+                                },
+                                "requiresChildSteps": false
+                              },
+                              "children": [],
+                              "seq": 32,
+                              "status": "enabled",
+                              "isBreakpoint": false,
+                              "ignoreErrors": false,
+                              "comments": "",
+                              "backgroundColor": null
+                            }
+                          ],
+                          "seq": 30,
+                          "status": "enabled",
+                          "isBreakpoint": false,
+                          "ignoreErrors": false,
+                          "comments": "",
+                          "backgroundColor": null
+                        }
+                      ],
+                      "seq": 27,
+                      "status": "enabled",
+                      "isBreakpoint": false,
+                      "ignoreErrors": false,
+                      "comments": "",
+                      "backgroundColor": null
+                    }
+                  ],
+                  "seq": 26,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null
+                }
+              ],
+              "seq": 21,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            },
+            {
+              "stepGuid": "a6b00000-0000-0000-0000-000000000028",
+              "stepName": "append result row",
+              "parentGuid": null,
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "csv-write-line",
+                "actionPropValues": {
+                  "csvFile": {
+                    "value": "{var:resultsCsv}"
+                  },
+                  "fields": {
+                    "value": [
+                      "{sml:loopItem}",
+                      "{var:outcome}",
+                      "{var:childPreflight}"
+                    ]
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 33,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            }
+          ],
+          "seq": 15,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "stepPrefix": "sml"
+        }
+      ],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6b00000-0000-0000-0000-000000000035",
+      "stepName": "SUMMARY",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "section",
+        "actionPropValues": {
+          "sectionName": {
+            "value": "Summary"
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "a6b00000-0000-0000-0000-000000000031",
+          "stepName": "log summary",
+          "parentGuid": null,
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "write-to-log",
+            "actionPropValues": {
+              "message": {
+                "value": "StepwiseGO regression suite finished: {var:passCount} passed, {var:skipCount} skipped, {var:failCount} failed. Results: {var:resultsCsv}"
+              },
+              "logLevel": {
+                "value": "info"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 35,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a6b00000-0000-0000-0000-000000000034",
+          "stepName": "fail the run when any test failed",
+          "parentGuid": null,
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:failCount}",
+                    "comparator": "greaterThan",
+                    "rightOperand": "0"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "a6b00000-0000-0000-0000-000000000032",
+              "stepName": "log failed list",
+              "parentGuid": null,
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "write-to-log",
+                "actionPropValues": {
+                  "message": {
+                    "value": "Failed tests: {var:failedList}"
+                  },
+                  "logLevel": {
+                    "value": "warning"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 37,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            },
+            {
+              "stepGuid": "a6b00000-0000-0000-0000-000000000033",
+              "stepName": "End Bot (with fail)",
+              "parentGuid": null,
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "end-bot",
+                "actionPropValues": {
+                  "endWithFail": {
+                    "value": true
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 38,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            }
+          ],
+          "seq": 36,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 34,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "test": {
+    "id": "tier1-features/ftp/failure-modes",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-script",
+        "get-file-contents",
+        "ftp-check-file-exists",
+        "ftp-get-file-names",
+        "ftp-download-files",
+        "set-variable",
+        "write-to-file",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/sftp-server.mjs"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "sftp"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 45000
+  },
+  "predictions": [
+    {
+      "id": "server-launched",
+      "kind": "round-trip",
+      "description": "detached sftp listener up before the bot proceeded",
+      "expr": {
+        "equals": [
+          {
+            "$var": "launchOut"
+          },
+          "server-up"
+        ]
+      }
+    },
+    {
+      "id": "failed-steps-left-vars-untouched",
+      "kind": "round-trip",
+      "description": "all three result variables kept their SENTINEL — failed connections never store partial results",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "wpRes"
+              },
+              "SENTINEL"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "crNames"
+              },
+              "SENTINEL"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "missNames"
+              },
+              "SENTINEL"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "run-continued",
+      "kind": "round-trip",
+      "description": "crumb variable + crumb file prove the run continued past the buried failures",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "crumb"
+              },
+              "continued-after-failures"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/crumb.txt"
+                  }
+                ]
+              },
+              "crumb continued-after-failures"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

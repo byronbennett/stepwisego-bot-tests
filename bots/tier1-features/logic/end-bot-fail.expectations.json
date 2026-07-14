@@ -1,0 +1,33 @@
+{
+  "test": {
+    "id": "tier1-features/logic/end-bot-fail",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["end-bot", "add-to-list"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": false,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "stops-and-fails",
+      "kind": "round-trip",
+      "description": "end-bot (endWithFail=true) terminates execution after the current step — the following step never runs — and the RUN classifies failed (smoke expectComplete=false) even though no step errored (errorCount stays 0: the fail flag is a run-status decision, not an error)",
+      "expr": { "equals": [ { "$var": "crumbs" }, ["before-end"] ] }
+    }
+  ]
+}

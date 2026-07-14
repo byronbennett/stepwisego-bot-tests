@@ -1,0 +1,275 @@
+{
+  "test": {
+    "id": "tier1-features/files/folder-ops",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "create-folder",
+        "delete-folder",
+        "get-files",
+        "get-folders",
+        "create-file",
+        "file-exists",
+        "if",
+        "add-to-list",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "create-folder-nested-and-idempotent",
+      "kind": "round-trip",
+      "description": "create-folder built the nested path (parents auto-created; in-bot file-exists saw it) and a second create on the same path succeeded (mkdir recursive is idempotent — smoke stays clean).",
+      "expr": {
+        "equals": [
+          {
+            "$var": "madeExists"
+          },
+          true
+        ]
+      }
+    },
+    {
+      "id": "get-files-counts",
+      "kind": "value",
+      "description": "get-files counts over the fixed 5-file tree: 2 non-recursive (top level only), 5 recursive, 2 with the csv extension condition, 3 with maxFiles=3, and 4 after keepExistingItems=true appended the 2 top-level files onto the 2 csv hits.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "size_of": [
+                  {
+                    "$var": "filesTop"
+                  }
+                ]
+              },
+              2
+            ]
+          },
+          {
+            "equals": [
+              {
+                "size_of": [
+                  {
+                    "$var": "filesAll"
+                  }
+                ]
+              },
+              5
+            ]
+          },
+          {
+            "equals": [
+              {
+                "size_of": [
+                  {
+                    "$var": "filesCapped"
+                  }
+                ]
+              },
+              3
+            ]
+          },
+          {
+            "equals": [
+              {
+                "size_of": [
+                  {
+                    "$var": "filesCsv"
+                  }
+                ]
+              },
+              4
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "get-folders-counts",
+      "kind": "value",
+      "description": "get-folders: 2 top-level dirs (sub, made), 4 recursive (sub, sub/deep, made, made/nested), 1 for glob pattern 's*' (name-matching only — children of sub don't inherit the match).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "size_of": [
+                  {
+                    "$var": "foldersTop"
+                  }
+                ]
+              },
+              2
+            ]
+          },
+          {
+            "equals": [
+              {
+                "size_of": [
+                  {
+                    "$var": "foldersAll"
+                  }
+                ]
+              },
+              4
+            ]
+          },
+          {
+            "equals": [
+              {
+                "size_of": [
+                  {
+                    "$var": "foldersS"
+                  }
+                ]
+              },
+              1
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "in-bot-membership",
+      "kind": "round-trip",
+      "description": "The single crumb proves the 8 in-bot membership checks passed: exact session-scoped paths present (and correctly absent) in each listing — the DSL cannot build those token-composed paths, so membership is the in-bot half of the dual witness.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "crumbs"
+          },
+          [
+            "listings-membership-ok"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "delete-empty-folder",
+      "kind": "round-trip",
+      "description": "delete-folder non-recursive removed the empty folder — in-bot exists=false plus the harness's own file_exists agrees it's physically gone.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "nestedGone"
+              },
+              false
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/fo/made/nested"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "non-recursive-refuses-non-empty",
+      "kind": "round-trip",
+      "description": "delete-folder non-recursive on a NON-EMPTY folder failed (buried; smoke errorCount stays 0) and destroyed nothing: sub still existed in-bot and its deepest file was still on disk when the recursive delete later ran (which then succeeded — see next check).",
+      "expr": {
+        "equals": [
+          {
+            "$var": "subSurvived"
+          },
+          true
+        ]
+      }
+    },
+    {
+      "id": "recursive-delete-subtree",
+      "kind": "round-trip",
+      "description": "delete-folder recursive removed the whole subtree: in-bot exists=false, and the harness confirms both the folder and its deepest file are physically gone.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "subAfterRecursive"
+              },
+              false
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/fo/sub"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/fo/sub/deep/d.csv"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "top-level-files-untouched-by-deletes",
+      "kind": "round-trip",
+      "description": "The folder deletes were surgical: the two top-level files are still physically present afterwards.",
+      "expr": {
+        "and": [
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/fo/a.txt"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/fo/b.csv"
+                  }
+                ]
+              },
+              "h1,h2\n1,2"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

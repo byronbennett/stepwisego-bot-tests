@@ -1,0 +1,2270 @@
+{
+  "job": {
+    "jobName": "SGT excel — search & format (find, find-and-replace, sort, dedupe, format-range, clear-formats)",
+    "jobGuid": "e5a00009-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbF",
+      "token": "{var:wbF}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "findAll",
+      "token": "{var:findAll}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "findCase",
+      "token": "{var:findCase}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "findWhole",
+      "token": "{var:findWhole}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "findNum",
+      "token": "{var:findNum}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "findByCols",
+      "token": "{var:findByCols}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "findScalar",
+      "token": "{var:findScalar}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "findRanged",
+      "token": "{var:findRanged}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "findMiss",
+      "token": "{var:findMiss}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "replacedA",
+      "token": "{var:replacedA}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "replacedB1",
+      "token": "{var:replacedB1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "frFormula",
+      "token": "{var:frFormula}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "frComputed",
+      "token": "{var:frComputed}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sortedIds",
+      "token": "{var:sortedIds}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sortedNames",
+      "token": "{var:sortedNames}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sortedMulti",
+      "token": "{var:sortedMulti}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sortedDesc",
+      "token": "{var:sortedDesc}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "deduped",
+      "token": "{var:deduped}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "mergedB1",
+      "token": "{var:mergedB1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "unmergedB1",
+      "token": "{var:unmergedB1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "styledC1",
+      "token": "{var:styledC1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "clearedC1",
+      "token": "{var:clearedC1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "afterSheetClear",
+      "token": "{var:afterSheetClear}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "e89309b1-7e18-4cf8-bc20-492b31bfa13f",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "bdad0eb3-99c1-4f1c-9c43-ac577ef1d888",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000001",
+      "stepName": "create workbook, 5 sheets → wbF",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": 5
+          },
+          "storeToVariable": {
+            "value": "{var:wbF}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000002",
+      "stepName": "Find grid row1: alpha | Alpha | ALPHABET",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": [
+              "alpha",
+              "Alpha",
+              "ALPHABET"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000003",
+      "stepName": "Find grid row2: beta | alpha beta | 42(number)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "range": {
+            "value": "A2"
+          },
+          "values": {
+            "value": [
+              "beta",
+              "alpha beta",
+              "42"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000004",
+      "stepName": "Find grid row3: alpha | (blank) | gamma",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "range": {
+            "value": "A3"
+          },
+          "values": {
+            "value": [
+              "alpha"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000005",
+      "stepName": "C3 = gamma",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "range": {
+            "value": "C3"
+          },
+          "value": {
+            "value": "gamma"
+          },
+          "valueType": {
+            "value": "text"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000006",
+      "stepName": "B3 = '42' locked as TEXT (vs numeric C2)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "range": {
+            "value": "B3"
+          },
+          "value": {
+            "value": "42"
+          },
+          "valueType": {
+            "value": "text"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000007",
+      "stepName": "find 'alpha' defaults (partial, case-insensitive, by rows) → list dest gets ALL match addresses",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-find",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "findText": {
+            "value": "alpha"
+          },
+          "storeToVariable": {
+            "value": "{var:findAll}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000008",
+      "stepName": "find 'alpha' matchCase=true → lowercase hits only",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-find",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "findText": {
+            "value": "alpha"
+          },
+          "matchCase": {
+            "value": true
+          },
+          "storeToVariable": {
+            "value": "{var:findCase}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000009",
+      "stepName": "find 'alpha' matchWholeCell+matchCase → exact-cell hits only",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-find",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "findText": {
+            "value": "alpha"
+          },
+          "matchCase": {
+            "value": true
+          },
+          "matchWholeCell": {
+            "value": true
+          },
+          "storeToVariable": {
+            "value": "{var:findWhole}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000010",
+      "stepName": "find '42' → numeric cell C2 and text cell B3 both stringify to 42",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-find",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "findText": {
+            "value": "42"
+          },
+          "storeToVariable": {
+            "value": "{var:findNum}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000011",
+      "stepName": "find 'alpha' searchBy=columns → column-major address order",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-find",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "findText": {
+            "value": "alpha"
+          },
+          "searchBy": {
+            "value": "columns"
+          },
+          "storeToVariable": {
+            "value": "{var:findByCols}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000012",
+      "stepName": "find 'alpha' into SCALAR dest → first match only",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-find",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "findText": {
+            "value": "alpha"
+          },
+          "storeToVariable": {
+            "value": "{var:findScalar}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000013",
+      "stepName": "find 'alpha' restricted to range A1:B2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-find",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "findText": {
+            "value": "alpha"
+          },
+          "range": {
+            "value": "A1:B2"
+          },
+          "storeToVariable": {
+            "value": "{var:findRanged}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000014",
+      "stepName": "find 'zzz' (no match) scalar → empty string overwrites the SENTINEL",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-find",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet1"
+          },
+          "findText": {
+            "value": "zzz"
+          },
+          "storeToVariable": {
+            "value": "{var:findMiss}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000015",
+      "stepName": "FR grid A1:A3 = cat, concatenate, CAT",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": [
+              "cat",
+              "concatenate",
+              "CAT"
+            ]
+          },
+          "direction": {
+            "value": "down"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000016",
+      "stepName": "B1 = dog",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "B1"
+          },
+          "value": {
+            "value": "dog"
+          },
+          "valueType": {
+            "value": "text"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000017",
+      "stepName": "A10=5, A11=9 (formula operands)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A10"
+          },
+          "values": {
+            "value": [
+              "5",
+              "9"
+            ]
+          },
+          "direction": {
+            "value": "down"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 19,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000018",
+      "stepName": "E1 = =SUM(A10:A11)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "E1"
+          },
+          "formula": {
+            "value": "=SUM(A10:A11)"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 20,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000019",
+      "stepName": "replace cat→bird defaults (partial, case-insensitive) over A1:B3",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-find-and-replace",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "findText": {
+            "value": "cat"
+          },
+          "replaceText": {
+            "value": "bird"
+          },
+          "range": {
+            "value": "A1:B3"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 21,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000020",
+      "stepName": "read A1:A3 after replace",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A1:A3"
+          },
+          "storeToVariable": {
+            "value": "{var:replacedA}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 22,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000021",
+      "stepName": "replace dog→wolf matchWholeCell+matchCase",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-find-and-replace",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "findText": {
+            "value": "dog"
+          },
+          "replaceText": {
+            "value": "wolf"
+          },
+          "matchWholeCell": {
+            "value": true
+          },
+          "matchCase": {
+            "value": true
+          },
+          "range": {
+            "value": "A1:B3"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 23,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000022",
+      "stepName": "read B1 after whole-cell replace",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "B1"
+          },
+          "storeToVariable": {
+            "value": "{var:replacedB1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 24,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000023",
+      "stepName": "replace SUM→MAX searchIn=FORMULAS on E1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-find-and-replace",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "findText": {
+            "value": "SUM"
+          },
+          "replaceText": {
+            "value": "MAX"
+          },
+          "searchIn": {
+            "value": "formulas"
+          },
+          "range": {
+            "value": "E1:E1"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 25,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000024",
+      "stepName": "get-formula E1 → rewritten formula text",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "E1"
+          },
+          "storeToVariable": {
+            "value": "{var:frFormula}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 26,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000025",
+      "stepName": "get-value E1 → formualizer computes the REWRITTEN formula (MAX not SUM)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "E1"
+          },
+          "storeToVariable": {
+            "value": "{var:frComputed}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 27,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000026",
+      "stepName": "Sort grid headers: id | name",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": [
+              "id",
+              "name"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 28,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000027",
+      "stepName": "Sort rows: 10/j, 9/i, 2/b (numeric compare pin: 9 < 10)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "A2"
+          },
+          "values": {
+            "value": [
+              "10",
+              "9",
+              "2"
+            ]
+          },
+          "direction": {
+            "value": "down"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 29,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000028",
+      "stepName": "Sort names col",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "B2"
+          },
+          "values": {
+            "value": [
+              "j",
+              "i",
+              "b"
+            ]
+          },
+          "direction": {
+            "value": "down"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 30,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000029",
+      "stepName": "sort A1:B4 by column A ascending (hasHeaders default true)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-sort-range",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "A1:B4"
+          },
+          "sortColumn1": {
+            "value": "A"
+          },
+          "sortDirection1": {
+            "value": "ascending"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 31,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000030",
+      "stepName": "read ids after sort",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "A2:A4"
+          },
+          "storeToVariable": {
+            "value": "{var:sortedIds}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 32,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000031",
+      "stepName": "read names after sort (rows moved together)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "B2:B4"
+          },
+          "storeToVariable": {
+            "value": "{var:sortedNames}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 33,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000032",
+      "stepName": "Multi-key grid D1:E3 (no headers): x/2, y/1, x/1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "D1"
+          },
+          "values": {
+            "value": [
+              "x",
+              "y",
+              "x"
+            ]
+          },
+          "direction": {
+            "value": "down"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 34,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000033",
+      "stepName": "Multi-key vals col E",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "E1"
+          },
+          "values": {
+            "value": [
+              "2",
+              "1",
+              "1"
+            ]
+          },
+          "direction": {
+            "value": "down"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 35,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000034",
+      "stepName": "sort D1:E3 hasHeaders=false, key1=col '4' (NUMERIC index) asc, key2=E desc",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-sort-range",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "D1:E3"
+          },
+          "hasHeaders": {
+            "value": false
+          },
+          "sortColumn1": {
+            "value": "4"
+          },
+          "sortDirection1": {
+            "value": "ascending"
+          },
+          "sortColumn2": {
+            "value": "E"
+          },
+          "sortDirection2": {
+            "value": "descending"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 36,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000035",
+      "stepName": "read multi-key result row-major",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "D1:E3"
+          },
+          "storeToVariable": {
+            "value": "{var:sortedMulti}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 37,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000036",
+      "stepName": "re-sort A1:B4 by A DESCENDING",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-sort-range",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "A1:B4"
+          },
+          "sortColumn1": {
+            "value": "A"
+          },
+          "sortDirection1": {
+            "value": "descending"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 38,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000037",
+      "stepName": "read ids after descending sort",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "A2:A4"
+          },
+          "storeToVariable": {
+            "value": "{var:sortedDesc}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 39,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000038",
+      "stepName": "sort with key column Z OUTSIDE the range → runtime error, buried",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-sort-range",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet3"
+          },
+          "range": {
+            "value": "A1:B4"
+          },
+          "sortColumn1": {
+            "value": "Z"
+          },
+          "sortDirection1": {
+            "value": "ascending"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 40,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000039",
+      "stepName": "Dedupe headers: k | v",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet4"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": [
+              "k",
+              "v"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 41,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000040",
+      "stepName": "Dedupe col A: a, b, a, A, b (case-DISTINCT 'A')",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet4"
+          },
+          "range": {
+            "value": "A2"
+          },
+          "values": {
+            "value": [
+              "a",
+              "b",
+              "a",
+              "A",
+              "b"
+            ]
+          },
+          "direction": {
+            "value": "down"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 42,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000041",
+      "stepName": "Dedupe col B: 1, 2, 1, 1, 2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet4"
+          },
+          "range": {
+            "value": "B2"
+          },
+          "values": {
+            "value": [
+              "1",
+              "2",
+              "1",
+              "1",
+              "2"
+            ]
+          },
+          "direction": {
+            "value": "down"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 43,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000042",
+      "stepName": "remove-duplicate-rows A1:B6 (hasHeaders default true)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-remove-duplicate-rows",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet4"
+          },
+          "range": {
+            "value": "A1:B6"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 44,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000043",
+      "stepName": "read A1:B6 after dedupe (skipEmpty compacts the cleared tail)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet4"
+          },
+          "range": {
+            "value": "A1:B6"
+          },
+          "storeToVariable": {
+            "value": "{var:deduped}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 45,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000044",
+      "stepName": "Fmt cells: A1=M, B1=gone, C1=styled",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet5"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": [
+              "M",
+              "gone",
+              "styled"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 46,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000045",
+      "stepName": "format-range A1:B1 mergeCells=true",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-format-range",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet5"
+          },
+          "range": {
+            "value": "A1:B1"
+          },
+          "mergeCells": {
+            "value": "true"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 47,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000046",
+      "stepName": "read B1 while merged → reflects master cell",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet5"
+          },
+          "range": {
+            "value": "B1"
+          },
+          "storeToVariable": {
+            "value": "{var:mergedB1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 48,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000047",
+      "stepName": "format-range A1:B1 mergeCells=false (unmerge)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-format-range",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet5"
+          },
+          "range": {
+            "value": "A1:B1"
+          },
+          "mergeCells": {
+            "value": "false"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 49,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000048",
+      "stepName": "read B1 after unmerge",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet5"
+          },
+          "range": {
+            "value": "B1"
+          },
+          "storeToVariable": {
+            "value": "{var:unmergedB1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 50,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000049",
+      "stepName": "format-range C1: bold, fontSize 14, yellow fill (style path; value must survive)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-format-range",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet5"
+          },
+          "range": {
+            "value": "C1"
+          },
+          "bold": {
+            "value": "true"
+          },
+          "fontSize": {
+            "value": 14
+          },
+          "backgroundColor": {
+            "value": "#FFFF00"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 51,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000050",
+      "stepName": "read C1 after styling",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet5"
+          },
+          "range": {
+            "value": "C1"
+          },
+          "storeToVariable": {
+            "value": "{var:styledC1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 52,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000051",
+      "stepName": "clear-formats on range C1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-clear-formats",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet5"
+          },
+          "range": {
+            "value": "C1"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 53,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000052",
+      "stepName": "read C1 after clear-formats (value untouched)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet5"
+          },
+          "range": {
+            "value": "C1"
+          },
+          "storeToVariable": {
+            "value": "{var:clearedC1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 54,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000053",
+      "stepName": "clear-formats ENTIRE sheet (no range)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-clear-formats",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet5"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 55,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00009-0000-0000-0000-000000000054",
+      "stepName": "read A1 after sheet-wide clear (values intact)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "sheetName": {
+            "value": "Sheet5"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "storeToVariable": {
+            "value": "{var:afterSheetClear}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 56,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

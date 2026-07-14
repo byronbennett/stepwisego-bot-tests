@@ -1,0 +1,229 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-06-error-handler-retry-chain/retry",
+    "tier": 2,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "error-handler",
+        "rest-call",
+        "if",
+        "add-to-list",
+        "run-script",
+        "get-file-contents",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": [
+        "error-handler",
+        "ignoreErrors"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 2,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "server-launched",
+      "kind": "round-trip",
+      "description": "the launcher confirmed the detached listener was up before the bot proceeded",
+      "expr": {
+        "equals": [
+          {
+            "$var": "launchOut"
+          },
+          "server-up"
+        ]
+      }
+    },
+    {
+      "id": "breadcrumb-sequence-exact",
+      "kind": "round-trip",
+      "description": "the full control-flow sequence is exact: fail → caught → resume at sibling → flag read → second fail → caught → retry → success path → buried variant → done; the skipped crumbs (try1-after, try2-after) never appear",
+      "expr": {
+        "equals": [
+          {
+            "$var": "crumbs"
+          },
+          [
+            "start",
+            "try1",
+            "after-eh1",
+            "retry-flagged",
+            "try2",
+            "retrying",
+            "success-path",
+            "done"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "handler1-status-flipped",
+      "kind": "round-trip",
+      "description": "error-handler #1 flipped its status variable on catch",
+      "expr": {
+        "equals": [
+          {
+            "$var": "caught1"
+          },
+          true
+        ]
+      }
+    },
+    {
+      "id": "handler2-status-flipped",
+      "kind": "round-trip",
+      "description": "error-handler #2 flipped its status variable on catch",
+      "expr": {
+        "equals": [
+          {
+            "$var": "caught2"
+          },
+          true
+        ]
+      }
+    },
+    {
+      "id": "handler1-error-message",
+      "kind": "round-trip",
+      "description": "the caught error surfaced through the handler's step outputs is rest-call's non-2xx failure message",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a7d20006-0000-0000-0000-000000000004",
+              "name": "errorMessage"
+            }
+          },
+          "HTTP 500"
+        ]
+      }
+    },
+    {
+      "id": "handler1-error-step-name",
+      "kind": "round-trip",
+      "description": "the handler recorded which child failed",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a7d20006-0000-0000-0000-000000000004",
+              "name": "errorStepName"
+            }
+          },
+          "GET /status/500 — fails the step; body + code must still be stored (Tier-1 contract inside a handler frame)"
+        ]
+      }
+    },
+    {
+      "id": "contract-500-code-inside-handler",
+      "kind": "round-trip",
+      "description": "the Tier-1 non-2xx contract holds inside a handler frame: responseCode stored as the string \"500\"",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a7d20006-0000-0000-0000-000000000402",
+              "name": "responseCode"
+            }
+          },
+          "500"
+        ]
+      }
+    },
+    {
+      "id": "contract-500-body-inside-handler",
+      "kind": "round-trip",
+      "description": "the 500 response body is stored in resultVariable despite the step failing inside the handler",
+      "expr": {
+        "equals": [
+          {
+            "$var": "body500"
+          },
+          "code-500"
+        ]
+      }
+    },
+    {
+      "id": "flaky-first-call-body",
+      "kind": "round-trip",
+      "description": "first /flaky call (server call #1) failed with its body stored — the counter witness starts at 1",
+      "expr": {
+        "equals": [
+          {
+            "$var": "bodyFlaky1"
+          },
+          "flaky-fail-1"
+        ]
+      }
+    },
+    {
+      "id": "flaky-retry-succeeded",
+      "kind": "round-trip",
+      "description": "OUT-OF-BAND-STYLE WITNESS: the retry body 'flaky-ok-2' is computed by the second process's own call counter — the retry really was the second TCP request to the same route, and it succeeded",
+      "expr": {
+        "equals": [
+          {
+            "$var": "bodyFlaky2"
+          },
+          "flaky-ok-2"
+        ]
+      }
+    },
+    {
+      "id": "buried-503-code",
+      "kind": "round-trip",
+      "description": "ignoreErrors variant: 503 buries the failure but responseCode is recorded",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a7d20006-0000-0000-0000-00000000000a",
+              "name": "responseCode"
+            }
+          },
+          "503"
+        ]
+      }
+    },
+    {
+      "id": "buried-503-body",
+      "kind": "round-trip",
+      "description": "ignoreErrors variant: the 503 body is stored and the run continued to 'done'",
+      "expr": {
+        "equals": [
+          {
+            "$var": "body503"
+          },
+          "code-503"
+        ]
+      }
+    },
+    {
+      "id": "shutdown-ack",
+      "kind": "round-trip",
+      "description": "cleanup /shutdown acknowledged — no lingering listener past the run",
+      "expr": {
+        "equals": [
+          {
+            "$var": "bodyDown"
+          },
+          "bye"
+        ]
+      }
+    }
+  ]
+}

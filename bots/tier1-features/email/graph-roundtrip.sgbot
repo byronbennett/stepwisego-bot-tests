@@ -1,0 +1,1244 @@
+{
+  "job": {
+    "jobName": "email-graph-roundtrip",
+    "jobGuid": "e13c0001-0000-4000-8000-000000000001",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "0caa2753-bba7-4819-b506-e176d04c3aa9",
+      "stepName": "Require shared variables: sgtMailGraph, sgtMailGraphBulkFolderId, sgtMailGraphUpn",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtMailGraph\nsgtMailGraphBulkFolderId\nsgtMailGraphUpn"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "c10203d9-6e13-499d-8d61-99fa4892225d",
+      "stepName": "capture configured sender prefix",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:mailSenderPrefix}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{svar:sgtMailGraphUpn|textBefore:@}@"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e13c0001-0000-4000-8000-000000000002",
+      "stepName": "arrange: calibration fetch of Inbox (unfiltered read, no mutation)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-graph",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtMailGraph}"
+          },
+          "emailAccount": {
+            "value": ""
+          },
+          "folder": {
+            "value": "Inbox"
+          },
+          "moveToFolder": {
+            "value": ""
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "markAsUnread": {
+            "value": false
+          },
+          "deleteMessages": {
+            "value": false
+          },
+          "getBodyAsText": {
+            "value": true
+          },
+          "preferImmutableId": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 25
+          },
+          "resultVariable": {
+            "value": "{var:calEmails}"
+          },
+          "emailConditions": {
+            "value": []
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "scal"
+    },
+    {
+      "stepGuid": "e13c0001-0000-4000-8000-000000000003",
+      "stepName": "arrange: clean slate \u2014 session-filtered Inbox fetch (expect 0)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-graph",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtMailGraph}"
+          },
+          "emailAccount": {
+            "value": ""
+          },
+          "folder": {
+            "value": "Inbox"
+          },
+          "moveToFolder": {
+            "value": ""
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "markAsUnread": {
+            "value": false
+          },
+          "deleteMessages": {
+            "value": false
+          },
+          "getBodyAsText": {
+            "value": true
+          },
+          "preferImmutableId": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 25
+          },
+          "resultVariable": {
+            "value": "{var:preEmails}"
+          },
+          "emailConditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftField": "subject",
+                "comparator": "contains",
+                "rightOperand": "[sgt-{var:_sgtSessionId}]"
+              }
+            ]
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "spre"
+    },
+    {
+      "stepGuid": "e13c0001-0000-4000-8000-000000000004",
+      "stepName": "act: send-email-graph (plain body, emailAccount blank \u2192 defaultUserUpn fallback)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "send-email-graph",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtMailGraph}"
+          },
+          "emailAccount": {
+            "value": ""
+          },
+          "to": {
+            "value": "{svar:sgtMailGraphUpn}"
+          },
+          "cc": {
+            "value": ""
+          },
+          "bcc": {
+            "value": ""
+          },
+          "priority": {
+            "value": "normal"
+          },
+          "subject": {
+            "value": "[sgt-{var:_sgtSessionId}] graph plain \u00dcn\u00efc\u00f8d\u00e9 \u6f22\u5b57"
+          },
+          "isHtml": {
+            "value": false
+          },
+          "body": {
+            "value": "sgt graph plain body {var:_sgtSessionId}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssp"
+    },
+    {
+      "stepGuid": "e13c0001-0000-4000-8000-000000000005",
+      "stepName": "act: send-email-graph (HTML body)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "send-email-graph",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtMailGraph}"
+          },
+          "emailAccount": {
+            "value": ""
+          },
+          "to": {
+            "value": "{svar:sgtMailGraphUpn}"
+          },
+          "cc": {
+            "value": ""
+          },
+          "bcc": {
+            "value": ""
+          },
+          "priority": {
+            "value": "high"
+          },
+          "subject": {
+            "value": "[sgt-{var:_sgtSessionId}] graph html"
+          },
+          "isHtml": {
+            "value": true
+          },
+          "body": {
+            "value": "<html><body><p>marker-<b>SGT-HTML-INNER</b>-marker</p></body></html>"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssh"
+    },
+    {
+      "stepGuid": "e13c0001-0000-4000-8000-000000000021",
+      "stepName": "assert: bounded delivery poll (12 x 5s) until both session messages land",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "count"
+          },
+          "count": {
+            "value": 12
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13c0001-0000-4000-8000-000000000007",
+          "stepName": "both found? stop polling",
+          "parentGuid": "e13c0001-0000-4000-8000-000000000021",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:foundCount}",
+                    "comparator": "equals",
+                    "rightOperand": "2"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 8,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13c0001-0000-4000-8000-000000000006",
+              "stepName": "exit poll",
+              "parentGuid": "e13c0001-0000-4000-8000-000000000007",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "exit-loop",
+                "actionPropValues": {},
+                "requiresChildSteps": false
+              },
+              "seq": 9,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13c0001-0000-4000-8000-000000000008",
+          "stepName": "wait for delivery",
+          "parentGuid": "e13c0001-0000-4000-8000-000000000021",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "delay",
+            "actionPropValues": {
+              "delayType": {
+                "value": "seconds"
+              },
+              "duration": {
+                "value": 5
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 10,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13c0001-0000-4000-8000-000000000009",
+          "stepName": "set {var:foundCount}",
+          "parentGuid": "e13c0001-0000-4000-8000-000000000021",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "set-variable",
+            "actionPropValues": {
+              "variableToken": {
+                "value": "{var:foundCount}"
+              },
+              "valueSource": {
+                "value": "substitute"
+              },
+              "value": {
+                "value": "0"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 11,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13c0001-0000-4000-8000-000000000010",
+          "stepName": "session-filtered Inbox fetch",
+          "parentGuid": "e13c0001-0000-4000-8000-000000000021",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "get-emails-graph",
+            "actionPropValues": {
+              "connectionVariable": {
+                "value": "{svar:sgtMailGraph}"
+              },
+              "emailAccount": {
+                "value": ""
+              },
+              "folder": {
+                "value": "Inbox"
+              },
+              "moveToFolder": {
+                "value": ""
+              },
+              "unreadOnly": {
+                "value": false
+              },
+              "markAsRead": {
+                "value": false
+              },
+              "markAsUnread": {
+                "value": false
+              },
+              "deleteMessages": {
+                "value": false
+              },
+              "getBodyAsText": {
+                "value": true
+              },
+              "preferImmutableId": {
+                "value": false
+              },
+              "maxEmails": {
+                "value": 25
+              },
+              "resultVariable": {
+                "value": "{var:sessionEmails}"
+              },
+              "emailConditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftField": "subject",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              },
+              "downloadAttachments": {
+                "value": false
+              },
+              "attachmentFolder": {
+                "value": ""
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 12,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": "sgf"
+        },
+        {
+          "stepGuid": "e13c0001-0000-4000-8000-000000000020",
+          "stepName": "scan session messages",
+          "parentGuid": "e13c0001-0000-4000-8000-000000000021",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "loop",
+            "actionPropValues": {
+              "loopType": {
+                "value": "list"
+              },
+              "listVariable": {
+                "value": "{var:sessionEmails}"
+              },
+              "maxIterations": {
+                "value": 100
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 13,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13c0001-0000-4000-8000-000000000011",
+              "stepName": "set {var:foundCount}",
+              "parentGuid": "e13c0001-0000-4000-8000-000000000020",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:foundCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:foundCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 14,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            },
+            {
+              "stepGuid": "e13c0001-0000-4000-8000-000000000017",
+              "stepName": "plain message?",
+              "parentGuid": "e13c0001-0000-4000-8000-000000000020",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "if",
+                "actionPropValues": {
+                  "conditions": {
+                    "value": [
+                      {
+                        "logic": "and",
+                        "leftOperand": "{sfl:loopItem|subject}",
+                        "comparator": "contains",
+                        "rightOperand": "graph plain"
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": true
+              },
+              "seq": 15,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [
+                {
+                  "stepGuid": "e13c0001-0000-4000-8000-000000000012",
+                  "stepName": "set {var:plainSubject}",
+                  "parentGuid": "e13c0001-0000-4000-8000-000000000017",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:plainSubject}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|subject}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 16,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13c0001-0000-4000-8000-000000000013",
+                  "stepName": "set {var:plainSender}",
+                  "parentGuid": "e13c0001-0000-4000-8000-000000000017",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:plainSender}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|senderEmail}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 17,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13c0001-0000-4000-8000-000000000014",
+                  "stepName": "set {var:plainBody}",
+                  "parentGuid": "e13c0001-0000-4000-8000-000000000017",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:plainBody}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|bodyText}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 18,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13c0001-0000-4000-8000-000000000016",
+                  "stepName": "pin: plain subject equalsExact (session token resolves in-bot)",
+                  "parentGuid": "e13c0001-0000-4000-8000-000000000017",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "if",
+                    "actionPropValues": {
+                      "conditions": {
+                        "value": [
+                          {
+                            "logic": "and",
+                            "leftOperand": "{sfl:loopItem|subject}",
+                            "comparator": "equalsExact",
+                            "rightOperand": "[sgt-{var:_sgtSessionId}] graph plain \u00dcn\u00efc\u00f8d\u00e9 \u6f22\u5b57"
+                          }
+                        ]
+                      }
+                    },
+                    "requiresChildSteps": true
+                  },
+                  "seq": 19,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": [
+                    {
+                      "stepGuid": "e13c0001-0000-4000-8000-000000000015",
+                      "stepName": "set {var:subjectOk}",
+                      "parentGuid": "e13c0001-0000-4000-8000-000000000016",
+                      "actionType": "action",
+                      "actionOp": {
+                        "actionName": "set-variable",
+                        "actionPropValues": {
+                          "variableToken": {
+                            "value": "{var:subjectOk}"
+                          },
+                          "valueSource": {
+                            "value": "substitute"
+                          },
+                          "value": {
+                            "value": "1"
+                          }
+                        },
+                        "requiresChildSteps": false
+                      },
+                      "seq": 20,
+                      "status": "enabled",
+                      "isBreakpoint": false,
+                      "ignoreErrors": false,
+                      "comments": "",
+                      "backgroundColor": null,
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "stepGuid": "e13c0001-0000-4000-8000-000000000019",
+              "stepName": "html message?",
+              "parentGuid": "e13c0001-0000-4000-8000-000000000020",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "if",
+                "actionPropValues": {
+                  "conditions": {
+                    "value": [
+                      {
+                        "logic": "and",
+                        "leftOperand": "{sfl:loopItem|subject}",
+                        "comparator": "contains",
+                        "rightOperand": "graph html"
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": true
+              },
+              "seq": 21,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [
+                {
+                  "stepGuid": "e13c0001-0000-4000-8000-000000000018",
+                  "stepName": "set {var:htmlBody}",
+                  "parentGuid": "e13c0001-0000-4000-8000-000000000019",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:htmlBody}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|body}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 22,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "stepPrefix": "sfl"
+        }
+      ],
+      "stepPrefix": "spol"
+    },
+    {
+      "stepGuid": "e13c0001-0000-4000-8000-000000000022",
+      "stepName": "cleanup: session-filtered fetch + moveToFolder sgt-bulk (only THESE messages move)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-graph",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtMailGraph}"
+          },
+          "emailAccount": {
+            "value": ""
+          },
+          "folder": {
+            "value": "Inbox"
+          },
+          "moveToFolder": {
+            "value": "{svar:sgtMailGraphBulkFolderId}"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "markAsUnread": {
+            "value": false
+          },
+          "deleteMessages": {
+            "value": false
+          },
+          "getBodyAsText": {
+            "value": true
+          },
+          "preferImmutableId": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 25
+          },
+          "resultVariable": {
+            "value": "{var:movedEmails}"
+          },
+          "emailConditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftField": "subject",
+                "comparator": "contains",
+                "rightOperand": "[sgt-{var:_sgtSessionId}]"
+              }
+            ]
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 23,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "smv"
+    },
+    {
+      "stepGuid": "e13c0001-0000-4000-8000-000000000023",
+      "stepName": "cleanup: delete-emails-graph \u2014 folder-scoped, sgt-bulk ONLY (never Inbox)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "delete-emails-graph",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtMailGraph}"
+          },
+          "emailAccount": {
+            "value": ""
+          },
+          "folder": {
+            "value": "{svar:sgtMailGraphBulkFolderId}"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 25
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 24,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sdel"
+    },
+    {
+      "stepGuid": "e13c0001-0000-4000-8000-000000000024",
+      "stepName": "cleanup: session-filtered Inbox re-fetch (expect 0)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-graph",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtMailGraph}"
+          },
+          "emailAccount": {
+            "value": ""
+          },
+          "folder": {
+            "value": "Inbox"
+          },
+          "moveToFolder": {
+            "value": ""
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "markAsUnread": {
+            "value": false
+          },
+          "deleteMessages": {
+            "value": false
+          },
+          "getBodyAsText": {
+            "value": true
+          },
+          "preferImmutableId": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 25
+          },
+          "resultVariable": {
+            "value": "{var:afterInbox}"
+          },
+          "emailConditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftField": "subject",
+                "comparator": "contains",
+                "rightOperand": "[sgt-{var:_sgtSessionId}]"
+              }
+            ]
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 25,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sai"
+    },
+    {
+      "stepGuid": "e13c0001-0000-4000-8000-000000000025",
+      "stepName": "cleanup: sgt-bulk re-fetch (expect 0 \u2014 purged)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-graph",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtMailGraph}"
+          },
+          "emailAccount": {
+            "value": ""
+          },
+          "folder": {
+            "value": "{svar:sgtMailGraphBulkFolderId}"
+          },
+          "moveToFolder": {
+            "value": ""
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "markAsUnread": {
+            "value": false
+          },
+          "deleteMessages": {
+            "value": false
+          },
+          "getBodyAsText": {
+            "value": true
+          },
+          "preferImmutableId": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 25
+          },
+          "resultVariable": {
+            "value": "{var:afterBulk}"
+          },
+          "emailConditions": {
+            "value": []
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 26,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sab"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "calEmails",
+      "token": "{var:calEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "preEmails",
+      "token": "{var:preEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sessionEmails",
+      "token": "{var:sessionEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "movedEmails",
+      "token": "{var:movedEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "afterInbox",
+      "token": "{var:afterInbox}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "afterBulk",
+      "token": "{var:afterBulk}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundCount",
+      "token": "{var:foundCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "subjectOk",
+      "token": "{var:subjectOk}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "plainSubject",
+      "token": "{var:plainSubject}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "plainSender",
+      "token": "{var:plainSender}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "plainBody",
+      "token": "{var:plainBody}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "htmlBody",
+      "token": "{var:htmlBody}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "mailSenderPrefix",
+      "token": "{var:mailSenderPrefix}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.176"
+}

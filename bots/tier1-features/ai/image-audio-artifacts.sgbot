@@ -1,0 +1,417 @@
+{
+  "job": {
+    "jobName": "ai-image-audio-artifacts",
+    "jobGuid": "a13b0003-0000-4000-8000-000000000001",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "2214ad49-72f8-4c43-8404-5b8b2a9da6f8",
+      "stepName": "Require shared variables: sgtAiOpenAi",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtAiOpenAi"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a13b0003-0000-4000-8000-000000000002",
+      "stepName": "act: generate image (gpt-image-1-mini, 1024x1024)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ai-image-generate",
+        "actionPropValues": {
+          "credential": {
+            "value": "sgtAiOpenAi"
+          },
+          "prompt": {
+            "value": "A plain solid blue square."
+          },
+          "imageSize": {
+            "value": "1024x1024"
+          },
+          "resultVariable": {
+            "value": "{var:imgFile}"
+          },
+          "savePath": {
+            "value": "{var:_sgtScratchDir}/sgt-img.png"
+          },
+          "model": {
+            "value": "gpt-image-1-mini"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "simg"
+    },
+    {
+      "stepGuid": "a13b0003-0000-4000-8000-000000000004",
+      "stepName": "assert: image file exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-exists",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sgt-img.png"
+          },
+          "resultVariable": {
+            "value": "{var:imgExists}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "a13b0003-0000-4000-8000-000000000005",
+      "stepName": "assert: read image base64",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-base64",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sgt-img.png"
+          },
+          "resultVariable": {
+            "value": "{var:imgB64}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "a13b0003-0000-4000-8000-000000000006",
+      "stepName": "set {var:imgMagic}",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:imgMagic}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{var:imgB64|left:11}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "a13b0003-0000-4000-8000-000000000003",
+      "stepName": "act: generate audio (tts-1, alloy)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ai-audio-generate",
+        "actionPropValues": {
+          "credential": {
+            "value": "sgtAiOpenAi"
+          },
+          "text": {
+            "value": "sgtester audio check"
+          },
+          "voice": {
+            "value": "alloy"
+          },
+          "resultVariable": {
+            "value": "{var:audFile}"
+          },
+          "savePath": {
+            "value": "{var:_sgtScratchDir}/sgt-aud.mp3"
+          },
+          "model": {
+            "value": "tts-1"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "saud"
+    },
+    {
+      "stepGuid": "a13b0003-0000-4000-8000-000000000007",
+      "stepName": "assert: audio file exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-exists",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sgt-aud.mp3"
+          },
+          "resultVariable": {
+            "value": "{var:audExists}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "a13b0003-0000-4000-8000-000000000008",
+      "stepName": "assert: read audio base64",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-base64",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sgt-aud.mp3"
+          },
+          "resultVariable": {
+            "value": "{var:audB64}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "a13b0003-0000-4000-8000-000000000009",
+      "stepName": "set {var:audMagic}",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:audMagic}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{var:audB64|left:4}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "imgFile",
+      "token": "{var:imgFile}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "file",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "audFile",
+      "token": "{var:audFile}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "file",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "imgExists",
+      "token": "{var:imgExists}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "audExists",
+      "token": "{var:audExists}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "imgB64",
+      "token": "{var:imgB64}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "audB64",
+      "token": "{var:audB64}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "imgMagic",
+      "token": "{var:imgMagic}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "audMagic",
+      "token": "{var:audMagic}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.176"
+}

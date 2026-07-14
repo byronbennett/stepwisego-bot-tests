@@ -1,0 +1,140 @@
+{
+  "test": {
+    "id": "tier1-features/web/form-actions",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "perform-browser-action",
+        "execute-javascript",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/action-matrix.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "check-sets-checked",
+      "kind": "round-trip",
+      "description": "Check flips the checkbox on (execute-javascript stringifies the boolean)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "checkVal"
+          },
+          "true"
+        ]
+      }
+    },
+    {
+      "id": "uncheck-clears-checked",
+      "kind": "round-trip",
+      "description": "Uncheck flips the checkbox back off",
+      "expr": {
+        "equals": [
+          {
+            "$var": "uncheckVal"
+          },
+          "false"
+        ]
+      }
+    },
+    {
+      "id": "select-option-by-value",
+      "kind": "round-trip",
+      "description": "SelectOption picks the option whose value attribute matches actionValue",
+      "expr": {
+        "equals": [
+          {
+            "$var": "selVal"
+          },
+          "opt-b"
+        ]
+      }
+    },
+    {
+      "id": "clear-field-empties-value",
+      "kind": "round-trip",
+      "description": "ClearField empties the pre-filled input (sentinel wrapping proves empty string, not null)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "clearVal"
+          },
+          "[]"
+        ]
+      }
+    },
+    {
+      "id": "form-verbs-report-success",
+      "kind": "round-trip",
+      "description": "every form verb reports success=true",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10006-0000-0000-0000-000000000003",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10006-0000-0000-0000-000000000005",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10006-0000-0000-0000-000000000007",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10006-0000-0000-0000-000000000009",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,253 @@
+{
+  "test": {
+    "id": "tier1-features/files/file-copy-move",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "copy-file",
+        "move-file",
+        "create-file",
+        "write-to-file",
+        "get-file-contents",
+        "file-exists",
+        "if",
+        "add-to-list",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "copy-duplicates-and-preserves-source",
+      "kind": "round-trip",
+      "description": "copy-file duplicated the exact content to a new folder (parents auto-created), and the source still exists afterwards — the defining difference from move.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "srcAfterCopy"
+              },
+              true
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/cm/copy/dst.txt"
+                  }
+                ]
+              },
+              {
+                "$var": "readCopy"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "crumbs"
+              },
+              [
+                "copy-content-ok",
+                "move-content-ok"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "copy-overwrite-true-replaces",
+      "kind": "round-trip",
+      "description": "copy-file overwrite=true replaced 'old-content' with the source payload; out-of-band read agrees with the bot's read.",
+      "expr": {
+        "and": [
+          {
+            "starts_with": [
+              {
+                "$var": "readOverwritten"
+              },
+              "payload-"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/cm/existing.txt"
+                  }
+                ]
+              },
+              {
+                "$var": "readOverwritten"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "copy-bare-name-lands-beside-source",
+      "kind": "round-trip",
+      "description": "A bare-file-name destPath ('sibling.txt') resolves into the SOURCE file's folder — the file physically exists at cm/sibling.txt with the source's content.",
+      "expr": {
+        "and": [
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/cm/sibling.txt"
+              }
+            ]
+          },
+          {
+            "starts_with": [
+              {
+                "$var": "readSibling"
+              },
+              "payload-"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "move-relocates-and-removes-source",
+      "kind": "round-trip",
+      "description": "move-file dual witness: content arrived intact at the new path (both readers agree) AND the source is gone — in-bot file-exists false plus the harness's own file_exists false.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "movedSrcGone"
+              },
+              false
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/cm/moveme.txt"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/cm/moved/renamed.txt"
+                  }
+                ]
+              },
+              {
+                "$var": "readMoved"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "move-bare-name-renames-in-place",
+      "kind": "round-trip",
+      "description": "A bare-file-name destPath ('r2.txt') renames within the source's folder: r1.txt gone, r2.txt readable with the same content.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "readRenamed"
+              },
+              "r1data"
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/cm/r1.txt"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "failed-move-is-atomic",
+      "kind": "round-trip",
+      "description": "move-file onto an existing dest with overwrite=false failed (buried) WITHOUT destroying the source (r2.txt survived) and WITHOUT touching the blocker — then overwrite=true replaced it and consumed the source.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "r2AfterFailedMove"
+              },
+              true
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "readBlocker"
+              },
+              "r1data"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/cm/blocker.txt"
+                  }
+                ]
+              },
+              "r1data"
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/cm/r2.txt"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

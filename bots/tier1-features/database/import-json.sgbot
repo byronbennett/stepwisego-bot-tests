@@ -1,0 +1,288 @@
+{
+  "job": {
+    "jobName": "SGT database — import-json-to-database (json parm → auto-created SQL Server table, buried schema-validation error)",
+    "jobGuid": "a6d10003-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "jsonSrc",
+      "token": "{var:jsonSrc}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "json",
+      "value": [
+        {
+          "sku": "A-1",
+          "qty": 5
+        },
+        {
+          "sku": "B-2",
+          "qty": 0
+        },
+        {
+          "sku": "C-3",
+          "qty": 12
+        }
+      ],
+      "defaultValue": [
+        {
+          "sku": "A-1",
+          "qty": 5
+        },
+        {
+          "sku": "B-2",
+          "qty": 0
+        },
+        {
+          "sku": "C-3",
+          "qty": 12
+        }
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "6517b01c-ad1e-42ca-baae-7fa8d1c19b6e",
+      "stepName": "Require shared variables: sgtDbMssql",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtDbMssql"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10003-0000-0000-0000-000000000001",
+      "stepName": "act: import 3 json items, createTableIfMissing auto-creates the table",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "import-json-to-database",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "targetTable": {
+            "value": "sgtester.{var:_sgtSessionId}_impj"
+          },
+          "createTableIfMissing": {
+            "value": true
+          },
+          "jsonVariable": {
+            "value": "jsonSrc"
+          },
+          "batchSize": {
+            "value": 2500
+          },
+          "commandTimeout": {
+            "value": 60
+          },
+          "sourceMap": {
+            "value": {
+              "fields": [
+                {
+                  "fieldName": "[field_000]",
+                  "fieldAlias": "sku"
+                },
+                {
+                  "fieldName": "[field_001]",
+                  "fieldAlias": "qty"
+                }
+              ]
+            }
+          },
+          "importMap": {
+            "value": {
+              "tableName": "sgtester.{var:_sgtSessionId}_impj",
+              "fields": [
+                {
+                  "fieldName": "sku",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_000]"
+                  }
+                },
+                {
+                  "fieldName": "qty",
+                  "dataType": "int",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_001]"
+                  }
+                },
+                {
+                  "fieldName": "origin",
+                  "dataType": "nvarchar",
+                  "mapTo": {
+                    "kind": "literal",
+                    "value": "json-import"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "simpj"
+    },
+    {
+      "stepGuid": "a6d10003-0000-0000-0000-000000000002",
+      "stepName": "buried error: importMap names a column the (now-created) table lacks → validation fails",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "import-json-to-database",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "targetTable": {
+            "value": "sgtester.{var:_sgtSessionId}_impj"
+          },
+          "createTableIfMissing": {
+            "value": false
+          },
+          "jsonVariable": {
+            "value": "jsonSrc"
+          },
+          "sourceMap": {
+            "value": {
+              "fields": [
+                {
+                  "fieldName": "[field_000]",
+                  "fieldAlias": "sku"
+                },
+                {
+                  "fieldName": "[field_001]",
+                  "fieldAlias": "qty"
+                }
+              ]
+            }
+          },
+          "importMap": {
+            "value": {
+              "tableName": "sgtester.{var:_sgtSessionId}_impj",
+              "fields": [
+                {
+                  "fieldName": "ghost_col",
+                  "dataType": "int",
+                  "mapTo": {
+                    "kind": "sourceField",
+                    "fieldId": "[field_001]"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10003-0000-0000-0000-000000000003",
+      "stepName": "in-bot witness: qty for sku C-3 round-trips",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "select"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "SELECT qty FROM [sgtester].[{var:_sgtSessionId}_impj] WHERE sku = 'C-3'"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "chkj"
+    }
+  ]
+}

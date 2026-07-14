@@ -1,0 +1,195 @@
+{
+  "test": {
+    "id": "tier1-features/email/graph-roundtrip",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "send-email-graph",
+        "get-emails-graph",
+        "delete-emails-graph",
+        "loop",
+        "if",
+        "set-variable",
+        "delay",
+        "exit-loop",
+        "require-shared-vars"
+      ],
+      "pipeFns": [
+        "subject",
+        "senderEmail",
+        "bodyText",
+        "body",
+        "add"
+      ],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_SP_TENANT_ID",
+      "SGT_SP_CLIENT_ID",
+      "SGT_SP_CLIENT_SECRET",
+      "SGT_MAIL_GRAPH_UPN",
+      "SGT_MAIL_GRAPH_BULK_FOLDER_ID"
+    ],
+    "serialGroup": "mail-graph",
+    "exclusive": true
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 180000
+  },
+  "predictions": [
+    {
+      "id": "pred-calibration",
+      "kind": "round-trip",
+      "description": "ARRANGE calibration: the unfiltered Inbox fetch saw real mail (emailCount > 0) \u2014 the fetcher provably works before any zero-match claim",
+      "expr": {
+        "greater_than": [
+          {
+            "$stepOut": {
+              "stepGuid": "e13c0001-0000-4000-8000-000000000002",
+              "name": "emailCount"
+            }
+          },
+          "0"
+        ]
+      }
+    },
+    {
+      "id": "pred-clean-slate",
+      "kind": "round-trip",
+      "description": "no message carrying this session's marker existed before ACT (server-side $filter)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "e13c0001-0000-4000-8000-000000000003",
+              "name": "emailCount"
+            }
+          },
+          "0"
+        ]
+      }
+    },
+    {
+      "id": "pred-both-delivered",
+      "kind": "round-trip",
+      "description": "both Graph-sent messages arrived and were found by the session-filtered Graph fetch within the poll budget",
+      "expr": {
+        "equals": [
+          {
+            "$var": "foundCount"
+          },
+          "2"
+        ]
+      }
+    },
+    {
+      "id": "pred-subject-exact",
+      "kind": "round-trip",
+      "description": "plain-message subject round-tripped exactly (in-bot equalsExact incl. session marker) with unicode intact",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "subjectOk"
+              },
+              "1"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$var": "plainSubject"
+              },
+              "] graph plain \u00dcn\u00efc\u00f8d\u00e9 \u6f22\u5b57"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-sender-upn",
+      "kind": "round-trip",
+      "description": "plain-fetch sender carries the configured Graph mailbox's local part ('<upn-before-@>@', captured from {svar:sgtMailGraphUpn} at run start \u2014 domain part deliberately not pinned: display domain can differ from the UPN domain)",
+      "expr": {
+        "contains": [
+          {
+            "$var": "plainSender"
+          },
+          {
+            "$var": "mailSenderPrefix"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-plain-body",
+      "kind": "round-trip",
+      "description": "PRODUCT CONTRACT: unlike the IMAP family, get-emails-graph DOES return bodies \u2014 the plain body round-trips with the session id intact",
+      "expr": {
+        "contains": [
+          {
+            "$var": "plainBody"
+          },
+          "sgt graph plain body"
+        ]
+      }
+    },
+    {
+      "id": "pred-html-body",
+      "kind": "round-trip",
+      "description": "HTML body survives as structural content (inner marker present; servers rewrap HTML so no byte-exact pin)",
+      "expr": {
+        "contains": [
+          {
+            "$var": "htmlBody"
+          },
+          "SGT-HTML-INNER"
+        ]
+      }
+    },
+    {
+      "id": "pred-inbox-purged",
+      "kind": "round-trip",
+      "description": "after the session-filtered move + folder-scoped delete, zero session messages remain in Inbox",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "e13c0001-0000-4000-8000-000000000024",
+              "name": "emailCount"
+            }
+          },
+          "0"
+        ]
+      }
+    },
+    {
+      "id": "pred-bulk-purged",
+      "kind": "round-trip",
+      "description": "delete-emails-graph emptied the sgt-bulk staging folder (its deletedCount matches what was moved in)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "e13c0001-0000-4000-8000-000000000025",
+              "name": "emailCount"
+            }
+          },
+          "0"
+        ]
+      }
+    }
+  ]
+}

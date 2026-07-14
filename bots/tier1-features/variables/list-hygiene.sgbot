@@ -1,0 +1,91 @@
+{
+  "job": {
+    "jobName": "SGT variables — list hygiene (clear-list, remove-empty-values, sort-email-list)",
+    "jobGuid": "f3b00002-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "messy", "token": "{var:messy}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": ["keep-1", "", "   ", null, "keep-2", "0"], "defaultValue": ["keep-1", "", "   ", null, "keep-2", "0"], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "clearable", "token": "{var:clearable}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": ["a", "b", "c"], "defaultValue": ["a", "b", "c"], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "emailsBySubject", "token": "{var:emailsBySubject}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfEmails", "value": [
+      { "subject": "Zeta report", "fromAddress": "carol@example.com", "toAddress": "ops@example.com", "dateReceived": "2026-03-01T09:00:00Z" },
+      { "subject": "alpha digest", "fromAddress": "bob@example.com", "toAddress": "ops@example.com", "dateReceived": "2026-03-02T09:00:00Z" },
+      { "subject": "Middle memo", "fromAddress": "alice@example.com", "toAddress": "ops@example.com", "dateReceived": "2026-03-03T09:00:00Z" }
+    ], "defaultValue": [
+      { "subject": "Zeta report", "fromAddress": "carol@example.com", "toAddress": "ops@example.com", "dateReceived": "2026-03-01T09:00:00Z" },
+      { "subject": "alpha digest", "fromAddress": "bob@example.com", "toAddress": "ops@example.com", "dateReceived": "2026-03-02T09:00:00Z" },
+      { "subject": "Middle memo", "fromAddress": "alice@example.com", "toAddress": "ops@example.com", "dateReceived": "2026-03-03T09:00:00Z" }
+    ], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "emailsByDateDesc", "token": "{var:emailsByDateDesc}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfEmails", "value": [
+      { "subject": "first", "fromAddress": "a@example.com", "toAddress": "x@example.com", "dateReceived": "2026-01-15T08:00:00Z" },
+      { "subject": "third", "fromAddress": "b@example.com", "toAddress": "x@example.com", "dateReceived": "2026-02-28T23:59:59Z" },
+      { "subject": "second", "fromAddress": "c@example.com", "toAddress": "x@example.com", "dateReceived": "2026-01-15T08:00:01Z" }
+    ], "defaultValue": [
+      { "subject": "first", "fromAddress": "a@example.com", "toAddress": "x@example.com", "dateReceived": "2026-01-15T08:00:00Z" },
+      { "subject": "third", "fromAddress": "b@example.com", "toAddress": "x@example.com", "dateReceived": "2026-02-28T23:59:59Z" },
+      { "subject": "second", "fromAddress": "c@example.com", "toAddress": "x@example.com", "dateReceived": "2026-01-15T08:00:01Z" }
+    ], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapSubjectOrder", "token": "{var:snapSubjectOrder}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapDateOrder", "token": "{var:snapDateOrder}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3b00002-0000-0000-0000-000000000001",
+      "stepName": "remove empty values from messy (null, empty, whitespace-only go; '0' stays)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "remove-empty-values", "actionPropValues": { "listVariable": { "value": "{var:messy}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00002-0000-0000-0000-000000000002",
+      "stepName": "clear clearable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "clear-list", "actionPropValues": { "listVariable": { "value": "{var:clearable}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00002-0000-0000-0000-000000000003",
+      "stepName": "clear-list on missing variable (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "clear-list", "actionPropValues": { "listVariable": { "value": "{var:noSuchList}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00002-0000-0000-0000-000000000004",
+      "stepName": "sort emailsBySubject by subject ascending (case-insensitive)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "sort-email-list", "actionPropValues": { "listVariable": { "value": "{var:emailsBySubject}" }, "sortBy": { "value": "subject" }, "direction": { "value": "asc" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00002-0000-0000-0000-000000000005",
+      "stepName": "sort emailsByDateDesc by dateReceived descending (1s granularity respected)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "sort-email-list", "actionPropValues": { "listVariable": { "value": "{var:emailsByDateDesc}" }, "sortBy": { "value": "dateReceived" }, "direction": { "value": "desc" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00002-0000-0000-0000-000000000006",
+      "stepName": "snapshot subject order after asc sort (alpha < Middle < Zeta, case-insensitive)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapSubjectOrder}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:emailsBySubject|itemIndex:0|subject};{var:emailsBySubject|itemIndex:1|subject};{var:emailsBySubject|itemIndex:2|subject}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3b00002-0000-0000-0000-000000000007",
+      "stepName": "snapshot subject order after desc date sort (third > second > first, 1s granularity)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapDateOrder}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:emailsByDateDesc|itemIndex:0|subject};{var:emailsByDateDesc|itemIndex:1|subject};{var:emailsByDateDesc|itemIndex:2|subject}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

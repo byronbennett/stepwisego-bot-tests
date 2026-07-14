@@ -1,0 +1,116 @@
+{
+  "test": {
+    "id": "tier1-features/web/nav-history",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "perform-browser-action",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/action-matrix.html",
+      "fixtures/nav-second.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "reload-resets-dom-state",
+      "kind": "round-trip",
+      "description": "Reload discards the checked state set before it",
+      "expr": {
+        "equals": [
+          {
+            "$var": "reloadVal"
+          },
+          "false"
+        ]
+      }
+    },
+    {
+      "id": "goback-returns-to-first-page",
+      "kind": "round-trip",
+      "description": "GoBack lands on the action-matrix page",
+      "expr": {
+        "equals": [
+          {
+            "$var": "backTitle"
+          },
+          "SGT Action Matrix"
+        ]
+      }
+    },
+    {
+      "id": "goforward-returns-to-second-page",
+      "kind": "round-trip",
+      "description": "GoForward lands back on nav-second",
+      "expr": {
+        "equals": [
+          {
+            "$var": "fwdTitle"
+          },
+          "SGT Nav Second"
+        ]
+      }
+    },
+    {
+      "id": "nav-verbs-report-success",
+      "kind": "round-trip",
+      "description": "Reload, GoBack, GoForward each report success=true",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10008-0000-0000-0000-000000000004",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10008-0000-0000-0000-000000000007",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10008-0000-0000-0000-000000000009",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

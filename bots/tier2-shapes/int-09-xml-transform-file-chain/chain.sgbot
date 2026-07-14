@@ -1,0 +1,814 @@
+{
+  "job": {
+    "jobName": "SGT INT-09 — xml-transform-file-chain: fixture XML → XPath reads → mutate → save → raw byte compare → xml-to-json → json-to-csv → csv-read back",
+    "jobGuid": "a7d20009-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "xdoc",
+      "token": "{var:xdoc}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "xml",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "amtBefore",
+      "token": "{var:amtBefore}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bigBefore",
+      "token": "{var:bigBefore}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "noteBefore",
+      "token": "{var:noteBefore}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "rawSaved",
+      "token": "{var:rawSaved}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "jdoc",
+      "token": "{var:jdoc}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "json",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "custJ",
+      "token": "{var:custJ}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "bigJ",
+      "token": "{var:bigJ}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "amtJ",
+      "token": "{var:amtJ}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "invArr",
+      "token": "{var:invArr}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "json",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "csvText",
+      "token": "{var:csvText}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dt",
+      "token": "{var:dt}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "cellStatus",
+      "token": "{var:cellStatus}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "cellBig",
+      "token": "{var:cellBig}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "a3b50edc-dbf1-4887-aaeb-08f14064a4ba",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "c38f58d1-9739-43ff-8b62-5f1b80333571",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000001",
+      "stepName": "arrange: fixture XML on disk (exact bytes: entities, namespace, decimals, big ints, dates, blank vs missing)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fixture.xml"
+          },
+          "content": {
+            "value": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><invoices xmlns:aud=\"urn:sgt:audit\" version=\"1\"><invoice id=\"A-1\"><customer>Müller &amp; Söhne 漢字 🎯</customer><amount>1234.5600</amount><big>9007199254740993</big><status>draft</status><posted>2028-02-29</posted><aud:note>seed &amp; keep</aud:note></invoice><invoice id=\"A-2\"><customer></customer><amount>-0.10</amount><big>9007199254740995</big><status>hold</status><posted>2026-12-31T23:59:59</posted></invoice></invoices>"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000002",
+      "stepName": "act: open fixture into an XML document variable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xml-open-document",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fixture.xml"
+          },
+          "resultVariable": {
+            "value": "{var:xdoc}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000003",
+      "stepName": "act: XPath read — amount of A-1 keeps trailing-zero scale",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xml-get-node",
+        "actionPropValues": {
+          "xmlVariable": {
+            "value": "{var:xdoc}"
+          },
+          "xpath": {
+            "value": "/invoices/invoice[@id='A-1']/amount"
+          },
+          "resultVariable": {
+            "value": "{var:amtBefore}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000004",
+      "stepName": "act: XPath read — big int of A-2 (>2^53) string-exact",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xml-get-node",
+        "actionPropValues": {
+          "xmlVariable": {
+            "value": "{var:xdoc}"
+          },
+          "xpath": {
+            "value": "/invoices/invoice[@id='A-2']/big"
+          },
+          "resultVariable": {
+            "value": "{var:bigBefore}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000005",
+      "stepName": "act: XPath read — namespaced aud:note via local-name(), entity decoded once",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xml-get-node",
+        "actionPropValues": {
+          "xmlVariable": {
+            "value": "{var:xdoc}"
+          },
+          "xpath": {
+            "value": "//*[local-name()='note']"
+          },
+          "resultVariable": {
+            "value": "{var:noteBefore}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000006",
+      "stepName": "act: mutate — status of A-1 draft → posted",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xml-update-node",
+        "actionPropValues": {
+          "xmlVariable": {
+            "value": "{var:xdoc}"
+          },
+          "xpath": {
+            "value": "/invoices/invoice[@id='A-1']/status"
+          },
+          "newValue": {
+            "value": "posted"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000007",
+      "stepName": "act: mutate — root version attribute 1 → 2 (updated in place, not appended)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xml-set-attribute",
+        "actionPropValues": {
+          "xmlVariable": {
+            "value": "{var:xdoc}"
+          },
+          "xpath": {
+            "value": "/invoices"
+          },
+          "attributeName": {
+            "value": "version"
+          },
+          "value": {
+            "value": "2"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000008",
+      "stepName": "act: save mutated document to a fresh path (replaceExisting=false default path works on fresh file)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xml-save-document",
+        "actionPropValues": {
+          "xmlVariable": {
+            "value": "{var:xdoc}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/out.xml"
+          },
+          "replaceExisting": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000009",
+      "stepName": "assert: raw re-read of the saved file (File plugin — different code path than the XML writer)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/out.xml"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:rawSaved}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-00000000000a",
+      "stepName": "act: xml-to-json over the saved bytes",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xml-to-json",
+        "actionPropValues": {
+          "xmlContent": {
+            "value": "{var:rawSaved}"
+          },
+          "ignoreAttributes": {
+            "value": false
+          },
+          "attributePrefix": {
+            "value": "@_"
+          },
+          "textNodeName": {
+            "value": "#text"
+          },
+          "resultVariable": {
+            "value": "{var:jdoc}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-00000000000b",
+      "stepName": "act: json spot check — unicode + entity customer of invoice 0",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-get-property",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:jdoc}"
+          },
+          "propertyName": {
+            "value": "invoices.invoice.0.customer"
+          },
+          "resultVariable": {
+            "value": "{var:custJ}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-00000000000c",
+      "stepName": "act: json spot check — big int of invoice 1 must remain a string",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-get-property",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:jdoc}"
+          },
+          "propertyName": {
+            "value": "invoices.invoice.1.big"
+          },
+          "resultVariable": {
+            "value": "{var:bigJ}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-00000000000d",
+      "stepName": "act: json spot check — amount of invoice 0 (fast-xml-parser coerces to number; scale lost — pinned KNOWN-COERCION)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-get-property",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:jdoc}"
+          },
+          "propertyName": {
+            "value": "invoices.invoice.0.amount"
+          },
+          "resultVariable": {
+            "value": "{var:amtJ}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-00000000000e",
+      "stepName": "act: extract the invoice array for CSV conversion",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-get-property",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:jdoc}"
+          },
+          "propertyName": {
+            "value": "invoices.invoice"
+          },
+          "resultVariable": {
+            "value": "{var:invArr}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-00000000000f",
+      "stepName": "act: json-to-csv (headers, comma) — missing aud:note on A-2 and blank customer both render as empty fields",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-to-csv",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:invArr}"
+          },
+          "includeHeaders": {
+            "value": true
+          },
+          "delimiter": {
+            "value": ","
+          },
+          "resultVariable": {
+            "value": "{var:csvText}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000010",
+      "stepName": "act: csv-read back (typingMode=string keeps every cell textual)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "csv-read",
+        "actionPropValues": {
+          "csvContent": {
+            "value": "{var:csvText}"
+          },
+          "hasHeaders": {
+            "value": true
+          },
+          "delimiter": {
+            "value": ","
+          },
+          "typingMode": {
+            "value": "string"
+          },
+          "dataTableVariable": {
+            "value": "{var:dt}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000011",
+      "stepName": "assert: the status mutation traveled XML→file→JSON→CSV→DataTable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "dt-get-value",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dt}"
+          },
+          "rowIndex": {
+            "value": "0"
+          },
+          "column": {
+            "value": "status"
+          },
+          "resultVariable": {
+            "value": "{var:cellStatus}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 19,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20009-0000-0000-0000-000000000012",
+      "stepName": "assert: the >2^53 big int survived the whole chain string-exact",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "dt-get-value",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dt}"
+          },
+          "rowIndex": {
+            "value": "1"
+          },
+          "column": {
+            "value": "big"
+          },
+          "resultVariable": {
+            "value": "{var:cellBig}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 20,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

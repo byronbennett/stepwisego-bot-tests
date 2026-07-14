@@ -1,0 +1,139 @@
+{
+  "test": {
+    "id": "tier3-hosted/int-12-clipboard-excel-bridge/clipboard-excel-bridge",
+    "tier": 3,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "set-datatable-to-clipboard",
+        "xl-paste-from-clipboard",
+        "xl-copy-to-clipboard",
+        "get-clipboard",
+        "set-clipboard",
+        "xl-get-range-as-datatable",
+        "xl-create-new-workbook",
+        "xl-set-values",
+        "xl-set-value",
+        "xl-save-as-csv",
+        "xl-get-value",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ],
+    "exclusive": true
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 180000
+  },
+  "predictions": [
+    {
+      "id": "datatable-clipboard-rendering",
+      "kind": "round-trip",
+      "description": "set-datatable-to-clipboard tab rendering (pinned live 2026-07-12): LF row joins, no trailing newline, null cell as empty field. Round-tripped byte-exact through the REAL Windows clipboard — the leg that caught the Set-Clipboard $input space-join bug.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "clipText"
+          },
+          "hcol\thmid\thnum\nvone\t\t99"
+        ]
+      }
+    },
+    {
+      "id": "paste-region-lands-at-anchor",
+      "kind": "round-trip",
+      "description": "Pasted region anchors at B2: col A stays empty (leading comma) and the null cell survives as an empty field; ExcelJS csv export drops the leading empty row and joins rows with LF (pinned live 2026-07-12; harness reads the artifact out-of-band).",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/bridge-dst.csv"
+              }
+            ]
+          },
+          ",hcol,hmid,hnum\n,vone,,99"
+        ]
+      }
+    },
+    {
+      "id": "xl-copy-is-bot-scoped",
+      "kind": "round-trip",
+      "description": "DESIGN CONTRACT (v0.2.147): xl-copy-to-clipboard never touches the OS clipboard — get-clipboard after it still returns the set-datatable text; the copied range travels via the bot-scoped __xl_clipboard marker instead, witnessed by the F1 paste.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "clipHdr"
+              },
+              "hcol\thmid\thnum\nvone\t\t99"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "pasteF"
+              },
+              "hcol"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "pasteH"
+              },
+              "hnum"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "datatable-shape",
+      "kind": "round-trip",
+      "description": "The bridge DataTable saw 1 data row x 3 columns (headers consumed).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "aa170012-0000-0000-0000-000000000007",
+                  "name": "rowCount"
+                }
+              },
+              1
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "aa170012-0000-0000-0000-000000000007",
+                  "name": "columnCount"
+                }
+              },
+              3
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

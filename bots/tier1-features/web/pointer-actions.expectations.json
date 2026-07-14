@@ -1,0 +1,105 @@
+{
+  "test": {
+    "id": "tier1-features/web/pointer-actions",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "perform-browser-action",
+        "move-mouse-browser",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/action-matrix.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "focus-fires-listener",
+      "kind": "round-trip",
+      "description": "Focus fires the element's focus listener",
+      "expr": {
+        "equals": [
+          {
+            "$var": "focusVal"
+          },
+          "focused"
+        ]
+      }
+    },
+    {
+      "id": "hover-reveals-element",
+      "kind": "round-trip",
+      "description": "Hover's mouseenter reveals the hidden element, and get-web-element can then read it",
+      "expr": {
+        "equals": [
+          {
+            "$var": "hoverVal"
+          },
+          "revealed by hover"
+        ]
+      }
+    },
+    {
+      "id": "move-mouse-element-reenters",
+      "kind": "round-trip",
+      "description": "after the log reset and a coordinate move-away, move-mouse to the element center re-fires mouseenter",
+      "expr": {
+        "equals": [
+          {
+            "$var": "mouseVal"
+          },
+          "entered"
+        ]
+      }
+    },
+    {
+      "id": "move-mouse-success-outputs",
+      "kind": "round-trip",
+      "description": "both move-mouse target types report success=true",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10007-0000-0000-0000-000000000008",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10007-0000-0000-0000-000000000009",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

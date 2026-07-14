@@ -1,0 +1,39 @@
+{
+  "test": {
+    "id": "tier1-features/xml/xml-mutate",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["xml-new", "xml-insert-node", "xml-update-node", "xml-set-attribute", "xml-delete-node", "xml-stringify", "xml-close-document"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "final-document-exact",
+      "kind": "round-trip",
+      "description": "One prediction pins the whole mutation sequence, because every action leaves its mark in the final serialization: xml-new adds the XML declaration; <settings> was inserted as root child (empty anchor); <timeout> inserted under it with text then UPDATED 30→60; <first/> was inserted Before settings and then DELETED (absence is its witness); <last/> sits after settings (After position); the createIfNotExists update built the audit/enabled chain relative to root (appended last, AFTER <last/>); set-attribute put version=\"2\" on the root; childless elements serialize self-closed.",
+      "expr": { "equals": [ { "$var": "finalXml" }, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><config version=\"2\"><settings><timeout>60</timeout></settings><last/><audit><enabled>yes</enabled></audit></config>" ] }
+    },
+    {
+      "id": "close-empties-variable",
+      "kind": "round-trip",
+      "description": "xml-close-document replaces the XmlDocument wrapper with an empty string (the snapshot in finalXml was taken before the close).",
+      "expr": { "equals": [ { "$var": "xdoc" }, "" ] }
+    }
+  ]
+}

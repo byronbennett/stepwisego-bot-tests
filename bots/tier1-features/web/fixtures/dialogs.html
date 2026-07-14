@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>SGT Dialogs</title></head>
+<body>
+<button id="btn-alert">alert</button>
+<button id="btn-confirm">confirm</button>
+<button id="btn-prompt">prompt</button>
+<div id="dialog-result">none</div>
+<script>
+  const out = document.getElementById("dialog-result");
+  document.getElementById("btn-alert").addEventListener("click", () => {
+    alert("sgt-alert-message");
+    out.textContent = "alert-done";
+  });
+  document.getElementById("btn-confirm").addEventListener("click", () => {
+    out.textContent = "confirm:" + String(confirm("sgt-confirm-message"));
+  });
+  document.getElementById("btn-prompt").addEventListener("click", () => {
+    const v = prompt("sgt-prompt-message", "default-text");
+    out.textContent = "prompt:" + (v === null ? "<null>" : v);
+  });
+</script>
+</body>
+</html>

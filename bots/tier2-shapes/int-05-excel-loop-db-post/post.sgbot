@@ -1,0 +1,759 @@
+{
+  "job": {
+    "jobName": "SGT INT-05 — excel-loop-db-post (ERP-posting shape): bundled invoice .xlsx → xl-get-range-as-datatable → loop rows → per-row builder INSERT (DECIMAL) → malformed row caught by error-handler → SELECT SUM vs hand constant → posting-summary CSV",
+    "jobGuid": "a7d20005-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "invFile",
+      "token": "{var:invFile}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "file",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false,
+      "fileMeta": {
+        "botFileId": "a7d20005-bf00-0000-0000-000000000001"
+      }
+    },
+    {
+      "name": "fixturePath",
+      "token": "{var:fixturePath}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbInv",
+      "token": "{var:wbInv}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dtInv",
+      "token": "{var:dtInv}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "rowFailed",
+      "token": "{var:rowFailed}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": false,
+      "defaultValue": false,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "postedAmounts",
+      "token": "{var:postedAmounts}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "failedItems",
+      "token": "{var:failedItems}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dbTotal",
+      "token": "{var:dbTotal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [
+    {
+      "id": "a7d20005-bf00-0000-0000-000000000001",
+      "fileName": "invoice.xlsx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "data": "UEsDBAoAAAAIAI2B6lyR28AJWQEAAPAEAAATAAAAW0NvbnRlbnRfVHlwZXNdLnhtbK2UTW7CMBCF9z1F5C1KDF1UVUXCorTLFqn0ANN4Qiwc2/KYv9t3EiiqKiCqYBMrmTfve57EGU+2jUnWGEg7m4tRNhQJ2tIpbRe5+Jy/po8ioQhWgXEWc7FDEpPibjzfeaSEmy3loo7RP0lJZY0NUOY8Wq5ULjQQ+TYspIdyCQuU98PhgyydjWhjGlsPUYynWMHKxORly4/3QQIaEsnzXtiycgHeG11C5LpcW/WHkh4IGXd2Gqq1pwELhDxJaCvnAYe+d55M0AqTGYT4Bg2r5NbIjQvLL+eW2WWTEyldVekSlStXDbdk5AOCohoxNibr1qwBbQf9/E5MsltGNw5y9O/JEfl94/56fYTOpgdIcWeQbj32zrSPXENA9REDH4ybB/jtfeGTXV9J5f5pgA1Tzm2UpbPgPPERDfj/Xf6cwbY79WyEIerLoz0S2frqsWI7K4XqBFt2P6ziG1BLAwQKAAAAAACNgepcAAAAAAAAAAAAAAAABgAAAF9yZWxzL1BLAwQKAAAACACNgepc8p9J2ukAAABLAgAACwAAAF9yZWxzLy5yZWxzrZLBTsMwDEDvfEXk+5puSAihpbsgpN0mND7AJG4btY2jxIPu74mQQAyNaQeOceznZ8vrzTyN6o1S9hwMLKsaFAXLzofOwMv+aXEPKgsGhyMHMnCkDJvmZv1MI0qpyb2PWRVIyAZ6kfigdbY9TZgrjhTKT8tpQinP1OmIdsCO9Kqu73T6yYDmhKm2zkDauiWo/THSNWxuW2/pke1hoiBnWvzKKGRMHYmBedTvnIZX5qEqUNDnXVbXu/w9p55I0KGgtpxoEVOpTuLLWr91HNtdCefPjEtCt/+5HJqFgiN3WQlj/DLSJzfQfABQSwMECgAAAAAAjYHqXAAAAAAAAAAAAAAAAAMAAAB4bC9QSwMECgAAAAAAjYHqXAAAAAAAAAAAAAAAAAkAAAB4bC9fcmVscy9QSwMECgAAAAgAjYHqXIQksVbpAAAAuQIAABoAAAB4bC9fcmVscy93b3JrYm9vay54bWwucmVsc62SwWrDMBBE7/0KsfdadlpKKZFzKYFcW/cDhLS2TGxJaDdt/fdVG0gcCKEHn8Ss2JnHSOvN9ziIT0zUB6+gKkoQ6E2wve8UfDTb+2cQxNpbPQSPCiYk2NR36zccNOcdcn0kkU08KXDM8UVKMg5HTUWI6PNNG9KoOcvUyajNXncoV2X5JNPcA+oLT7GzCtLOViCaKeJ/vEPb9gZfgzmM6PlKhCSehswvGp06ZAVHXWQfkNfjV0vGc97Fc/qfPA6rWwwPi1bgdEL7zik/8LyJ+fgWzOOSMF8h7ckh8hnkNPpFzcepGXnx4+ofUEsDBAoAAAAAAI2B6lwAAAAAAAAAAAAAAAAOAAAAeGwvd29ya3NoZWV0cy9QSwMECgAAAAgAjYHqXAcjjXhrAgAAQwcAABgAAAB4bC93b3Jrc2hlZXRzL3NoZWV0MS54bWyVlU1vnDAQhu/9Fcj3YGD5CCsgSoKiVmqlqk3Vs2PMYgUwsr2bpL++sya7Mg6H7I2Z13792B4Pxc3r0HsHJhUXY4lCP0AeG6lo+Lgr0Z/Hh6tr5ClNxob0YmQlemMK3VRfihchn1XHmPbAYFQl6rSethgr2rGBKF9MbASlFXIgGkK5w2qSjDRm0tDjKAhSPBA+otlhKz/jIdqWU1YLuh/YqGcTyXqiAV91fFInt4F+xm4g8nk/XVExTGDxxHuu34wp8ga6/bYbhSRPPWz7NYwJPXmb4IP9wKkUSrTaB7t30I97znGOwakqGg47OJ66J1lbottwW2cIV4UZ+2AYf0qvYS3Z9/qXePnK+K7TcEUJ8sRe93xk39mB9SCVKFjm7kVvcgZ027zVTFE4rhIlyXmJmmhSFVK8eHDwIVzyRI7XGG7jlXmBHyXATI9jb2EwpBTEhyoo8KEqMH3X7mwtXGr3thYttdrWNmcNA96ZMbqEMbL8YofR1hKHMVqlm7Nh7uf5OtvmEraNtX7qsNla5rBt1k61fs9Gm9hP0nW6+BK62CK4duhsLXfo4pnDKYh6Tgd+uI6WXIKW2MXlVt5CdEsvcQprZpuzcbKOll6CltqrO+VztxAdiPt0rUbrOZvBEutw2SVwmb2++xoWovscstWSW0xxaw5b3WUiO/aDyB0fldez1nDBZDl3MvOtxWS+4PqehNZiOEUd9E0mjxG8iVYIfQrw7Pub6f3kCclhv6b9l2gSUkvCNUyG/D8BQl9PHB5AlMd5mkU5+MK/TnO6IihIQqcPA2icLdeP4i9vdGd6ownPDfhIgM//v+o/UEsDBAoAAAAIAI2B6lxtmbnQDwEAABQCAAAUAAAAeGwvc2hhcmVkU3RyaW5ncy54bWxl0c1KxDAQB/C7TxFy8OZmd9VVtM2igl78AFE8h2a2DTZJNzOVrSexJ88+hfgAXnwGH8K+iF0EhfQ4v/xnMjDJfGVL9gABjXcpn4zGnIHLvDYuT/ntzenWPmdIymlVegcpbwD5XG4kiMT6VocpL4iqAyEwK8AqHPkKXP+y8MEq6suQC6wCKI0FANlSTMfjmbDKOM4yXzvqv93jrHZmWcPJH8gEjUxIGgKbCJKJWNe/pgGzEOOSmpiUXY+L9XwSy53RORD7ehtEp7GcmUfr2ffTK9NQ1isYdGzHchxUdg/DLXZi6Z4/uvaza9+79mWQ3o3lalNVHg+v+0MNwrNYLhokCA1bwGDhS3H0T6I/q/wBUEsDBAoAAAAAAI2B6lwAAAAAAAAAAAAAAAAJAAAAeGwvdGhlbWUvUEsDBAoAAAAIAI2B6lx2mzDfIQYAABkfAAATAAAAeGwvdGhlbWUvdGhlbWUxLnhtbO1ZTW/bNhi+71cQurfyl1InqFPEjt1ubdogcTv0SEu0xIYSBZJO4tvQHgcMGNYNuwzYbYdhW4EW2KX7Ndk6bB3Qv7BX1ocpm2qcJt1QIDk4IvU87xff9yVpX79xHDJ0SISkPOpY9as1C5HI5R6N/I51fzi40raQVDjyMOMR6VhTIq0bmx9dxxsqICFBQI/kBu5YgVLxhm1LF6axvMpjEsG7MRchVjAUvu0JfARiQ2Y3arU1O8Q0slCEQ5B6bzymLkHDRKS1iXLpfQYfkZKzGZeJfXemU+ekaO+gPvsvp7LHBDrErGOBLo8fDcmxshDDUsGLjlWb/Vk2oO05jakqukYdzP5yak7xDhopVfijglsftNavbc+1NDItBmi/3+/163OpKQS7LvhdX4a3Bu16t5Csw9Jng4Zezam1Fii6luYyZb3b7TrrZUpTo7SWKe3aWmurUaa0NIpj8KW71eutlSmORllbpgyura+1FigpLGA0OlgmJKs9X7Q5aMzZLTOjDYx2kSEaztZSMJMRqcqMDPEjLgaASJceKxohNY3JGLuA7OFwJCieacEbBGuvsjlXLs8lCpF0BY1Vx/okxlA+c8yblz+9efkcvXn57OTxi5PHv548eXLy+BcT8xaOfJ35+ocv//nuM/T38+9fP/26giB1wh8/f/77b19VIJWOfPXNsz9fPHv17Rd//fjUhN8SeKTjhzQkEt0lR2iPh+CfSQUZiTNShgGmJQoOAGpC9lVQQt6dYmYEdkk5hg8EtAsj8ubkUcne/UBMFDUhbwdhCbnDOetyYfbpdqJO92kS+RX6xUQH7mF8aFTfW1jl/iSG3KZGob2AlEzdZbDw2CcRUSh5xw8IMfEeUlqK7w51BZd8rNBDirqYmgMzpCNlZt2iISzQ1GgjrHopQjsPUJczo4JtcliGQoVgZhRKWCmaN/FE4dBsNQ6ZDr2DVWA0dH8q3FLgpYJF9wnjqO8RKY2ke2JaMvk2hjZlzoAdNg3LUKHogRF6B3OuQ7f5QS/AYWy2m0aBDv5YHkDGYrTLldkOXq6ZZAwLgqPqlX9AiTpjsd+nfmBOluTNRBhrhPByjU7ZGJMo3wTKvTyk0Vs7O6PQ2i87+0Jn34LtzlhRi/28EviBdvFtPIl2CVTKZRO/bOKXTfxtFf4+WrfWrG39yJ5KCqsP8GPK2L6aMnJHpp1egpveAGbT0YxX3BriAB5zpWWkL/BsgARXn1IV7Ac4Bl31VI0vc/m+RDGXcGWxqhWkV2MK/s8mneIyC3isdriXzjdLt9xCUjr0ZUldMxGyusrmtfOrrKfYlXXWnQqdzmk6bT3AUFsIJ19r1NcaqQWQRZgRL1mMTEi+WO975eo1fekC7BHTvOZrvfn+4uuc0ZaLi3vNEHfbUHssWhiio4617jQcC7k47lhjOIbBYxiDTJk0KMz8qGO5KvN1hdpd9H69IunqNafa+bKeWEi1jWWQEmfvii96Is2RhtNKgnJRnhi70Kq2NNv1/90We2nByXhMXFU1pY3zt3yiiNgPvCM0YhOxh8GDVpp6HpWwbTTygYD0b2VZWS7zvIAWv07KKwuzOMBZQbT1lEgJ6aCwIx3qRtpVPryzT80L9cm59Cnf+V04Eze92bMLBwWBUZLCHYsLFXBoXXFA3YGAs0WqEexDUDqJaYglX6snNpNDrd2lUrLu6Adqj/pIUGiRKhCE7KrM49Pk1RulXTcXlbemudUyzh5G5JCwYVLoa0kwLBTk7SePSopcWkjbWIQjf/ABHJNa77yPzdW1zraltvTdQ9tU1s9vyWq7u6a0UeF+w3nLTra8jcdw9UHJB+wAVLhMOycP+R5kBiqOEghy9Uo7K9ZicgS2t3U/E2H/7bGrXZUJF3561eLfrIr/qUrPE3/HEH7n1Ojbhpq2tYtSOlz+cY6PHoEF23AJm7BsSsYwzJ52Rer+iHvT/JnJtJdkgSk2CBbtkTGi3nGx5AtRzn71mh8Z9jI9SSgKbnMVbsbQNqaC31iFX3A284tpwZ/dPI0ymKY/ZWQZMG+189ix6NxRXMmTiiia83z1KK60gu8URXV8ahTz2NnG/CTHSuBe/osepLqtJffmv1BLAwQKAAAACACNgepcBTuAXnYCAAADBgAADQAAAHhsL3N0eWxlcy54bWyllF1vmzAUhu/3KyzfUwMNLImAammKVKmbKjWTduuASaz6AxnTkU377zsGEhJ12qb2ysevj5/z+jO56aRAL8w0XKsUB1c+RkwVuuRql+Kvm9ybY9RYqkoqtGIpPrAG32QfksYeBHvaM2YREFST4r219ZKQptgzSZsrXTMFI5U2klromh1pasNo2bhJUpDQ92MiKVd4ICxl8T8QSc1zW3uFljW1fMsFt4eehZEslvc7pQ3dCnDaBTNaoC6ITXis0EuvikheGN3oyl4BlOiq4gV77XVBFoQWEwmwbyMFEfHDYeFZUmllG1ToVlnYfaA7h8tnpb+r3A05ccjKkkILbZCFUszJBHQquTigFypSHDqhN8IGQXLYil78MQhBP0fRY8ItFXxruBPJUKFvGuByIU6uQjwIWQIbbplROXTQGG8ONZhRcDUGTJ/3j+ydoYcgjM4m9A3U3WpTwlWc9uMoZYlglYUJhu/2rrW6Jm7QWtjoLCk53WlFhUMeZ4wBYAsmxJO7r9+qC3ZXIdXKXNr7MsVw8d3qjyEYGsMBM3Qc/5w2sN+NRV11yT+h+0IX9JOK3Emm+It7G2JCoG3LheXqD4aBWXaT137UusdyWQUYJatoK+zmNJjiKf7MSt7K8JT1yF+0HbOm+MGdVBC7GqyzD43tW9QanuKfd6uPi/VdHnpzfzX3Ztcs8hbRau1Fs9vVep0v/NC//XX2at/xZseHBpBlIyDLjIsdzT9NWorPOoP9fv/A9rn3RRj7n6LA9/JrP/BmMZ178/g68vIoCNfxbHUX5dGZ9+iNv4RPgmAyHy0tl0xwxS7tb85VOCTo/mUR5HgSZPq+s99QSwMECgAAAAAAjYHqXAAAAAAAAAAAAAAAAAkAAABkb2NQcm9wcy9QSwMECgAAAAgAjYHqXHDqztSCAQAAJAMAABAAAABkb2NQcm9wcy9hcHAueG1snVJBbtswELz3FQLvMeW0CAqDYlA4LVKgQQ3YSc5bamURoUiCuxHsvr6UDCty01Nvs7OD0Wi46vbQuaLHRDb4SiwXpSjQm1Bbv6/E4+7b1WdREIOvwQWPlTgiiVv9QW1SiJjYIhXZwVMlWua4kpJMix3QIq993jQhdcB5THsZmsYavAvmtUPP8rosbyQeGH2N9VWcDMXJcdXz/5rWwQz56Gl3jNlPqy8xOmuA80/qB2tSoNBw8fVg0Ck5X6pstEXzmiwfdankfFRbAw7X2Vg34AiVfCPUPcLQ2QZsIq16XvVoOKSC7O/c2rUofgHhEKcSPSQLnsVJdhpG7CJx0s8hvVCLyKTkRI5wrp1j+0kvR0EGl0I5Bcn4MuLOskP62Wwg8T8SL+eJxwxilvG770Nu/V3A86f+Ml+HLoLPDcoJPYCHPQ7aCf2w/oUe4y7cAeO54ktSbVtIWOdXmZ5gItR9zprcoF+34PdYnzXvF8NBPJ2OXi9vFuXHshzv4Mwp+Xbf+g9QSwMECgAAAAgAjYHqXIDMww5eAQAA4wIAABEAAABkb2NQcm9wcy9jb3JlLnhtbJ1Sy27CMBC89ysi34OTINEqCkFqK05FqlRQq95cewkuiW3ZS0P+vs6DACqn3nZ2Zsf7cLY4VmXwA9ZJreYknkQkAMW1kKqYk816GT6QwCFTgpVawZw04Mgiv8u4Sbm28Gq1AYsSXOCNlEu5mZMdokkpdXwHFXMTr1Ce3GpbMfTQFtQwvmcF0CSKZrQCZIIho61haEZHMlgKPlqagy07A8EplFCBQkfjSUzPWgRbuZsFHXOhrCQ2Bm5KT+SoPjo5Cuu6ntTTTur7j+nH6uWtGzWUql0VB5JngqfcAkNt843aK12rjF7kWh4llpB36SH0kTt8fQPHPj0CHwtw3EqD/k49eZXw59hDU2srnGevUHsphlBo2/TUGXlQMocrf+6tBPHYnHv9S2XDbvsZQAR+J2m/wRPzPn16Xi9JnkTJLIzuwzhax7M0TtJk9tn2fFV/NqyGR/7teDIY5rv6l/kvUEsDBAoAAAAIAI2B6lwPtzt6WgEAAHICAAAPAAAAeGwvd29ya2Jvb2sueG1sjZJNb8IwDIbv+xVR7tAWGGwVLdK0TeIycWC7h8SlEflSkhb493NbOmniwiWOnfjxayfrzUUr0oIP0pqCZtOUEjDcCmmOBf3ef05eKAmRGcGUNVDQKwS6KZ/WZ+tPB2tPBPNNKGgdo8uTJPAaNAtT68DgSWW9ZhFdf0yC88BEqAGiVsksTZeJZtLQgZD7Rxi2qiSHd8sbDSYOEA+KRVQfaunCSNP8EZxm/tS4CbfaIeIglYzXHkqJ5vn2aKxnB4VdX7LnkYzbO7SW3NtgqzhF1E3kXb9ZmmTZ0HK5rqSCn2HqhDn3xXRXRVGiWIgfQkYQBcWayp7hX8A37q2RCp3XeTqnSfn3EjtPBFSsUXGPqkY6vulykWYZJVgygt952TJ+xXCX26sLN0v6dSu6M2J6RVvTWuyl/wIR/VYGiQNBGbnEe34rFh0mGTmcKY46OtNzVlk6W/U3RpXlL1BLAQIUAAoAAAAIAI2B6lyR28AJWQEAAPAEAAATAAAAAAAAAAAAAAAAAAAAAABbQ29udGVudF9UeXBlc10ueG1sUEsBAhQACgAAAAAAjYHqXAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAQAAAAigEAAF9yZWxzL1BLAQIUAAoAAAAIAI2B6lzyn0na6QAAAEsCAAALAAAAAAAAAAAAAAAAAK4BAABfcmVscy8ucmVsc1BLAQIUAAoAAAAAAI2B6lwAAAAAAAAAAAAAAAADAAAAAAAAAAAAEAAAAMACAAB4bC9QSwECFAAKAAAAAACNgepcAAAAAAAAAAAAAAAACQAAAAAAAAAAABAAAADhAgAAeGwvX3JlbHMvUEsBAhQACgAAAAgAjYHqXIQksVbpAAAAuQIAABoAAAAAAAAAAAAAAAAACAMAAHhsL19yZWxzL3dvcmtib29rLnhtbC5yZWxzUEsBAhQACgAAAAAAjYHqXAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAQAAAAKQQAAHhsL3dvcmtzaGVldHMvUEsBAhQACgAAAAgAjYHqXAcjjXhrAgAAQwcAABgAAAAAAAAAAAAAAAAAVQQAAHhsL3dvcmtzaGVldHMvc2hlZXQxLnhtbFBLAQIUAAoAAAAIAI2B6lxtmbnQDwEAABQCAAAUAAAAAAAAAAAAAAAAAPYGAAB4bC9zaGFyZWRTdHJpbmdzLnhtbFBLAQIUAAoAAAAAAI2B6lwAAAAAAAAAAAAAAAAJAAAAAAAAAAAAEAAAADcIAAB4bC90aGVtZS9QSwECFAAKAAAACACNgepcdpsw3yEGAAAZHwAAEwAAAAAAAAAAAAAAAABeCAAAeGwvdGhlbWUvdGhlbWUxLnhtbFBLAQIUAAoAAAAIAI2B6lwFO4BedgIAAAMGAAANAAAAAAAAAAAAAAAAALAOAAB4bC9zdHlsZXMueG1sUEsBAhQACgAAAAAAjYHqXAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAQAAAAUREAAGRvY1Byb3BzL1BLAQIUAAoAAAAIAI2B6lxw6s7UggEAACQDAAAQAAAAAAAAAAAAAAAAAHgRAABkb2NQcm9wcy9hcHAueG1sUEsBAhQACgAAAAgAjYHqXIDMww5eAQAA4wIAABEAAAAAAAAAAAAAAAAAKBMAAGRvY1Byb3BzL2NvcmUueG1sUEsBAhQACgAAAAgAjYHqXA+3O3paAQAAcgIAAA8AAAAAAAAAAAAAAAAAtRQAAHhsL3dvcmtib29rLnhtbFBLBQYAAAAAEAAQAMYDAAA8FgAAAAA=",
+      "sizeBytes": 6680,
+      "sha256": "5ce1b119a214bc749641eb9106d19789f0d01c0b32167844aa108da369cbdaa2"
+    }
+  ],
+  "steps": [
+    {
+      "stepGuid": "82025d87-b993-4212-8a48-4b1a2cf6633d",
+      "stepName": "Require shared variables: sgtDbMssql",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtDbMssql"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "ae2b843f-73f7-44bf-b682-09dba0fada9a",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20005-0000-0000-0000-000000000001",
+      "stepName": "arrange: unpack the bundled invoice.xlsx fixture into scratch",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "save-bundled-file",
+        "actionPropValues": {
+          "sourceFile": {
+            "value": "{var:invFile}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fx/invoice.xlsx"
+          },
+          "resultVariable": {
+            "value": "{var:fixturePath}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20005-0000-0000-0000-000000000002",
+      "stepName": "arrange: create the posting table (amount DECIMAL(18,2) NOT NULL — the malformed row must fail at this contract)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "other"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "IF OBJECT_ID('sgtester.sgt_int05_post') IS NOT NULL DROP TABLE [sgtester].[sgt_int05_post]; CREATE TABLE [sgtester].[sgt_int05_post] (item NVARCHAR(20) NOT NULL, descr NVARCHAR(100) NULL, qty INT NULL, amount DECIMAL(18,2) NOT NULL)"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20005-0000-0000-0000-000000000003",
+      "stepName": "arrange: posting-summary CSV header line",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "csv-write-line",
+        "actionPropValues": {
+          "csvFile": {
+            "value": "{var:_sgtScratchDir}/posting-summary.csv"
+          },
+          "fields": {
+            "value": [
+              "item",
+              "status",
+              "amount"
+            ]
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20005-0000-0000-0000-000000000004",
+      "stepName": "act: open the fixture workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:fixturePath}"
+          },
+          "storeToVariable": {
+            "value": "{var:wbInv}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20005-0000-0000-0000-000000000005",
+      "stepName": "act: Invoice!A1:D7 → DataTable (headers from row 1; 6 line items incl. the malformed one)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-range-as-datatable",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbInv}"
+          },
+          "sheetName": {
+            "value": "Invoice"
+          },
+          "range": {
+            "value": "A1:D7"
+          },
+          "includeHeaders": {
+            "value": true
+          },
+          "storeToVariable": {
+            "value": "{var:dtInv}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "srange"
+    },
+    {
+      "stepGuid": "a7d20005-0000-0000-0000-000000000006",
+      "stepName": "act: loop invoice rows — per-row posting with an error-handler around each INSERT",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "spost",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "dataTable"
+          },
+          "dataTableVariable": {
+            "value": "{var:dtInv}"
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "a7d20005-0000-0000-0000-000000000601",
+          "stepName": "Error Handler: one row's INSERT — statusVariable re-initializes to false every iteration",
+          "parentGuid": "a7d20005-0000-0000-0000-000000000006",
+          "actionType": "action",
+          "stepPrefix": "srow",
+          "actionOp": {
+            "actionName": "error-handler",
+            "actionPropValues": {
+              "statusVariable": {
+                "value": "{var:rowFailed}"
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "a7d20005-0000-0000-0000-000000000611",
+              "stepName": "builder INSERT via per-iteration column sub-variables ({spost-currentDataRow:*})",
+              "parentGuid": "a7d20005-0000-0000-0000-000000000601",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "db-sql-query",
+                "actionPropValues": {
+                  "connectionVariable": {
+                    "value": "devDb"
+                  },
+                  "queryType": {
+                    "value": "insert"
+                  },
+                  "queryConfig": {
+                    "value": {
+                      "queryTables": [
+                        {
+                          "name": "sgt_int05_post",
+                          "alias": "t",
+                          "schema": "sgtester",
+                          "columns": []
+                        }
+                      ],
+                      "insertTable": {
+                        "tableAlias": "t"
+                      },
+                      "insertFields": [
+                        {
+                          "tableAlias": "t",
+                          "field": "item",
+                          "dataType": "text",
+                          "setValue": "{spost-currentDataRow:item}"
+                        },
+                        {
+                          "tableAlias": "t",
+                          "field": "descr",
+                          "dataType": "text",
+                          "setValue": "{spost-currentDataRow:descr}"
+                        },
+                        {
+                          "tableAlias": "t",
+                          "field": "qty",
+                          "dataType": "int",
+                          "setValue": "{spost-currentDataRow:qty}"
+                        },
+                        {
+                          "tableAlias": "t",
+                          "field": "amount",
+                          "dataType": "decimal",
+                          "setValue": "{spost-currentDataRow:amount}"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 10,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "stepPrefix": "sins"
+            }
+          ],
+          "seq": 9,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": true,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a7d20005-0000-0000-0000-000000000602",
+          "stepName": "If posted — record amount + summary line",
+          "parentGuid": "a7d20005-0000-0000-0000-000000000006",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:rowFailed}",
+                    "comparator": "equals",
+                    "rightOperand": "false"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "a7d20005-0000-0000-0000-000000000621",
+              "stepName": "record posted amount (Excel→DT→token string form)",
+              "parentGuid": "a7d20005-0000-0000-0000-000000000602",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "add-to-list",
+                "actionPropValues": {
+                  "listVariable": {
+                    "value": "{var:postedAmounts}"
+                  },
+                  "value": {
+                    "value": "{spost-currentDataRow:amount}"
+                  },
+                  "addPosition": {
+                    "value": "end"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 12,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            },
+            {
+              "stepGuid": "a7d20005-0000-0000-0000-000000000622",
+              "stepName": "summary CSV: posted line",
+              "parentGuid": "a7d20005-0000-0000-0000-000000000602",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "csv-write-line",
+                "actionPropValues": {
+                  "csvFile": {
+                    "value": "{var:_sgtScratchDir}/posting-summary.csv"
+                  },
+                  "fields": {
+                    "value": [
+                      "{spost-currentDataRow:item}",
+                      "posted",
+                      "{spost-currentDataRow:amount}"
+                    ]
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 13,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            }
+          ],
+          "seq": 11,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "a7d20005-0000-0000-0000-000000000603",
+          "stepName": "If failed — record item + summary line (posting skips the row per contract, run continues)",
+          "parentGuid": "a7d20005-0000-0000-0000-000000000006",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:rowFailed}",
+                    "comparator": "equals",
+                    "rightOperand": "true"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "a7d20005-0000-0000-0000-000000000631",
+              "stepName": "record failed item",
+              "parentGuid": "a7d20005-0000-0000-0000-000000000603",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "add-to-list",
+                "actionPropValues": {
+                  "listVariable": {
+                    "value": "{var:failedItems}"
+                  },
+                  "value": {
+                    "value": "{spost-currentDataRow:item}"
+                  },
+                  "addPosition": {
+                    "value": "end"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 15,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            },
+            {
+              "stepGuid": "a7d20005-0000-0000-0000-000000000632",
+              "stepName": "summary CSV: failed line",
+              "parentGuid": "a7d20005-0000-0000-0000-000000000603",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "csv-write-line",
+                "actionPropValues": {
+                  "csvFile": {
+                    "value": "{var:_sgtScratchDir}/posting-summary.csv"
+                  },
+                  "fields": {
+                    "value": [
+                      "{spost-currentDataRow:item}",
+                      "failed",
+                      "{spost-currentDataRow:amount}"
+                    ]
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "children": [],
+              "seq": 16,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null
+            }
+          ],
+          "seq": 14,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20005-0000-0000-0000-000000000007",
+      "stepName": "assert: SELECT SUM(amount) CAST to NVARCHAR — DECIMAL(18,2) aggregate, scale preserved",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "select"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "SELECT CAST(SUM(amount) AS NVARCHAR(50)) AS total FROM [sgtester].[sgt_int05_post]"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sagg"
+    },
+    {
+      "stepGuid": "a7d20005-0000-0000-0000-000000000008",
+      "stepName": "assert: pull the scalar total out of the result DT",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "dt-get-value",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{sagg:resultDT}"
+          },
+          "rowIndex": {
+            "value": "0"
+          },
+          "column": {
+            "value": "total"
+          },
+          "resultVariable": {
+            "value": "{var:dbTotal}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20005-0000-0000-0000-000000000009",
+      "stepName": "cleanup: summary CSV total line (item=total, amount from the DB aggregate)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "csv-write-line",
+        "actionPropValues": {
+          "csvFile": {
+            "value": "{var:_sgtScratchDir}/posting-summary.csv"
+          },
+          "fields": {
+            "value": [
+              "total",
+              "",
+              "{var:dbTotal}"
+            ]
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 19,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

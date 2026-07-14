@@ -1,0 +1,451 @@
+{
+  "job": {
+    "jobName": "SGT xlcom-save-as-pdf — whole-workbook and single-sheet PDF export witnessed by %PDF magic bytes",
+    "jobGuid": "aa170002-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbFastP",
+      "token": "{var:wbFastP}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbP",
+      "token": "{var:wbP}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false,
+      "excelMeta": {
+        "mode": "full"
+      }
+    },
+    {
+      "name": "pdfAll",
+      "token": "{var:pdfAll}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "pdfSheet",
+      "token": "{var:pdfSheet}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "1f288722-5c9f-4cd4-a753-cc53df7e0385",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a4eedd03-d5c5-4a27-892c-b69911b7b065",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170002-0000-0000-0000-000000000001",
+      "stepName": "fast-mode 2-sheet seed for the literal-path sheet leg",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": "2"
+          },
+          "storeToVariable": {
+            "value": "{var:wbFastP}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170002-0000-0000-0000-000000000002",
+      "stepName": "xl-set-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbFastP}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "value": {
+            "value": "pdf-page-one"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170002-0000-0000-0000-000000000003",
+      "stepName": "xl-set-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbFastP}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "value": {
+            "value": "pdf-page-two"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170002-0000-0000-0000-000000000004",
+      "stepName": "xl-save-as-xlsx",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-xlsx",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbFastP}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/seedpdf.xlsx"
+          },
+          "replaceExisting": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170002-0000-0000-0000-000000000005",
+      "stepName": "FULL-mode live session for the whole-workbook variable leg",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": "1"
+          },
+          "storeToVariable": {
+            "value": "{var:wbP}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170002-0000-0000-0000-000000000006",
+      "stepName": "xl-set-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbP}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "value": {
+            "value": "pdf-live-session"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170002-0000-0000-0000-000000000007",
+      "stepName": "export whole workbook to PDF from the variable input",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xlcom-save-as-pdf",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:wbP}"
+          },
+          "outputPath": {
+            "value": "{var:_sgtScratchDir}/all.pdf"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "spdfall"
+    },
+    {
+      "stepGuid": "aa170002-0000-0000-0000-000000000008",
+      "stepName": "export only Sheet2 to PDF from the literal-path input",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xlcom-save-as-pdf",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/seedpdf.xlsx"
+          },
+          "outputPath": {
+            "value": "{var:_sgtScratchDir}/sheettwo.pdf"
+          },
+          "sheet": {
+            "value": "Sheet2"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "spdfsheet"
+    },
+    {
+      "stepGuid": "aa170002-0000-0000-0000-000000000009",
+      "stepName": "xl-close-workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-close-workbook",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbP}"
+          },
+          "saveBeforeClose": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170002-0000-0000-0000-000000000010",
+      "stepName": "get-file-contents",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/all.pdf"
+          },
+          "resultVariable": {
+            "value": "{var:pdfAll}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170002-0000-0000-0000-000000000011",
+      "stepName": "get-file-contents",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sheettwo.pdf"
+          },
+          "resultVariable": {
+            "value": "{var:pdfSheet}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

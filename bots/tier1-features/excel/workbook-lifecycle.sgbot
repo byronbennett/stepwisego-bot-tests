@@ -1,0 +1,1068 @@
+{
+  "job": {
+    "jobName": "SGT excel — workbook lifecycle (create, save-as-xlsx, save, open, close)",
+    "jobGuid": "e5a00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "crumbs",
+      "token": "{var:crumbs}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wb",
+      "token": "{var:wb}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wb2",
+      "token": "{var:wb2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wb3",
+      "token": "{var:wb3}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbCsv",
+      "token": "{var:wbCsv}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbXls",
+      "token": "{var:wbXls}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "existsBefore",
+      "token": "{var:existsBefore}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "existsAfterSave",
+      "token": "{var:existsAfterSave}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "namesAfterCreate",
+      "token": "{var:namesAfterCreate}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readA1",
+      "token": "{var:readA1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readB2",
+      "token": "{var:readB2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readSavedA2",
+      "token": "{var:readSavedA2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readOverwriteA1",
+      "token": "{var:readOverwriteA1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readCsvB2",
+      "token": "{var:readCsvB2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readClosed",
+      "token": "{var:readClosed}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "UNTOUCHED",
+      "defaultValue": "UNTOUCHED",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "91f67750-1d18-4823-8068-1653cdf13994",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "d16f62f3-6ceb-45a1-bd08-ac687abfc876",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000001",
+      "stepName": "clean-slate proof: book.xlsx absent before anything runs",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-exists",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/life/book.xlsx"
+          },
+          "resultVariable": {
+            "value": "{var:existsBefore}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-0000000000aa",
+      "stepName": "arrange: scratch subfolder (xl-save* does not mkdir parents)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/life"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000002",
+      "stepName": "create new workbook with 2 sheets → wb",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": 2
+          },
+          "storeToVariable": {
+            "value": "{var:wb}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000003",
+      "stepName": "fresh workbook has sheets Sheet1, Sheet2 (default naming pinned)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-sheet-names",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb}"
+          },
+          "storeToVariable": {
+            "value": "{var:namesAfterCreate}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000004",
+      "stepName": "seed A1 on default sheet with a session-scoped text value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "value": {
+            "value": "alpha-{var:_sgtSessionId}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000005",
+      "stepName": "seed Sheet2!B2 = 42 (sheetName prop routes to the second sheet)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "B2"
+          },
+          "value": {
+            "value": "42"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000006",
+      "stepName": "xl-save on a never-saved workbook (no file path) → representative error, buried",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000007",
+      "stepName": "save-as-xlsx to a new path (replaceExisting default false, target absent)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-xlsx",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/life/book.xlsx"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000008",
+      "stepName": "file-exists flips true after save-as (probe calibrated both polarities)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-exists",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/life/book.xlsx"
+          },
+          "resultVariable": {
+            "value": "{var:existsAfterSave}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000009",
+      "stepName": "save-as-xlsx onto the existing path with replaceExisting=false → error, buried",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-xlsx",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/life/book.xlsx"
+          },
+          "replaceExisting": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-00000000000a",
+      "stepName": "open the saved xlsx into a SECOND variable (independent reopen witness)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/life/book.xlsx"
+          },
+          "storeToVariable": {
+            "value": "{var:wb2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-00000000000b",
+      "stepName": "reopened A1 holds the session-scoped seed",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb2}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "storeToVariable": {
+            "value": "{var:readA1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-00000000000c",
+      "stepName": "in-bot check: A1 round-trip exact (token-built expected — DSL cannot express it)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:readA1}",
+                "comparator": "equalsExact",
+                "rightOperand": "alpha-{var:_sgtSessionId}"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e5a00001-0000-0000-0000-000000000c01",
+          "stepName": "crumb: reopen-a1-ok",
+          "parentGuid": "e5a00001-0000-0000-0000-00000000000c",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "reopen-a1-ok"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 16,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-00000000000d",
+      "stepName": "reopened Sheet2!B2 holds the number 42 (survives the xlsx round-trip)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb2}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "B2"
+          },
+          "storeToVariable": {
+            "value": "{var:readB2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-00000000000e",
+      "stepName": "mutate reopened workbook: A2 = saved-by-xl-save",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb2}"
+          },
+          "range": {
+            "value": "A2"
+          },
+          "value": {
+            "value": "saved-by-xl-save"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-00000000000f",
+      "stepName": "xl-save persists in place (wb2 carries filePath from the open step)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 19,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000010",
+      "stepName": "third independent open proves xl-save physically wrote A2 to disk",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/life/book.xlsx"
+          },
+          "storeToVariable": {
+            "value": "{var:wb3}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 20,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000011",
+      "stepName": "read A2 from the third open",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb3}"
+          },
+          "range": {
+            "value": "A2"
+          },
+          "storeToVariable": {
+            "value": "{var:readSavedA2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 21,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000012",
+      "stepName": "overwrite branch: change wb A1 then save-as-xlsx replaceExisting=true onto book.xlsx",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "value": {
+            "value": "overwritten-content"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 22,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000013",
+      "stepName": "save-as-xlsx replaceExisting=true overwrites the existing file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-xlsx",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/life/book.xlsx"
+          },
+          "replaceExisting": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 23,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000014",
+      "stepName": "fresh open after overwrite: A1 is the new content, A2 gone (wb never had it)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/life/book.xlsx"
+          },
+          "storeToVariable": {
+            "value": "{var:wb3}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 24,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000015",
+      "stepName": "read overwritten A1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb3}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "storeToVariable": {
+            "value": "{var:readOverwriteA1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 25,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000016",
+      "stepName": "write a plain CSV file for the csv-open branch",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/life/plain.csv"
+          },
+          "content": {
+            "value": "h1,h2\nv1,v2"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 26,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000017",
+      "stepName": "xl-open-existing-workbook on a .csv (ExcelJS csv reader branch)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/life/plain.csv"
+          },
+          "storeToVariable": {
+            "value": "{var:wbCsv}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 27,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000018",
+      "stepName": "csv-opened workbook: B2 = v2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbCsv}"
+          },
+          "range": {
+            "value": "B2"
+          },
+          "storeToVariable": {
+            "value": "{var:readCsvB2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 28,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-000000000019",
+      "stepName": "xl-open-existing-workbook on a .xls path → unsupported-format error, buried",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/life/legacy.xls"
+          },
+          "storeToVariable": {
+            "value": "{var:wbXls}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 29,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-00000000001a",
+      "stepName": "close wb2 (clears the variable)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-close-workbook",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb2}"
+          },
+          "saveBeforeClose": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 30,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00001-0000-0000-0000-00000000001b",
+      "stepName": "get-value from the closed workbook → error, buried; readClosed sentinel must stay UNTOUCHED",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wb2}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "storeToVariable": {
+            "value": "{var:readClosed}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 31,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

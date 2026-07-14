@@ -1,0 +1,87 @@
+{
+  "test": {
+    "id": "tier1-features/bot/run-bot-as-function",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-bot-as-function",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/child-echo.sgbot"
+    ],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "inline-round-trip",
+      "kind": "round-trip",
+      "description": "Default in-process fast path: greeting (with non-ASCII chars) maps in via msgIn, the child's upper-cased msgOut maps back via bothWays. SENTINEL default means a silent no-write would fail this pin.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "echoInline"
+          },
+          "HÉLLO WÖRLD ≤42"
+        ]
+      }
+    },
+    {
+      "id": "forked-round-trip",
+      "kind": "round-trip",
+      "description": "isolateProcess=true: same mapping crosses the process boundary via the temp-file inbound/outbound channel and must produce the identical value.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "echoForked"
+          },
+          "HÉLLO WÖRLD ≤42"
+        ]
+      }
+    },
+    {
+      "id": "status-true-both",
+      "kind": "round-trip",
+      "description": "statusVariable captured TRUE for both calls (parms default false, so a no-write reads as a real failure of this pin).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "statusInline"
+              },
+              true
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "statusForked"
+              },
+              true
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

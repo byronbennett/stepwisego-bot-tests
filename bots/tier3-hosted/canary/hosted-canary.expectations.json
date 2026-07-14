@@ -1,0 +1,45 @@
+{
+  "test": {
+    "id": "tier3-hosted/canary/hosted-canary",
+    "tier": 3,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "set-variable",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "exclusive": true
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "canary-ran",
+      "kind": "round-trip",
+      "description": "the canary step ran and stamped the session id",
+      "expr": {
+        "starts_with": [
+          {
+            "$var": "canaryOut"
+          },
+          "hosted-canary-ran:"
+        ]
+      }
+    }
+  ]
+}

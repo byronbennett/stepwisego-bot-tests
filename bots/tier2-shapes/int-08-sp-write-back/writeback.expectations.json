@@ -1,0 +1,261 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-08-sp-write-back",
+    "tier": 2,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "sp-create-list",
+        "sp-insert-item",
+        "sp-select-items",
+        "sp-update-item",
+        "loop",
+        "add-to-list",
+        "require-shared-vars"
+      ],
+      "pipeFns": [
+        "add"
+      ],
+      "patterns": [
+        "captured-datatable-write-back"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [
+      "sgt-{var:_sgtSessionId}-wb"
+    ],
+    "requiresEnv": [
+      "SGT_SP_TENANT_ID",
+      "SGT_SP_CLIENT_ID",
+      "SGT_SP_CLIENT_SECRET",
+      "SGT_SP_SITE_URL",
+      "SGT_SP_CERT_FILE",
+      "SGT_SP_CERT_KEY_FILE"
+    ],
+    "exclusive": true
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "pred-snapshot-rowcounts",
+      "kind": "round-trip",
+      "description": "both selects saw all three rows (captured snapshot before, verification read after)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b80008-0000-4000-8000-000000000006",
+                  "name": "rowCount"
+                }
+              },
+              3
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b80008-0000-4000-8000-000000000008",
+                  "name": "rowCount"
+                }
+              },
+              3
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-writeback-sequence",
+      "kind": "round-trip",
+      "description": "per-row computed fees (amt |add:0.25, exact decimals) came back through the re-select in order — the breadcrumb sequence pins per-iteration freshness AND exact arithmetic",
+      "expr": {
+        "equals": [
+          {
+            "$var": "feeCrumbs"
+          },
+          [
+            "w-1=10.75",
+            "w-2=20.5",
+            "w-3=0.25"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "pred-raw-fees",
+      "kind": "round-trip",
+      "description": "raw Graph state confirms every write-back landed exactly",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-wb"
+                    }
+                  },
+                  {
+                    "Title": "w-1"
+                  },
+                  "SgtFee"
+                ]
+              },
+              10.75
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-wb"
+                    }
+                  },
+                  {
+                    "Title": "w-2"
+                  },
+                  "SgtFee"
+                ]
+              },
+              20.5
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-wb"
+                    }
+                  },
+                  {
+                    "Title": "w-3"
+                  },
+                  "SgtFee"
+                ]
+              },
+              0.25
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-untouched-fields-intact",
+      "kind": "round-trip",
+      "description": "partial update left SgtNote and SgtAmt byte-identical raw",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-wb"
+                    }
+                  },
+                  {
+                    "Title": "w-1"
+                  },
+                  "SgtNote"
+                ]
+              },
+              "n1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-wb"
+                    }
+                  },
+                  {
+                    "Title": "w-2"
+                  },
+                  "SgtAmt"
+                ]
+              },
+              20.25
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-wb"
+                    }
+                  },
+                  {
+                    "Title": "w-3"
+                  },
+                  "SgtNote"
+                ]
+              },
+              "n3"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-last-update-exact",
+      "kind": "round-trip",
+      "description": "each in-loop update matched exactly one row (last iteration's counters)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b80008-0000-4000-8000-000000000007",
+                  "name": "affectedRows"
+                }
+              },
+              1
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b80008-0000-4000-8000-000000000007",
+                  "name": "failedCount"
+                }
+              },
+              0
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

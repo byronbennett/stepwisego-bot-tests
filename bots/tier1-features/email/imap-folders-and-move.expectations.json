@@ -1,0 +1,308 @@
+{
+  "test": {
+    "id": "tier1-features/email/imap-folders-and-move",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "get-email-folders-imap",
+        "move-single-email-imap",
+        "send-email",
+        "get-emails-imap",
+        "delete-single-email-imap",
+        "loop",
+        "if",
+        "set-variable",
+        "delay",
+        "exit-loop",
+        "require-shared-vars"
+      ],
+      "pipeFns": [
+        "add",
+        "count",
+        "folderName",
+        "parentFolderId",
+        "subject",
+        "totalMessages"
+      ],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_MAIL_SMTP_HOST",
+      "SGT_MAIL_SMTP_PORT",
+      "SGT_MAIL_IMAP_HOST",
+      "SGT_MAIL_IMAP_PORT",
+      "SGT_MAIL_ACCOUNT",
+      "SGT_MAIL_PASSWORD"
+    ],
+    "serialGroup": "mail-gmail"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 180000
+  },
+  "predictions": [
+    {
+      "id": "pred-calibration",
+      "kind": "round-trip",
+      "description": "ARRANGE fetch saw the standing [sgt-calibration] email — the IMAP fetcher provably works before any zero-match claim",
+      "expr": {
+        "equals": [
+          {
+            "$var": "calFound"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-clean-slate",
+      "kind": "round-trip",
+      "description": "no message carrying this session's marker existed in INBOX before ACT",
+      "expr": {
+        "equals": [
+          {
+            "$var": "preCount"
+          },
+          "0"
+        ]
+      }
+    },
+    {
+      "id": "pred-folders-nonempty",
+      "kind": "round-trip",
+      "description": "get-email-folders-imap returned a non-empty folder list (its `folderCount` step output, captured in-bot)",
+      "expr": {
+        "greater_than": [
+          {
+            "$var": "folderCountStep"
+          },
+          0
+        ]
+      }
+    },
+    {
+      "id": "pred-folder-count-agrees",
+      "kind": "round-trip",
+      "description": "the step-output folderCount agrees with |count over the result list — two independent readings of the same fetch",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "countAgree"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "foldersNonEmpty"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "folderCountStep"
+              },
+              {
+                "$var": "folderCountPipe"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-folder-names-readable",
+      "kind": "round-trip",
+      "description": "the three standing folders are identified by READING each loop item's name (|folderName), and INBOX reports a real message count (|totalMessages). GUARDS THE FIX shipped in this track: EmailFolder objects were unreachable from bot tokens (no accessor read .name; {loopItem} stringifies an object to '[object Object]'), and the IMAP runner hard-coded both counts to 0 — so a bot could list folders but never branch on one.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "sawInbox"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "sawArchive"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "sawBulk"
+              },
+              "1"
+            ]
+          },
+          {
+            "greater_than": [
+              {
+                "$var": "inboxTotal"
+              },
+              "0"
+            ]
+          }
+        ]
+      },
+      "approvedAt": "2026-07-12T00:00:00Z",
+      "approvedBy": "regression-campaign-track13"
+    },
+    {
+      "id": "pred-delivered",
+      "kind": "round-trip",
+      "description": "the SMTP-sent, session-marked message arrived and was found in INBOX by IMAP within the poll budget (cross-protocol witness: SMTP writer, IMAP reader)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "found"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "foundSubject"
+              },
+              {
+                "$var": "archSubject"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "foundFolder"
+              },
+              "INBOX"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-move-success",
+      "kind": "round-trip",
+      "description": "move-single-email-imap reported success via its `success` step output (targeted move driven by a live {sfl:loopItem} step token)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "moveSuccess"
+          },
+          "true"
+        ]
+      }
+    },
+    {
+      "id": "pred-in-archive",
+      "kind": "round-trip",
+      "description": "the moved message is now readable from sgt-archive: exact subject pin (in-bot equalsExact incl. session marker) and the fetched copy reports sgt-archive as its parent folder",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "archFound"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "archSubjectOk"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "archFolder"
+              },
+              "sgt-archive"
+            ]
+          },
+          {
+            "starts_with": [
+              {
+                "$var": "archSubject"
+              },
+              "[sgt-"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$var": "archSubject"
+              },
+              "] folders-and-move"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-gone-from-inbox",
+      "kind": "round-trip",
+      "description": "the other half of the MOVE: a fresh INBOX fetch finds zero session-marked messages (IMAP MOVE = copy + delete, not copy)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "inboxRemaining"
+          },
+          "0"
+        ]
+      }
+    },
+    {
+      "id": "pred-cleanup-deleted",
+      "kind": "round-trip",
+      "description": "CLEANUP deleted the session message out of sgt-archive with delete-single-email-imap (targeted, live {scl:loopItem} step token)",
+      "expr": {
+        "greater_than": [
+          {
+            "$var": "deletedCount"
+          },
+          0
+        ]
+      }
+    },
+    {
+      "id": "pred-archive-empty-after",
+      "kind": "round-trip",
+      "description": "post-delete re-fetch of sgt-archive finds zero session-marked messages — the box is left exactly as found",
+      "expr": {
+        "equals": [
+          {
+            "$var": "afterCount"
+          },
+          "0"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "test": {
+    "id": "tier1-features/statistics/metrics-recording",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["record-metric", "increment-counter", "record-amount", "record-transaction-outcome", "set-variable"],
+      "pipeFns": ["passCount", "failCount"],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "counters-start-zero",
+      "kind": "round-trip",
+      "description": "Baseline snapshots taken as steps 1-2 execute: passCount and failCount are 0 before anything completes (a step's own pass is recorded AFTER its runner returns).",
+      "expr": {
+        "and": [
+          { "equals": [ { "$var": "snapPass0" }, "0" ] },
+          { "equals": [ { "$var": "snapFail0" }, "0" ] }
+        ]
+      }
+    },
+    {
+      "id": "transaction-outcome-feeds-rollup",
+      "kind": "round-trip",
+      "description": "record-transaction-outcome adds its count to the bot-level rollup (spec §7.1 Action 3): at snapshot time passCount = 7 engine auto step-passes (steps 1-7) + 2 explicit = 9, and failCount = 1 explicit only (no step failed). The three pure metric writers (record-metric, increment-counter, record-amount) contribute NOTHING to these counters — 9/1 would be wrong if any of them did.",
+      "expr": {
+        "and": [
+          { "equals": [ { "$var": "snapPass1" }, "9" ] },
+          { "equals": [ { "$var": "snapFail1" }, "1" ] }
+        ]
+      }
+    },
+    {
+      "id": "gauge-payload-exact",
+      "kind": "round-trip",
+      "description": "Track 8 observability: record-metric's gauge payload lands on RunState.metrics with FixedDecimal exactness — value is the exact decimal string '12.5' (scale 1, no float round-trip), kind gauge, unit preserved.",
+      "expr": {
+        "and": [
+          { "equals": [ { "$metric": { "name": "sgt.gauge", "field": "kind" } }, "gauge" ] },
+          { "equals": [ { "$metric": { "name": "sgt.gauge", "field": "value" } }, "12.5" ] },
+          { "equals": [ { "$metric": { "name": "sgt.gauge", "field": "unit" } }, "items" ] }
+        ]
+      }
+    },
+    {
+      "id": "counter-payload-exact",
+      "kind": "round-trip",
+      "description": "increment-counter's default amount records a counter metric of exactly '1' (scale 0).",
+      "expr": {
+        "and": [
+          { "equals": [ { "$metric": { "name": "sgt.count", "field": "kind" } }, "counter" ] },
+          { "equals": [ { "$metric": { "name": "sgt.count", "field": "value" } }, "1" ] }
+        ]
+      }
+    },
+    {
+      "id": "money-payload-exact",
+      "kind": "round-trip",
+      "description": "record-amount records a money metric: exact decimal string '12.34' (integer minor units, scale 2), ISO currency USD, unit and tags preserved (tags.env via the dotted $metric path).",
+      "expr": {
+        "and": [
+          { "equals": [ { "$metric": { "name": "sgt.amount", "field": "kind" } }, "money" ] },
+          { "equals": [ { "$metric": { "name": "sgt.amount", "field": "value" } }, "12.34" ] },
+          { "equals": [ { "$metric": { "name": "sgt.amount", "field": "currency" } }, "USD" ] },
+          { "equals": [ { "$metric": { "name": "sgt.amount", "field": "unit" } }, "reconciled" ] },
+          { "equals": [ { "$metric": { "name": "sgt.amount", "field": "tags.env" } }, "dev" ] }
+        ]
+      }
+    },
+    {
+      "id": "outcome-payloads",
+      "kind": "round-trip",
+      "description": "record-transaction-outcome also records named outcome metrics alongside the rollup: txn-ok is a pass with count 2, txn-bad a fail with count 1.",
+      "expr": {
+        "and": [
+          { "equals": [ { "$metric": { "name": "txn-ok", "field": "status" } }, "pass" ] },
+          { "equals": [ { "$metric": { "name": "txn-ok", "field": "value" } }, 2 ] },
+          { "equals": [ { "$metric": { "name": "txn-bad", "field": "status" } }, "fail" ] },
+          { "equals": [ { "$metric": { "name": "txn-bad", "field": "value" } }, 1 ] }
+        ]
+      }
+    },
+    {
+      "id": "bad-metric-not-recorded",
+      "kind": "round-trip",
+      "description": "The non-decimal record-metric value fails at parse time and records NOTHING — $metric returns null for sgt.bad (the buried error left no metric behind).",
+      "expr": { "equals": [ { "$metric": { "name": "sgt.bad" } }, null ] }
+    }
+  ]
+}

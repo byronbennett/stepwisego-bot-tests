@@ -1,0 +1,1054 @@
+{
+  "job": {
+    "jobName": "SGT files — folder ops (create-folder, delete-folder, get-files, get-folders)",
+    "jobGuid": "f4a00004-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "crumbs",
+      "token": "{var:crumbs}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "madeExists",
+      "token": "{var:madeExists}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "nestedGone",
+      "token": "{var:nestedGone}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "subSurvived",
+      "token": "{var:subSurvived}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "subAfterRecursive",
+      "token": "{var:subAfterRecursive}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "filesTop",
+      "token": "{var:filesTop}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "filesAll",
+      "token": "{var:filesAll}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "filesCsv",
+      "token": "{var:filesCsv}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "filesCapped",
+      "token": "{var:filesCapped}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foldersTop",
+      "token": "{var:foldersTop}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foldersAll",
+      "token": "{var:foldersAll}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foldersS",
+      "token": "{var:foldersS}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "4ad47072-3c5b-4102-9d38-60391119e7f6",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "fb56d513-acfe-43c1-baa2-bf67aa147343",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000001",
+      "stepName": "create-folder with nested path (parents auto-created)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo/made/nested"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000002",
+      "stepName": "folder exists after create (file-exists works on directories too)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-exists",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fo/made/nested"
+          },
+          "resultVariable": {
+            "value": "{var:madeExists}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000003",
+      "stepName": "create-folder on an EXISTING path is idempotent (no error)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo/made/nested"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000004",
+      "stepName": "seed fo/a.txt",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fo/a.txt"
+          },
+          "content": {
+            "value": "alpha"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000005",
+      "stepName": "seed fo/b.csv",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fo/b.csv"
+          },
+          "content": {
+            "value": "h1,h2\n1,2"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000006",
+      "stepName": "seed fo/sub/c.txt",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fo/sub/c.txt"
+          },
+          "content": {
+            "value": "charlie"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000007",
+      "stepName": "seed fo/sub/deep/d.csv",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fo/sub/deep/d.csv"
+          },
+          "content": {
+            "value": "x,y\n3,4"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000008",
+      "stepName": "seed fo/sub/e.log",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fo/sub/e.log"
+          },
+          "content": {
+            "value": "log line"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000009",
+      "stepName": "get-files non-recursive → only the 2 top-level files",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-files",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo"
+          },
+          "recursive": {
+            "value": false
+          },
+          "resultVariable": {
+            "value": "filesTop"
+          },
+          "keepExistingItems": {
+            "value": false
+          },
+          "maxFiles": {
+            "value": 0
+          },
+          "fileConditions": {
+            "value": []
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-00000000000a",
+      "stepName": "get-files recursive → all 5 files",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-files",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo"
+          },
+          "recursive": {
+            "value": true
+          },
+          "resultVariable": {
+            "value": "filesAll"
+          },
+          "keepExistingItems": {
+            "value": false
+          },
+          "maxFiles": {
+            "value": 0
+          },
+          "fileConditions": {
+            "value": []
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-00000000000b",
+      "stepName": "get-files recursive + extension condition (csv) → 2 files",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-files",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo"
+          },
+          "recursive": {
+            "value": true
+          },
+          "resultVariable": {
+            "value": "filesCsv"
+          },
+          "keepExistingItems": {
+            "value": false
+          },
+          "maxFiles": {
+            "value": 0
+          },
+          "fileConditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftSide": "",
+                "rightSide": "csv",
+                "comparator": "equals",
+                "caseSensitive": false,
+                "isActive": true,
+                "dataType": "fileAttribute.extension"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-00000000000c",
+      "stepName": "get-files recursive with maxFiles=3 caps the result",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-files",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo"
+          },
+          "recursive": {
+            "value": true
+          },
+          "resultVariable": {
+            "value": "filesCapped"
+          },
+          "keepExistingItems": {
+            "value": false
+          },
+          "maxFiles": {
+            "value": 3
+          },
+          "fileConditions": {
+            "value": []
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-00000000000d",
+      "stepName": "get-files keepExistingItems=true appends the 2 top-level files onto filesCsv (2+2=4)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-files",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo"
+          },
+          "recursive": {
+            "value": false
+          },
+          "resultVariable": {
+            "value": "filesCsv"
+          },
+          "keepExistingItems": {
+            "value": true
+          },
+          "maxFiles": {
+            "value": 0
+          },
+          "fileConditions": {
+            "value": []
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-00000000000e",
+      "stepName": "get-folders non-recursive → sub + made (2)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-folders",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo"
+          },
+          "pattern": {
+            "value": "*"
+          },
+          "recursive": {
+            "value": false
+          },
+          "resultVariable": {
+            "value": "foldersTop"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-00000000000f",
+      "stepName": "get-folders recursive → sub, sub/deep, made, made/nested (4)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-folders",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo"
+          },
+          "pattern": {
+            "value": "*"
+          },
+          "recursive": {
+            "value": true
+          },
+          "resultVariable": {
+            "value": "foldersAll"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000010",
+      "stepName": "get-folders recursive with glob pattern s* → only 'sub' matches by name (1)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-folders",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo"
+          },
+          "pattern": {
+            "value": "s*"
+          },
+          "recursive": {
+            "value": true
+          },
+          "resultVariable": {
+            "value": "foldersS"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000011",
+      "stepName": "in-bot membership: listings contain the session-scoped paths (list contains = item-wise)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:filesTop}",
+                "comparator": "contains",
+                "rightOperand": "{var:_sgtScratchDir}/fo/a.txt"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:filesTop}",
+                "comparator": "notContains",
+                "rightOperand": "{var:_sgtScratchDir}/fo/sub/c.txt"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:filesAll}",
+                "comparator": "contains",
+                "rightOperand": "{var:_sgtScratchDir}/fo/sub/deep/d.csv"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:filesCsv}",
+                "comparator": "contains",
+                "rightOperand": "{var:_sgtScratchDir}/fo/sub/deep/d.csv"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:foldersTop}",
+                "comparator": "contains",
+                "rightOperand": "{var:_sgtScratchDir}/fo/sub"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:foldersAll}",
+                "comparator": "contains",
+                "rightOperand": "{var:_sgtScratchDir}/fo/made/nested"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:foldersS}",
+                "comparator": "contains",
+                "rightOperand": "{var:_sgtScratchDir}/fo/sub"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:foldersS}",
+                "comparator": "notContains",
+                "rightOperand": "{var:_sgtScratchDir}/fo/made"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "f4a00004-0000-0000-0000-000000001101",
+          "stepName": "crumb: listings-membership-ok",
+          "parentGuid": "f4a00004-0000-0000-0000-000000000011",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "listings-membership-ok"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 20,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 19,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000012",
+      "stepName": "delete-folder non-recursive on EMPTY folder succeeds",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "delete-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo/made/nested"
+          },
+          "recursive": {
+            "value": false
+          },
+          "throwIfNotExist": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 21,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000013",
+      "stepName": "empty folder is gone (in-bot witness)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-exists",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fo/made/nested"
+          },
+          "resultVariable": {
+            "value": "{var:nestedGone}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 22,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000014",
+      "stepName": "delete-folder non-recursive on NON-EMPTY folder (ENOTEMPTY error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "delete-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo/sub"
+          },
+          "recursive": {
+            "value": false
+          },
+          "throwIfNotExist": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 23,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000015",
+      "stepName": "non-empty folder survived the failed non-recursive delete",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-exists",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fo/sub"
+          },
+          "resultVariable": {
+            "value": "{var:subSurvived}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 24,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000016",
+      "stepName": "delete-folder recursive removes the whole subtree",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "delete-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo/sub"
+          },
+          "recursive": {
+            "value": true
+          },
+          "throwIfNotExist": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 25,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000017",
+      "stepName": "subtree gone after recursive delete (in-bot witness)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-exists",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fo/sub"
+          },
+          "resultVariable": {
+            "value": "{var:subAfterRecursive}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 26,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000018",
+      "stepName": "delete-folder on missing path, throwIfNotExist=false (default) → success",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "delete-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo/ghost"
+          },
+          "recursive": {
+            "value": false
+          },
+          "throwIfNotExist": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 27,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00004-0000-0000-0000-000000000019",
+      "stepName": "delete-folder on missing path, throwIfNotExist=true (error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "delete-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fo/ghost"
+          },
+          "recursive": {
+            "value": false
+          },
+          "throwIfNotExist": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 28,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

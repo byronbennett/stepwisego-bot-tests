@@ -1,0 +1,54 @@
+{
+  "job": {
+    "jobName": "SGT INT-07 child #2 — write each inbound row to the output CSV, then audit",
+    "jobGuid": "a7d20007-c200-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "rows", "token": "{var:rows}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "outPath", "token": "{var:outPath}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "CHILD-DEFAULT-OUTPATH", "defaultValue": "CHILD-DEFAULT-OUTPATH", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "auditPath", "token": "{var:auditPath}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "CHILD-DEFAULT-AUDITPATH", "defaultValue": "CHILD-DEFAULT-AUDITPATH", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "a7d20007-c200-0000-0000-000000000001",
+      "stepName": "loop rows, append each as a CSV line",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "srow",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": { "loopType": { "value": "list" }, "listVariable": { "value": "{var:rows}" } },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "a7d20007-c200-0000-0000-000000000101",
+          "stepName": "csv-write-line {srow:loopItem} → outPath",
+          "parentGuid": "a7d20007-c200-0000-0000-000000000001",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "csv-write-line",
+            "actionPropValues": { "csvFile": { "value": "{var:outPath}" }, "fields": { "value": ["{srow:loopItem}"] }, "delimiter": { "value": "," }, "quoteAllFields": { "value": false } },
+            "requiresChildSteps": false
+          },
+          "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "a7d20007-c200-0000-0000-000000000002",
+      "stepName": "audit: append child2 row to the shared audit CSV",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "csv-write-line",
+        "actionPropValues": { "csvFile": { "value": "{var:auditPath}" }, "fields": { "value": ["child2", "done"] }, "delimiter": { "value": "," }, "quoteAllFields": { "value": false } },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

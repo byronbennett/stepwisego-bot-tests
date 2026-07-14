@@ -1,0 +1,164 @@
+{
+  "test": {
+    "id": "tier1-features/web/js-eval",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "execute-javascript",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/js-eval.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "string-marshals-verbatim",
+      "kind": "round-trip",
+      "description": "string result stored as-is",
+      "expr": {
+        "equals": [
+          {
+            "$var": "jsStr"
+          },
+          "sgt-str"
+        ]
+      }
+    },
+    {
+      "id": "float64-binary-arithmetic",
+      "kind": "round-trip",
+      "description": "0.1 + 0.2 pins IEEE-754 float64 page semantics (NOT StepwiseGO exact numerics — this is the page's engine)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "jsFloat"
+          },
+          "0.30000000000000004"
+        ]
+      }
+    },
+    {
+      "id": "above-2p53-precision-loss",
+      "kind": "round-trip",
+      "description": "9007199254740993 loses precision in the page's number type — documents the boundary",
+      "expr": {
+        "equals": [
+          {
+            "$var": "jsBig"
+          },
+          "9007199254740992"
+        ]
+      }
+    },
+    {
+      "id": "object-json-stringified",
+      "kind": "round-trip",
+      "description": "object results come back JSON.stringified",
+      "expr": {
+        "equals": [
+          {
+            "$var": "jsObj"
+          },
+          "{\"a\":1,\"b\":\"x\"}"
+        ]
+      }
+    },
+    {
+      "id": "array-json-stringified",
+      "kind": "round-trip",
+      "description": "array results come back JSON.stringified",
+      "expr": {
+        "equals": [
+          {
+            "$var": "jsArr"
+          },
+          "[1,\"two\",null]"
+        ]
+      }
+    },
+    {
+      "id": "null-becomes-empty-string",
+      "kind": "round-trip",
+      "description": "null result clobbers the sentinel with empty string",
+      "expr": {
+        "equals": [
+          {
+            "$var": "jsNull"
+          },
+          ""
+        ]
+      }
+    },
+    {
+      "id": "boolean-stringified",
+      "kind": "round-trip",
+      "description": "boolean results stringify",
+      "expr": {
+        "equals": [
+          {
+            "$var": "jsBool"
+          },
+          "true"
+        ]
+      }
+    },
+    {
+      "id": "promises-are-awaited",
+      "kind": "round-trip",
+      "description": "a promise result is awaited before marshaling",
+      "expr": {
+        "equals": [
+          {
+            "$var": "jsAsync"
+          },
+          "async-done"
+        ]
+      }
+    },
+    {
+      "id": "dom-read",
+      "kind": "round-trip",
+      "description": "evaluate can read the DOM",
+      "expr": {
+        "equals": [
+          {
+            "$var": "jsDom"
+          },
+          "SGT JS Eval"
+        ]
+      }
+    },
+    {
+      "id": "throw-fails-step-var-untouched",
+      "kind": "round-trip",
+      "description": "a thrown page error fails the (buried) step and never writes the result var",
+      "expr": {
+        "equals": [
+          {
+            "$var": "jsFail"
+          },
+          "SENTINEL"
+        ]
+      }
+    }
+  ]
+}

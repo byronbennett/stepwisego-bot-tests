@@ -1,0 +1,745 @@
+{
+  "job": {
+    "jobName": "email-imap-error-paths",
+    "jobGuid": "e13a0003-0000-4000-8000-000000000000",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "efe93d68-4f2a-4991-8a88-c04a050122bb",
+      "stepName": "Require shared variables: sgtMailAccount, sgtMailImapHost, sgtMailImapPort, sgtMailPassword, sgtMailSmtpHost, sgtMailSmtpPort",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtMailAccount\nsgtMailImapHost\nsgtMailImapPort\nsgtMailPassword\nsgtMailSmtpHost\nsgtMailSmtpPort"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "0e5ecbd2-93b6-430f-8ef1-c8b7446bd3d5",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000001",
+      "stepName": "arrange: calibration fetch (good creds, INBOX) — proves the fetcher works",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 5
+          },
+          "resultVariable": {
+            "value": "{var:calEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "scal"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000003",
+      "stepName": "calibration saw at least one message?",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{scal:emailCount}",
+                "comparator": "greaterThan",
+                "rightOperand": "0"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0003-0000-4000-8000-000000000002",
+          "stepName": "set {var:calOk}",
+          "parentGuid": "e13a0003-0000-4000-8000-000000000003",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "set-variable",
+            "actionPropValues": {
+              "variableToken": {
+                "value": "{var:calOk}"
+              },
+              "valueSource": {
+                "value": "substitute"
+              },
+              "value": {
+                "value": "1"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 5,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000004",
+      "stepName": "leg A: get-emails-imap with a WRONG password (buried auth failure)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "sgt-definitely-not-the-password"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 5
+          },
+          "resultVariable": {
+            "value": "{var:legAEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sla"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000005",
+      "stepName": "leg B: send-email to an unreachable SMTP endpoint (buried connect failure)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "send-email",
+        "actionPropValues": {
+          "useConnectionVariable": {
+            "value": false
+          },
+          "smtpServer": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "1"
+          },
+          "useSsl": {
+            "value": false
+          },
+          "requiresAuth": {
+            "value": false
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": ""
+          },
+          "from": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "to": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "cc": {
+            "value": ""
+          },
+          "bcc": {
+            "value": ""
+          },
+          "priority": {
+            "value": "normal"
+          },
+          "subject": {
+            "value": "[sgt-{var:_sgtSessionId}] never delivered"
+          },
+          "isHtml": {
+            "value": false
+          },
+          "body": {
+            "value": "this message must never reach the mailbox"
+          },
+          "attachments": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssnd"
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000006",
+      "stepName": "pin: send step's messageId output after the buried failure",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:legBMessageId}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{ssnd:messageId}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000007",
+      "stepName": "leg C: get-emails-imap against a non-existent folder (buried failure)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "sgt-no-such-folder-{var:_sgtSessionId}"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 5
+          },
+          "resultVariable": {
+            "value": "{var:legCEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "slc"
+    },
+    {
+      "stepGuid": "e14e0001-0000-4000-8000-000000000020",
+      "stepName": "leg D: wrong password, message captured via Error Handler",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "sehA",
+      "actionOp": {
+        "actionName": "error-handler",
+        "actionPropValues": {
+          "statusVariable": {
+            "value": "{var:authMsgStatus}"
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e14e0001-0000-4000-8000-000000000021",
+          "stepName": "get-emails-imap with a wrong password",
+          "parentGuid": "e14e0001-0000-4000-8000-000000000020",
+          "actionType": "action",
+          "stepPrefix": "sld",
+          "actionOp": {
+            "actionName": "get-emails-imap",
+            "actionPropValues": {
+              "imapServer": {
+                "value": "{svar:sgtMailImapHost}"
+              },
+              "port": {
+                "value": "{svar:sgtMailImapPort}"
+              },
+              "useSsl": {
+                "value": true
+              },
+              "emailAccount": {
+                "value": "{svar:sgtMailAccount}"
+              },
+              "password": {
+                "value": "definitely-not-the-password"
+              },
+              "folder": {
+                "value": "INBOX"
+              },
+              "maxEmails": {
+                "value": 1
+              },
+              "resultVariable": {
+                "value": "{var:legDEmails}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 11,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "stepGuid": "e14e0001-0000-4000-8000-000000000030",
+      "stepName": "leg E: non-existent folder, message captured via Error Handler",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "sehB",
+      "actionOp": {
+        "actionName": "error-handler",
+        "actionPropValues": {
+          "statusVariable": {
+            "value": "{var:folderMsgStatus}"
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e14e0001-0000-4000-8000-000000000031",
+          "stepName": "get-emails-imap against a folder that does not exist",
+          "parentGuid": "e14e0001-0000-4000-8000-000000000030",
+          "actionType": "action",
+          "stepPrefix": "sle",
+          "actionOp": {
+            "actionName": "get-emails-imap",
+            "actionPropValues": {
+              "imapServer": {
+                "value": "{svar:sgtMailImapHost}"
+              },
+              "port": {
+                "value": "{svar:sgtMailImapPort}"
+              },
+              "useSsl": {
+                "value": true
+              },
+              "emailAccount": {
+                "value": "{svar:sgtMailAccount}"
+              },
+              "password": {
+                "value": "{svar:sgtMailPassword}"
+              },
+              "folder": {
+                "value": "sgt-no-such-folder-{var:_sgtSessionId}"
+              },
+              "maxEmails": {
+                "value": 1
+              },
+              "resultVariable": {
+                "value": "{var:legEEmails}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 13,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000008",
+      "stepName": "set {var:crumb}",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:crumb}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "continued-after-failures"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0003-0000-4000-8000-000000000009",
+      "stepName": "assert: crumb file (out-of-band witness that the run reached the end)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/crumb.txt"
+          },
+          "content": {
+            "value": "crumb {var:crumb}"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "calEmails",
+      "token": "{var:calEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "legAEmails",
+      "token": "{var:legAEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "legCEmails",
+      "token": "{var:legCEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "calOk",
+      "token": "{var:calOk}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "legBMessageId",
+      "token": "{var:legBMessageId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "crumb",
+      "token": "{var:crumb}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "authMsgStatus",
+      "token": "{var:authMsgStatus}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folderMsgStatus",
+      "token": "{var:folderMsgStatus}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "legDEmails",
+      "token": "{var:legDEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "legEEmails",
+      "token": "{var:legEEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.176"
+}

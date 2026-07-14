@@ -1,0 +1,354 @@
+{
+  "test": {
+    "id": "tier1-features/email/imap-flags-and-bulk-delete",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "delete-emails-imap",
+        "get-emails-imap",
+        "move-single-email-imap",
+        "send-email",
+        "delete-single-email-imap",
+        "loop",
+        "if",
+        "set-variable",
+        "delay",
+        "exit-loop",
+        "require-shared-vars"
+      ],
+      "pipeFns": [
+        "subject",
+        "isRead",
+        "count",
+        "add"
+      ],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_MAIL_SMTP_HOST",
+      "SGT_MAIL_SMTP_PORT",
+      "SGT_MAIL_IMAP_HOST",
+      "SGT_MAIL_IMAP_PORT",
+      "SGT_MAIL_ACCOUNT",
+      "SGT_MAIL_PASSWORD"
+    ],
+    "serialGroup": "mail-gmail"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 180000
+  },
+  "predictions": [
+    {
+      "id": "pred-calibration",
+      "kind": "round-trip",
+      "description": "ARRANGE fetch saw the standing [sgt-calibration] email — the IMAP fetcher provably works before any zero-match claim",
+      "expr": {
+        "equals": [
+          {
+            "$var": "calFound"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-clean-slate",
+      "kind": "round-trip",
+      "description": "no message carrying this session's marker existed in INBOX before ACT",
+      "expr": {
+        "equals": [
+          {
+            "$var": "preCount"
+          },
+          "0"
+        ]
+      }
+    },
+    {
+      "id": "pred-both-delivered",
+      "kind": "round-trip",
+      "description": "BOTH session-marked messages (A and B) arrived in INBOX within the poll budget (cross-protocol witness: SMTP writer, IMAP reader)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "bothSeen"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "seenA"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "seenB"
+              },
+              "1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-unread-on-arrival",
+      "kind": "round-trip",
+      "description": "fetched with markAsRead=false, both freshly delivered messages report isRead=false — a never-opened message carries no \\Seen flag",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "aReadBefore"
+              },
+              "false"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "bReadBefore"
+              },
+              "false"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-unreadonly-sees-unread",
+      "kind": "round-trip",
+      "description": "the unreadOnly=true filter returns BOTH freshly delivered session messages, and each reports isRead=false — the flag state the IMAP reader exposes for a never-opened message",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "unreadBeforeA"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "unreadBeforeB"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "unreadAIsRead"
+              },
+              "false"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "unreadBIsRead"
+              },
+              "false"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-moved-to-bulk",
+      "kind": "round-trip",
+      "description": "both session messages were moved INBOX -> sgt-bulk with move-single-email-imap (targeted, live {sml:loopItem} step tokens) and the last move reported success",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "movedCount"
+              },
+              "2"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "moveSuccess"
+              },
+              "true"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-bulk-staged",
+      "kind": "round-trip",
+      "description": "exactly the two session messages are readable from sgt-bulk before the bulk delete fires — the delete's blast radius is what we think it is",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "bulkBoth"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "bulkBefore"
+              },
+              "2"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-bulk-unread-calibrated",
+      "kind": "round-trip",
+      "description": "PROBE CALIBRATION in the folder the flag flip happens in: before markAsRead, an unreadOnly=true fetch of sgt-bulk returns BOTH session messages. Without this, the post-flip zero-match claim could mean a broken filter rather than a written \\Seen flag.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "bulkUnreadBefore"
+          },
+          "2"
+        ]
+      }
+    },
+    {
+      "id": "pred-markasread-fetch",
+      "kind": "round-trip",
+      "description": "the markAsRead=true fetch of sgt-bulk returned both session messages (it is the act that flips \\Seen on what it returns; scoped to sgt-bulk so INBOX's standing mail is never touched)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "markFetchA"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "markFetchB"
+              },
+              "1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-seen-flag-written",
+      "kind": "round-trip",
+      "description": "after the markAsRead=true fetch, an unreadOnly=true re-fetch of sgt-bulk returns NOTHING — zero session messages and zero unread messages at all: the \\Seen flag was really written server-side (same filter that saw both a moment earlier)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "unreadSessionCount"
+              },
+              "0"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "unreadAfterTotal"
+              },
+              "0"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-bulk-delete-reports",
+      "kind": "round-trip",
+      "description": "delete-emails-imap (folder=sgt-bulk, no subject filter, action under test) ran clean and REPORTED deleting the two staged messages via its deletedCount step output",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "bulkDeleted"
+              },
+              "2"
+            ]
+          },
+          {
+            "greater_than": [
+              {
+                "$var": "bulkDeleted"
+              },
+              1
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-bulk-empty-after",
+      "kind": "round-trip",
+      "description": "delete-emails-imap emptied the sgt-bulk staging folder. GUARDS THE FIX shipped in this track: the runner used to call client.search() WITHOUT {uid:true} — imapflow answers with SEQUENCE numbers — and then passed that list to messageFlagsAdd/messageDelete with {uid:true}, reinterpreting sequence numbers as UIDs. The two agree only in a virgin mailbox; anywhere else it deleted the WRONG messages (or none) while still reporting success with a deletedCount.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "bulkAfterCount"
+              },
+              "0"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "bulkAfterTotal"
+              },
+              "0"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-inbox-left-clean",
+      "kind": "round-trip",
+      "description": "INBOX carries zero session-marked messages at the end (the moves took both out; the standing calibration/fixture mail is untouched)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "inboxLeftover"
+          },
+          "0"
+        ]
+      }
+    }
+  ]
+}

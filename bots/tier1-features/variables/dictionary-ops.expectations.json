@@ -1,0 +1,68 @@
+{
+  "test": {
+    "id": "tier1-features/variables/dictionary-ops",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["set-dictionary-value", "remove-from-dictionary", "clear-dictionary", "set-variable"],
+      "pipeFns": ["keys", "key", "hasKey", "join", "count"],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "keys-insertion-order-no-duplicate",
+      "kind": "round-trip",
+      "description": "After set alpha, set beta, overwrite alpha, set token key gamma: keys are alpha;beta;gamma — insertion order preserved, overwriting an existing key does NOT create a duplicate, and both key and value token substitution worked (gamma came from {var:seedKey}).",
+      "expr": { "equals": [ { "$var": "snapKeysFull" }, "alpha;beta;gamma" ] }
+    },
+    {
+      "id": "overwrite-wins",
+      "kind": "round-trip",
+      "description": "Reading alpha back via the key: pipe yields the second write's value, not the first.",
+      "expr": { "equals": [ { "$var": "snapAlpha" }, "overwritten" ] }
+    },
+    {
+      "id": "haskey-true-before-remove",
+      "kind": "round-trip",
+      "description": "hasKey:beta reports True (engine boolean formatting) while beta is present.",
+      "expr": { "equals": [ { "$var": "snapHasBeta" }, "True" ] }
+    },
+    {
+      "id": "remove-deletes-only-target",
+      "kind": "round-trip",
+      "description": "remove-from-dictionary drops exactly beta: remaining keys alpha;gamma keep relative order and hasKey:beta flips to False.",
+      "expr": {
+        "and": [
+          { "equals": [ { "$var": "snapKeysAfterRemove" }, "alpha;gamma" ] },
+          { "equals": [ { "$var": "snapHasBetaAfterRemove" }, "False" ] }
+        ]
+      }
+    },
+    {
+      "id": "remove-missing-key-noop",
+      "kind": "round-trip",
+      "description": "Removing a key that is not in the dictionary passes as a no-op (ignoreErrors NOT set on that step) and leaves the keys unchanged.",
+      "expr": { "equals": [ { "$var": "snapKeysAfterNoopRemove" }, "alpha;gamma" ] }
+    },
+    {
+      "id": "clear-empties-dictionary",
+      "kind": "round-trip",
+      "description": "clear-dictionary leaves zero keys; the snapshot variable started as SENTINEL so the 0 proves the pipe actually ran against the cleared dictionary.",
+      "expr": { "equals": [ { "$var": "snapCountAfterClear" }, "0" ] }
+    }
+  ]
+}

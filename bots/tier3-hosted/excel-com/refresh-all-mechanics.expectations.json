@@ -1,0 +1,83 @@
+{
+  "test": {
+    "id": "tier3-hosted/excel-com/refresh-all-mechanics",
+    "tier": 3,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xlcom-refresh-all",
+        "xl-create-new-workbook",
+        "xl-set-value",
+        "xl-save-as-xlsx",
+        "xl-open-existing-workbook",
+        "xl-get-value",
+        "xl-save-as-csv",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ],
+    "serialGroup": "vm-excel-com"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "refresh-noop-succeeds",
+      "kind": "round-trip",
+      "description": "RefreshAll on a workbook with zero connections/queries completes without error (pinned contract; a real external-query fixture is deferred — needs a hand-built workbook, see review).",
+      "expr": {
+        "equals": [
+          {
+            "$var": "refA"
+          },
+          "refresh-me"
+        ]
+      }
+    },
+    {
+      "id": "csv-harness-witness",
+      "kind": "round-trip",
+      "description": "Out-of-band read of the refreshed artifact's content.",
+      "expr": {
+        "starts_with": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/refreshed.csv"
+              }
+            ]
+          },
+          "refresh-me"
+        ]
+      }
+    },
+    {
+      "id": "refreshed-artifact-exists",
+      "kind": "round-trip",
+      "description": "SaveCopyAs artifact exists.",
+      "expr": {
+        "file_exists": [
+          {
+            "file": "{var:_sgtScratchDir}/refreshed.xlsx"
+          }
+        ]
+      }
+    }
+  ]
+}

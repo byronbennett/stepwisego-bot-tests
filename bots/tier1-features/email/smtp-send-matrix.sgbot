@@ -1,0 +1,1709 @@
+{
+  "job": {
+    "jobName": "email-smtp-send-matrix",
+    "jobGuid": "e13a0002-0000-4000-8000-000000000000",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "7c9cb053-c034-416b-8816-b1be8bf455f0",
+      "stepName": "Require shared variables: sgtMailAccount, sgtMailImapHost, sgtMailImapPort, sgtMailPassword, sgtMailSmtpHost, sgtMailSmtpPort",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtMailAccount\nsgtMailImapHost\nsgtMailImapPort\nsgtMailPassword\nsgtMailSmtpHost\nsgtMailSmtpPort"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "d5236be3-fd56-41cb-a671-3d5a04333c62",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "11fb057f-7c47-43f5-981e-a4042182fe23",
+      "stepName": "capture configured mail account",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:mailAccountUsed}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{svar:sgtMailAccount}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000001",
+      "stepName": "arrange: write UTF-8 text attachment (unicode filename + unicode content)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/att-\u00fcn\u00ef-\u6f22\u5b57.txt"
+          },
+          "content": {
+            "value": "sgt matrix attachment \u00dcn\u00efc\u00f8d\u00e9 \u6f22\u5b57 content \u2714"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000002",
+      "stepName": "arrange: write deterministic-byte attachment from base64",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-file-from-base64",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/att-bytes.bin"
+          },
+          "base64Content": {
+            "value": "AAECAwT//v38ECAwQFBgcN6tvu8AESIzRFVmd4iZqrs="
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000003",
+      "stepName": "arrange: prove both attachment files exist before the send",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-exists",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/att-\u00fcn\u00ef-\u6f22\u5b57.txt"
+          },
+          "resultVariable": {
+            "value": "{var:textAttExists}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000004",
+      "stepName": "arrange: prove the binary attachment exists before the send",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-exists",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/att-bytes.bin"
+          },
+          "resultVariable": {
+            "value": "{var:binAttExists}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000005",
+      "stepName": "arrange: fetch INBOX (calibration + clean slate)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:calEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "scal"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000010",
+      "stepName": "arrange: scan calibration + session stragglers",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:calEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000007",
+          "stepName": "calibration email visible?",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000010",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{slc:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-calibration]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 10,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000006",
+              "stepName": "set {var:calFound}",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000007",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:calFound}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 11,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000009",
+          "stepName": "this session already present? (must not be)",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000010",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{slc:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 12,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000008",
+              "stepName": "set {var:preCount}",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000009",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:preCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:preCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 13,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "slc"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000011",
+      "stepName": "act: send-email matrix \u2014 HTML body, cc self, bcc self, high priority, comma/semicolon/quote subject, 2 attachments (unicode + binary)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "send-email",
+        "actionPropValues": {
+          "useConnectionVariable": {
+            "value": false
+          },
+          "smtpServer": {
+            "value": "{svar:sgtMailSmtpHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailSmtpPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "requiresAuth": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "from": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "to": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "cc": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "bcc": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "priority": {
+            "value": "high"
+          },
+          "subject": {
+            "value": "[sgt-{var:_sgtSessionId}] matrix, \"high;prio\", send"
+          },
+          "isHtml": {
+            "value": true
+          },
+          "body": {
+            "value": "<html><body><h1>sgt matrix</h1><p>sgt html body {var:_sgtSessionId}</p></body></html>"
+          },
+          "attachments": {
+            "value": "{var:_sgtScratchDir}/att-\u00fcn\u00ef-\u6f22\u5b57.txt|{var:_sgtScratchDir}/att-bytes.bin"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssnd"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000012",
+      "stepName": "assert: capture the send step's messageId output (proves the SMTP hand-off happened)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:sentMessageId}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{ssnd:messageId}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000035",
+      "stepName": "assert: bounded delivery poll (12 x 5s)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "count"
+          },
+          "count": {
+            "value": 12
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000014",
+          "stepName": "already found? stop polling",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000035",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:found}",
+                    "comparator": "equals",
+                    "rightOperand": "1"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 17,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000013",
+              "stepName": "exit poll",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000014",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "exit-loop",
+                "actionPropValues": {},
+                "requiresChildSteps": false
+              },
+              "seq": 18,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000015",
+          "stepName": "wait for delivery",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000035",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "delay",
+            "actionPropValues": {
+              "delayType": {
+                "value": "seconds"
+              },
+              "duration": {
+                "value": 5
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 19,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000016",
+          "stepName": "fetch INBOX",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000035",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "get-emails-imap",
+            "actionPropValues": {
+              "imapServer": {
+                "value": "{svar:sgtMailImapHost}"
+              },
+              "port": {
+                "value": "{svar:sgtMailImapPort}"
+              },
+              "useSsl": {
+                "value": true
+              },
+              "emailAccount": {
+                "value": "{svar:sgtMailAccount}"
+              },
+              "password": {
+                "value": "{svar:sgtMailPassword}"
+              },
+              "folder": {
+                "value": "INBOX"
+              },
+              "unreadOnly": {
+                "value": false
+              },
+              "markAsRead": {
+                "value": false
+              },
+              "maxEmails": {
+                "value": 50
+              },
+              "resultVariable": {
+                "value": "{var:inboxEmails}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 20,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": "sgf"
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000034",
+          "stepName": "scan fetched",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000035",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "loop",
+            "actionPropValues": {
+              "loopType": {
+                "value": "list"
+              },
+              "listVariable": {
+                "value": "{var:inboxEmails}"
+              },
+              "maxIterations": {
+                "value": 1000
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 21,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000033",
+              "stepName": "session marker match?",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000034",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "if",
+                "actionPropValues": {
+                  "conditions": {
+                    "value": [
+                      {
+                        "logic": "and",
+                        "leftOperand": "{sfl:loopItem|subject}",
+                        "comparator": "contains",
+                        "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": true
+              },
+              "seq": 22,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000017",
+                  "stepName": "set {var:matchCount}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:matchCount}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{var:matchCount|add:1}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 23,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000018",
+                  "stepName": "set {var:foundSubject}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundSubject}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|subject}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 24,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000019",
+                  "stepName": "set {var:foundTo}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundTo}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|recipients}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 25,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000020",
+                  "stepName": "set {var:foundCc}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundCc}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|ccRecipients}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 26,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000021",
+                  "stepName": "set {var:foundBcc}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundBcc}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|bccRecipients}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 27,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000022",
+                  "stepName": "set {var:foundPriority}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundPriority}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|priority}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 28,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000023",
+                  "stepName": "set {var:foundHasAtt}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundHasAtt}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|hasAttachments}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 29,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000024",
+                  "stepName": "set {var:foundAttCount}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundAttCount}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|attachmentCount}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 30,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000025",
+                  "stepName": "set {var:foundAttNames}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundAttNames}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|attachmentNames}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 31,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000026",
+                  "stepName": "set {var:foundPaths}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundPaths}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|filePaths}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 32,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000027",
+                  "stepName": "set {var:foundBody}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundBody}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|body}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 33,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000028",
+                  "stepName": "set {var:foundBodyText}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundBodyText}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|bodyText}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 34,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000029",
+                  "stepName": "set {var:found}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:found}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "1"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 35,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000031",
+                  "stepName": "pin: subject equalsExact (in-bot \u2014 the session token resolves here; the prediction DSL does not expand tokens in comparator literals)",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "if",
+                    "actionPropValues": {
+                      "conditions": {
+                        "value": [
+                          {
+                            "logic": "and",
+                            "leftOperand": "{sfl:loopItem|subject}",
+                            "comparator": "equalsExact",
+                            "rightOperand": "[sgt-{var:_sgtSessionId}] matrix, \"high;prio\", send"
+                          }
+                        ]
+                      }
+                    },
+                    "requiresChildSteps": true
+                  },
+                  "seq": 36,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": [
+                    {
+                      "stepGuid": "e13a0002-0000-4000-8000-000000000030",
+                      "stepName": "set {var:subjectOk}",
+                      "parentGuid": "e13a0002-0000-4000-8000-000000000031",
+                      "actionType": "action",
+                      "actionOp": {
+                        "actionName": "set-variable",
+                        "actionPropValues": {
+                          "variableToken": {
+                            "value": "{var:subjectOk}"
+                          },
+                          "valueSource": {
+                            "value": "substitute"
+                          },
+                          "value": {
+                            "value": "1"
+                          }
+                        },
+                        "requiresChildSteps": false
+                      },
+                      "seq": 37,
+                      "status": "enabled",
+                      "isBreakpoint": false,
+                      "ignoreErrors": false,
+                      "comments": "",
+                      "backgroundColor": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000032",
+                  "stepName": "delete the session message (targeted, live step token)",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "delete-single-email-imap",
+                    "actionPropValues": {
+                      "imapServer": {
+                        "value": "{svar:sgtMailImapHost}"
+                      },
+                      "port": {
+                        "value": "{svar:sgtMailImapPort}"
+                      },
+                      "useSsl": {
+                        "value": true
+                      },
+                      "emailAccount": {
+                        "value": "{svar:sgtMailAccount}"
+                      },
+                      "password": {
+                        "value": "{svar:sgtMailPassword}"
+                      },
+                      "emailVariable": {
+                        "value": "{sfl:loopItem}"
+                      },
+                      "folder": {
+                        "value": "INBOX"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 38,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": [],
+                  "stepPrefix": "sdel"
+                }
+              ]
+            }
+          ],
+          "stepPrefix": "sfl"
+        }
+      ],
+      "stepPrefix": "spol"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000036",
+      "stepName": "cleanup: re-fetch INBOX",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:afterEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 39,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "saf"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000040",
+      "stepName": "cleanup: count session leftovers (expect 0)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:afterEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 40,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000039",
+          "stepName": "session message still present?",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000040",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sal:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 41,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000037",
+              "stepName": "set {var:afterCount}",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000039",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:afterCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:afterCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 42,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            },
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000038",
+              "stepName": "self-heal: delete leftover",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000039",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "delete-single-email-imap",
+                "actionPropValues": {
+                  "imapServer": {
+                    "value": "{svar:sgtMailImapHost}"
+                  },
+                  "port": {
+                    "value": "{svar:sgtMailImapPort}"
+                  },
+                  "useSsl": {
+                    "value": true
+                  },
+                  "emailAccount": {
+                    "value": "{svar:sgtMailAccount}"
+                  },
+                  "password": {
+                    "value": "{svar:sgtMailPassword}"
+                  },
+                  "emailVariable": {
+                    "value": "{sal:loopItem}"
+                  },
+                  "folder": {
+                    "value": "INBOX"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 43,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": true,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [],
+              "stepPrefix": "shl"
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "sal"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "calEmails",
+      "token": "{var:calEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "inboxEmails",
+      "token": "{var:inboxEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "afterEmails",
+      "token": "{var:afterEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "textAttExists",
+      "token": "{var:textAttExists}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "trueFalse",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "binAttExists",
+      "token": "{var:binAttExists}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "trueFalse",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "calFound",
+      "token": "{var:calFound}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "preCount",
+      "token": "{var:preCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "found",
+      "token": "{var:found}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "matchCount",
+      "token": "{var:matchCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "afterCount",
+      "token": "{var:afterCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sentMessageId",
+      "token": "{var:sentMessageId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundSubject",
+      "token": "{var:foundSubject}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundTo",
+      "token": "{var:foundTo}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundCc",
+      "token": "{var:foundCc}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundBcc",
+      "token": "{var:foundBcc}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundPriority",
+      "token": "{var:foundPriority}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundHasAtt",
+      "token": "{var:foundHasAtt}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundAttCount",
+      "token": "{var:foundAttCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundAttNames",
+      "token": "{var:foundAttNames}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundPaths",
+      "token": "{var:foundPaths}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundBody",
+      "token": "{var:foundBody}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundBodyText",
+      "token": "{var:foundBodyText}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "subjectOk",
+      "token": "{var:subjectOk}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "mailAccountUsed",
+      "token": "{var:mailAccountUsed}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.176"
+}

@@ -1,0 +1,61 @@
+{
+  "test": {
+    "id": "tier1-features/user-interactions/message-box-toast",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "message-box",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "run-continues-past-toast",
+      "kind": "round-trip",
+      "description": "the toast (autoCloseSeconds=1) never blocks — the following set-variable ran",
+      "expr": {
+        "equals": [
+          {
+            "$var": "afterVal"
+          },
+          "continued-after-toast"
+        ]
+      }
+    },
+    {
+      "id": "crumb-file-witness",
+      "kind": "external-write",
+      "description": "the post-toast write-to-file landed on disk (out-of-band proof the run continued)",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/after-toast.txt"
+              }
+            ]
+          },
+          "after-toast continued-after-toast"
+        ]
+      }
+    }
+  ]
+}

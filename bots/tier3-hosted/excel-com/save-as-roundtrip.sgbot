@@ -1,0 +1,614 @@
+{
+  "job": {
+    "jobName": "SGT xlcom-save-as — format matrix (csv known-vector from a literal path, legacy xls from a live FULL session) with a COM re-open round-trip witness",
+    "jobGuid": "aa170001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbFast",
+      "token": "{var:wbFast}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbSeed",
+      "token": "{var:wbSeed}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false,
+      "excelMeta": {
+        "mode": "full"
+      }
+    },
+    {
+      "name": "wbXls",
+      "token": "{var:wbXls}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false,
+      "excelMeta": {
+        "mode": "full"
+      }
+    },
+    {
+      "name": "xlsA2",
+      "token": "{var:xlsA2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "xlsB2",
+      "token": "{var:xlsB2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "csvText",
+      "token": "{var:csvText}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "dce741d5-e7b8-475c-8a7b-bd282391fcf6",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "ccca0f5f-7bd4-4144-85f0-a70b63764fa3",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000001",
+      "stepName": "fast-mode seed workbook for the literal-path leg (kept OUT of Excel: a live session on the same path would collide with the owned whole-file open)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": "1"
+          },
+          "storeToVariable": {
+            "value": "{var:wbFast}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sseed"
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000002",
+      "stepName": "xl-set-values",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbFast}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": [
+              "hello",
+              "7"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000003",
+      "stepName": "xl-set-values",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbFast}"
+          },
+          "range": {
+            "value": "A2"
+          },
+          "values": {
+            "value": [
+              "world",
+              "42"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000004",
+      "stepName": "xl-save-as-xlsx",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-save-as-xlsx",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbFast}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/seed.xlsx"
+          },
+          "replaceExisting": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000005",
+      "stepName": "FULL-mode live session for the variable leg",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": "1"
+          },
+          "storeToVariable": {
+            "value": "{var:wbSeed}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000006",
+      "stepName": "xl-set-values",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbSeed}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": [
+              "hello",
+              "7"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000007",
+      "stepName": "xl-set-values",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbSeed}"
+          },
+          "range": {
+            "value": "A2"
+          },
+          "values": {
+            "value": [
+              "world",
+              "42"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000008",
+      "stepName": "convert literal path to csv via COM",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xlcom-save-as",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/seed.xlsx"
+          },
+          "outputPath": {
+            "value": "{var:_sgtScratchDir}/conv.csv"
+          },
+          "format": {
+            "value": "csv"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "scsv"
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000009",
+      "stepName": "convert the live-session workbook variable to legacy xls via COM",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xlcom-save-as",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:wbSeed}"
+          },
+          "outputPath": {
+            "value": "{var:_sgtScratchDir}/conv.xls"
+          },
+          "format": {
+            "value": "xls"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sxls"
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000010",
+      "stepName": "open the converted .xls in FULL mode (real Excel reads it back)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/conv.xls"
+          },
+          "storeToVariable": {
+            "value": "{var:wbXls}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000011",
+      "stepName": "xl-get-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbXls}"
+          },
+          "range": {
+            "value": "A2"
+          },
+          "storeToVariable": {
+            "value": "{var:xlsA2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000012",
+      "stepName": "xl-get-value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbXls}"
+          },
+          "range": {
+            "value": "B2"
+          },
+          "storeToVariable": {
+            "value": "{var:xlsB2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000013",
+      "stepName": "xl-close-workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-close-workbook",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbXls}"
+          },
+          "saveBeforeClose": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000014",
+      "stepName": "xl-close-workbook",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-close-workbook",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbSeed}"
+          },
+          "saveBeforeClose": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa170001-0000-0000-0000-000000000015",
+      "stepName": "get-file-contents",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/conv.csv"
+          },
+          "resultVariable": {
+            "value": "{var:csvText}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "test": {
+    "id": "tier1-features/csv/csv-inmemory",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["csv-read", "csv-write-datatable", "csv-to-json", "csv-build-line", "json-stringify"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "read-write-round-trip",
+      "kind": "round-trip",
+      "description": "csv-read (headers, string typing) → csv-write-datatable reproduces the source byte-for-byte, including re-quoting the cell with an embedded comma.",
+      "expr": { "equals": [ { "$var": "roundTrip" }, "name,qty\n\"Widget, big\",3\nBolt,12" ] }
+    },
+    {
+      "id": "headerless-generates-column-names",
+      "kind": "round-trip",
+      "description": "csv-read with hasHeaders=false auto-names columns Column1..N; writing back WITH headers exposes them and the first data row is data, not headers.",
+      "expr": { "equals": [ { "$var": "noHeadCsv" }, "Column1,Column2\na,b\nc,d" ] }
+    },
+    {
+      "id": "to-json-string-typing",
+      "kind": "round-trip",
+      "description": "csv-to-json with typingMode=string keeps every cell a string — qty is \"3\", not 3.",
+      "expr": { "equals": [ { "$var": "jsonStringsText" }, "[{\"name\":\"Widget, big\",\"qty\":\"3\"},{\"name\":\"Bolt\",\"qty\":\"12\"}]" ] }
+    },
+    {
+      "id": "to-json-dynamic-typing",
+      "kind": "round-trip",
+      "description": "typingMode=dynamic converts numeric-looking cells to JSON numbers (qty 3/12) while text cells stay strings.",
+      "expr": { "equals": [ { "$var": "jsonTypedText" }, "[{\"name\":\"Widget, big\",\"qty\":3},{\"name\":\"Bolt\",\"qty\":12}]" ] }
+    },
+    {
+      "id": "to-json-empty-content",
+      "kind": "round-trip",
+      "description": "csv-to-json with runtime-empty content PASSES and stores an empty array (the empty string came through a token — a literally empty prop is rejected by pre-run validation).",
+      "expr": { "equals": [ { "$var": "jsonEmpty" }, [] ] }
+    },
+    {
+      "id": "build-line-trim-and-append",
+      "kind": "round-trip",
+      "description": "csv-build-line trims each split value ('alpha, beta ,gamma' → alpha,beta,gamma) and a second call APPENDS with a newline instead of overwriting.",
+      "expr": { "equals": [ { "$var": "buildOut" }, "alpha,beta,gamma\n1,2,3" ] }
+    }
+  ]
+}

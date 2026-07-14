@@ -1,0 +1,648 @@
+{
+  "job": {
+    "jobName": "int-08-sp-write-back",
+    "jobGuid": "51b80008-0000-4000-8000-000000000001",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "dbdc4e9d-6ad4-4104-b3c4-52baffa1a50e",
+      "stepName": "Require shared variables: sgtSharePoint",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtSharePoint"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "51b80008-0000-4000-8000-000000000002",
+      "stepName": "arrange: create write-back session list",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-create-list",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "newListName": {
+            "value": "sgt-{var:_sgtSessionId}-wb"
+          },
+          "newIsLibrary": {
+            "value": false
+          },
+          "newListDescription": {
+            "value": "sgtester INT-08 write-back list"
+          },
+          "fieldsConfig": {
+            "value": {
+              "fields": [
+                {
+                  "displayName": "SgtAmt",
+                  "internalName": "SgtAmt",
+                  "fieldType": "Number"
+                },
+                {
+                  "displayName": "SgtFee",
+                  "internalName": "SgtFee",
+                  "fieldType": "Number"
+                },
+                {
+                  "displayName": "SgtNote",
+                  "internalName": "SgtNote",
+                  "fieldType": "Text"
+                }
+              ]
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "scl"
+    },
+    {
+      "stepGuid": "51b80008-0000-4000-8000-000000000003",
+      "stepName": "arrange: seed w-1 (amt 10.5)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-wb"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "w-1"
+                },
+                {
+                  "internalName": "SgtAmt",
+                  "displayName": "SgtAmt",
+                  "fieldType": "Number",
+                  "value": "10.5"
+                },
+                {
+                  "internalName": "SgtNote",
+                  "displayName": "SgtNote",
+                  "value": "n1"
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "si3"
+    },
+    {
+      "stepGuid": "51b80008-0000-4000-8000-000000000004",
+      "stepName": "arrange: seed w-2 (amt 20.25)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-wb"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "w-2"
+                },
+                {
+                  "internalName": "SgtAmt",
+                  "displayName": "SgtAmt",
+                  "fieldType": "Number",
+                  "value": "20.25"
+                },
+                {
+                  "internalName": "SgtNote",
+                  "displayName": "SgtNote",
+                  "value": "n2"
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "si4"
+    },
+    {
+      "stepGuid": "51b80008-0000-4000-8000-000000000005",
+      "stepName": "arrange: seed w-3 (amt 0)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-wb"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "w-3"
+                },
+                {
+                  "internalName": "SgtAmt",
+                  "displayName": "SgtAmt",
+                  "fieldType": "Number",
+                  "value": "0"
+                },
+                {
+                  "internalName": "SgtNote",
+                  "displayName": "SgtNote",
+                  "value": "n3"
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "si5"
+    },
+    {
+      "stepGuid": "51b80008-0000-4000-8000-000000000006",
+      "stepName": "select captured snapshot (sela)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-select-items",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-wb"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "queryConfig": {
+            "value": {
+              "selectedFields": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title"
+                },
+                {
+                  "internalName": "SgtAmt",
+                  "displayName": "SgtAmt",
+                  "fieldType": "Number"
+                },
+                {
+                  "internalName": "SgtFee",
+                  "displayName": "SgtFee",
+                  "fieldType": "Number"
+                },
+                {
+                  "internalName": "SgtNote",
+                  "displayName": "SgtNote"
+                }
+              ],
+              "orderBy": [
+                {
+                  "field": "Title",
+                  "direction": "asc"
+                }
+              ]
+            }
+          },
+          "maxItems": 50,
+          "includeSubfolders": {
+            "value": false
+          },
+          "folderPath": {
+            "value": ""
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sela"
+    },
+    {
+      "stepGuid": "51b80008-0000-4000-8000-000000000011",
+      "stepName": "write-back loop over the CAPTURED DataTable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "dataTable"
+          },
+          "dataTableVariable": {
+            "value": "{sela:resultDT}"
+          },
+          "maxIterations": {
+            "value": 100
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "51b80008-0000-4000-8000-000000000007",
+          "stepName": "write back computed fee for the captured row",
+          "parentGuid": "51b80008-0000-4000-8000-000000000011",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "sp-update-item",
+            "actionPropValues": {
+              "connectionVariable": {
+                "value": "{svar:sgtSharePoint}"
+              },
+              "listName": {
+                "value": "sgt-{var:_sgtSessionId}-wb"
+              },
+              "listId": {
+                "value": "{scl:listId}"
+              },
+              "listInternalName": {
+                "value": ""
+              },
+              "updateMode": {
+                "value": "filtersOnly"
+              },
+              "updateConfig": {
+                "value": {
+                  "mappings": [
+                    {
+                      "internalName": "SgtFee",
+                      "displayName": "SgtFee",
+                      "fieldType": "Number",
+                      "value": "{swb-currentDataRow:SgtAmt|add:0.25}"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "logic": "and",
+                      "field": "Title",
+                      "comparator": "eq",
+                      "value": "{swb-currentDataRow:Title}"
+                    }
+                  ]
+                }
+              },
+              "loopList": {
+                "value": ""
+              },
+              "loopDataTable": {
+                "value": ""
+              },
+              "ignoreMissingUploadFiles": {
+                "value": false
+              },
+              "disableConcurrency": {
+                "value": false
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 8,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": "supd"
+        }
+      ],
+      "stepPrefix": "swb"
+    },
+    {
+      "stepGuid": "51b80008-0000-4000-8000-000000000008",
+      "stepName": "select captured snapshot (selb)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-select-items",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-wb"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "queryConfig": {
+            "value": {
+              "selectedFields": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title"
+                },
+                {
+                  "internalName": "SgtAmt",
+                  "displayName": "SgtAmt",
+                  "fieldType": "Number"
+                },
+                {
+                  "internalName": "SgtFee",
+                  "displayName": "SgtFee",
+                  "fieldType": "Number"
+                },
+                {
+                  "internalName": "SgtNote",
+                  "displayName": "SgtNote"
+                }
+              ],
+              "orderBy": [
+                {
+                  "field": "Title",
+                  "direction": "asc"
+                }
+              ]
+            }
+          },
+          "maxItems": 50,
+          "includeSubfolders": {
+            "value": false
+          },
+          "folderPath": {
+            "value": ""
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "selb"
+    },
+    {
+      "stepGuid": "51b80008-0000-4000-8000-000000000009",
+      "stepName": "breadcrumb loop over the re-selected DataTable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "dataTable"
+          },
+          "dataTableVariable": {
+            "value": "{selb:resultDT}"
+          },
+          "maxIterations": {
+            "value": 100
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "51b80008-0000-4000-8000-000000000010",
+          "stepName": "record fee breadcrumb",
+          "parentGuid": "51b80008-0000-4000-8000-000000000009",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:feeCrumbs}"
+              },
+              "value": {
+                "value": "{swbb-currentDataRow:Title}={swbb-currentDataRow:SgtFee}"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 11,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": ""
+        }
+      ],
+      "stepPrefix": "swbb"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "feeCrumbs",
+      "token": "{var:feeCrumbs}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.180"
+}

@@ -1,0 +1,203 @@
+{
+  "test": {
+    "id": "tier1-features/ftp/upload-download-roundtrip",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-script",
+        "get-file-contents",
+        "write-to-file",
+        "create-file",
+        "ftp-upload-files",
+        "ftp-get-file-names",
+        "set-variable",
+        "ftp-download-files",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/sftp-server.mjs"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "sftp"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 45000
+  },
+  "predictions": [
+    {
+      "id": "server-launched",
+      "kind": "round-trip",
+      "description": "the launcher confirmed the detached sftp listener was up before the bot proceeded",
+      "expr": {
+        "equals": [
+          {
+            "$var": "launchOut"
+          },
+          "server-up"
+        ]
+      }
+    },
+    {
+      "id": "upload-count",
+      "kind": "round-trip",
+      "description": "directory upload pushed exactly the 2 staged files",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "aa10ff01-0000-0000-0000-000000000005",
+                  "name": "uploadedCount"
+                }
+              },
+              2
+            ]
+          },
+          {
+            "equals": [
+              {
+                "length": [
+                  {
+                    "$stepOut": {
+                      "stepGuid": "aa10ff01-0000-0000-0000-000000000005",
+                      "name": "uploadedFiles"
+                    }
+                  }
+                ]
+              },
+              2
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "backing-unicode-exact",
+      "kind": "external-write",
+      "description": "the server's backing file carries the exact bytes (unicode name + content, real newline) — out-of-band witness, the harness reads the jail directly",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/sftp-root/up/uni-Ünïcødé-漢字.txt"
+              }
+            ]
+          },
+          "sgt-ftp Ünïcødé 漢字\nline-two 12345678901234567890.10"
+        ]
+      }
+    },
+    {
+      "id": "backing-empty-file",
+      "kind": "external-write",
+      "description": "the 0-byte upload landed as a 0-byte backing file",
+      "expr": {
+        "and": [
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/sftp-root/up/empty.txt"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/sftp-root/up/empty.txt"
+                  }
+                ]
+              },
+              ""
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "listing-sorted",
+      "kind": "round-trip",
+      "description": "ftp-get-file-names sees exactly the uploaded set (sorted compare — order unspecified)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "upSorted"
+          },
+          "empty.txt,uni-Ünïcødé-漢字.txt"
+        ]
+      }
+    },
+    {
+      "id": "download-roundtrip",
+      "kind": "round-trip",
+      "description": "both files download to a second path; the unicode content survives byte-exact",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "aa10ff01-0000-0000-0000-000000000008",
+                  "name": "downloadedCount"
+                }
+              },
+              2
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "dlContent"
+              },
+              "sgt-ftp Ünïcødé 漢字\nline-two 12345678901234567890.10"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "downloaded-empty-on-disk",
+      "kind": "external-write",
+      "description": "the 0-byte file also made the return trip",
+      "expr": {
+        "and": [
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/dl/empty.txt"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/dl/empty.txt"
+                  }
+                ]
+              },
+              ""
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

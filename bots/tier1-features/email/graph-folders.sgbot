@@ -1,0 +1,418 @@
+{
+  "job": {
+    "jobName": "email-graph-folders",
+    "jobGuid": "e13c0002-0000-4000-8000-000000000001",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "324ef7e7-a2ed-4bbc-82c8-08a2eb3f927e",
+      "stepName": "Require shared variables: sgtMailGraph, sgtMailGraphUpn",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtMailGraph\nsgtMailGraphUpn"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e13c0002-0000-4000-8000-000000000002",
+      "stepName": "act: get-email-folders-graph",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-email-folders-graph",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtMailGraph}"
+          },
+          "emailAccount": {
+            "value": ""
+          },
+          "resultVariable": {
+            "value": "{var:folders}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sfd"
+    },
+    {
+      "stepGuid": "e13c0002-0000-4000-8000-000000000090",
+      "stepName": "assert: serialize the folder list (EmailFolder fields are unreachable from tokens — see review)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "json-stringify",
+        "actionPropValues": {
+          "jsonVariable": {
+            "value": "{var:folders}"
+          },
+          "pretty": {
+            "value": false
+          },
+          "resultVariable": {
+            "value": "{var:foldersJson}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13c0002-0000-4000-8000-000000000008",
+      "stepName": "assert: scan the folder list",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:folders}"
+          },
+          "maxIterations": {
+            "value": 200
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13c0002-0000-4000-8000-000000000003",
+          "stepName": "set {var:folderCount}",
+          "parentGuid": "e13c0002-0000-4000-8000-000000000008",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "set-variable",
+            "actionPropValues": {
+              "variableToken": {
+                "value": "{var:folderCount}"
+              },
+              "valueSource": {
+                "value": "substitute"
+              },
+              "value": {
+                "value": "{var:folderCount|add:1}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 5,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13c0002-0000-4000-8000-000000000080",
+          "stepName": "Inbox? (read the NAME via |folderName — the accessor added with the fix)",
+          "parentGuid": "e13c0002-0000-4000-8000-000000000008",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sfl:loopItem|folderName}",
+                    "comparator": "equalsExact",
+                    "rightOperand": "Inbox"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 6,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13c0002-0000-4000-8000-000000000081",
+              "stepName": "set {var:sawInbox}",
+              "parentGuid": "e13c0002-0000-4000-8000-000000000080",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:sawInbox}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 7,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            },
+            {
+              "stepGuid": "e13c0002-0000-4000-8000-000000000082",
+              "stepName": "set {var:inboxTotal}",
+              "parentGuid": "e13c0002-0000-4000-8000-000000000080",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:inboxTotal}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{sfl:loopItem|totalMessages}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 8,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13c0002-0000-4000-8000-000000000083",
+          "stepName": "sgt-bulk?",
+          "parentGuid": "e13c0002-0000-4000-8000-000000000008",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sfl:loopItem|folderName}",
+                    "comparator": "equalsExact",
+                    "rightOperand": "sgt-bulk"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 9,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13c0002-0000-4000-8000-000000000084",
+              "stepName": "set {var:sawBulk}",
+              "parentGuid": "e13c0002-0000-4000-8000-000000000083",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:sawBulk}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 10,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "sfl"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folders",
+      "token": "{var:folders}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folderCount",
+      "token": "{var:folderCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sawInbox",
+      "token": "{var:sawInbox}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sawBulk",
+      "token": "{var:sawBulk}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foldersJson",
+      "token": "{var:foldersJson}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "inboxTotal",
+      "token": "{var:inboxTotal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.176"
+}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>SGT Interact</title></head>
+<body>
+<button id="clicker">Click me</button>
+<div id="click-log"></div>
+<input id="text-in" type="text" placeholder="type here">
+<textarea id="area-in"></textarea>
+<input id="enter-in" type="text">
+<div id="enter-count">0</div>
+<script>
+  const log = document.getElementById("click-log");
+  const clicker = document.getElementById("clicker");
+  clicker.addEventListener("click", () => { log.textContent += "single;"; });
+  clicker.addEventListener("dblclick", () => { log.textContent += "double;"; });
+  clicker.addEventListener("contextmenu", (e) => { e.preventDefault(); log.textContent += "right;"; });
+  const enterCount = document.getElementById("enter-count");
+  document.getElementById("enter-in").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") enterCount.textContent = String(Number(enterCount.textContent) + 1);
+  });
+</script>
+</body>
+</html>

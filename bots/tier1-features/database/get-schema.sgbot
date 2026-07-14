@@ -1,0 +1,214 @@
+{
+  "job": {
+    "jobName": "SGT database — db-get-schema (tables filter, columns, databases, missing-tableName buried error)",
+    "jobGuid": "a6d10001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "09db2604-d93c-450e-8129-0d67afd81018",
+      "stepName": "Require shared variables: sgtDbMssql",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtDbMssql"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10001-0000-0000-0000-000000000001",
+      "stepName": "arrange: session table with 3 typed columns",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "other"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "CREATE TABLE [sgtester].[{var:_sgtSessionId}_sch] (id INT NOT NULL PRIMARY KEY, name NVARCHAR(50) NULL, amount DECIMAL(10,2) NULL)"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10001-0000-0000-0000-000000000002",
+      "stepName": "act: tables target, LIKE filter scoped to this session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-get-schema",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "schemaTarget": {
+            "value": "tables"
+          },
+          "schemaFilter": {
+            "value": "{var:_sgtSessionId}_sch%"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sch1"
+    },
+    {
+      "stepGuid": "a6d10001-0000-0000-0000-000000000003",
+      "stepName": "act: columns target on the session table",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-get-schema",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "schemaTarget": {
+            "value": "columns"
+          },
+          "tableName": {
+            "value": "sgtester.{var:_sgtSessionId}_sch"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sch2"
+    },
+    {
+      "stepGuid": "a6d10001-0000-0000-0000-000000000004",
+      "stepName": "act: databases target (server catalog, at least the dev DB itself)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-get-schema",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "schemaTarget": {
+            "value": "databases"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sch3"
+    },
+    {
+      "stepGuid": "a6d10001-0000-0000-0000-000000000005",
+      "stepName": "buried error: columns target without tableName fails at runtime",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-get-schema",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "schemaTarget": {
+            "value": "columns"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

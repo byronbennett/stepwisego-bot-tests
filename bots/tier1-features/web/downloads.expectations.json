@@ -1,0 +1,222 @@
+{
+  "test": {
+    "id": "tier1-features/web/downloads",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "download-file",
+        "save-download",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/download-page.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 90000
+  },
+  "predictions": [
+    {
+      "id": "direct-download-content",
+      "kind": "round-trip",
+      "description": "download-file writes the exact response bytes (unicode + newline survive)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "directContent"
+          },
+          "sgt-download-payload Ünïcødé 漢字\nsecond-line-bytes"
+        ]
+      }
+    },
+    {
+      "id": "direct-download-outputs",
+      "kind": "round-trip",
+      "description": "download-file reports statusCode 200 and the on-disk path",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000d-0000-0000-0000-000000000003",
+                  "name": "statusCode"
+                }
+              },
+              200
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000d-0000-0000-0000-000000000003",
+                  "name": "filePath"
+                }
+              },
+              "/direct.txt"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "overwrite-false-skips",
+      "kind": "round-trip",
+      "description": "overwrite=false on an existing file passes with the sentinel statusCode 0 and the untouched file size",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000d-0000-0000-0000-000000000005",
+                  "name": "statusCode"
+                }
+              },
+              0
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000d-0000-0000-0000-000000000005",
+                  "name": "fileSize"
+                }
+              },
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000d-0000-0000-0000-000000000003",
+                  "name": "fileSize"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "browser-saved-content-matches-direct",
+      "kind": "round-trip",
+      "description": "the browser-triggered save-download file carries byte-identical content to the direct fetch",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "savedContent"
+              },
+              {
+                "$var": "directContent"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000d-0000-0000-0000-000000000010",
+                  "name": "fileSize"
+                }
+              },
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000d-0000-0000-0000-000000000003",
+                  "name": "fileSize"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "save-download-uses-server-filename",
+      "kind": "round-trip",
+      "description": "directory-mode savePath uses the server's Content-Disposition filename",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000d-0000-0000-0000-000000000010",
+                  "name": "fileName"
+                }
+              },
+              "dl.txt"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e1000d-0000-0000-0000-000000000010",
+                  "name": "filePath"
+                }
+              },
+              "/saved/dl.txt"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "saved-file-on-disk",
+      "kind": "external-write",
+      "description": "the saved download exists on disk with the exact content (out-of-band witness)",
+      "expr": {
+        "and": [
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/saved/dl.txt"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/saved/dl.txt"
+                  }
+                ]
+              },
+              "sgt-download-payload Ünïcødé 漢字\nsecond-line-bytes"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "shutdown-witness",
+      "kind": "round-trip",
+      "description": "the teardown GET /shutdown returned the listener's goodbye body",
+      "expr": {
+        "equals": [
+          {
+            "$var": "byeContent"
+          },
+          "bye"
+        ]
+      }
+    }
+  ]
+}

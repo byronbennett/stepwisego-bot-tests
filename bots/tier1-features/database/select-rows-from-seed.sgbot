@@ -1,0 +1,208 @@
+{
+  "job": {
+    "jobName": "SGT — DB select rows from seed",
+    "jobGuid": "11111111-1111-1111-1111-111111110001",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "21219eef-a1f9-433e-9a1a-75512fb47d4b",
+      "stepName": "Require shared variables: sgtDbMssql",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtDbMssql"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "11111111-aaaa-aaaa-aaaa-000000000001",
+      "stepName": "Create ephemeral orders table",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "CREATE TABLE [sgtester].[{var:_sgtSessionId}_orders] (id INT NOT NULL PRIMARY KEY, customer NVARCHAR(100) NOT NULL, amount DECIMAL(10,2) NOT NULL)"
+            }
+          },
+          "rawQueryType": {
+            "value": "other"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sa"
+    },
+    {
+      "stepGuid": "11111111-aaaa-aaaa-aaaa-000000000002",
+      "stepName": "Seed three orders",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "INSERT INTO [sgtester].[{var:_sgtSessionId}_orders] (id, customer, amount) VALUES (1,'Alice',10.00),(2,'Bob',20.00),(3,'Cara',30.00)"
+            }
+          },
+          "rawQueryType": {
+            "value": "other"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sb"
+    },
+    {
+      "stepGuid": "11111111-aaaa-aaaa-aaaa-000000000003",
+      "stepName": "Select all orders",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "SELECT id, customer, amount FROM [sgtester].[{var:_sgtSessionId}_orders] ORDER BY id"
+            }
+          },
+          "rawQueryType": {
+            "value": "select"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sc"
+    },
+    {
+      "stepGuid": "11111111-aaaa-aaaa-aaaa-000000000004",
+      "stepName": "Drop ephemeral table",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDb"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "DROP TABLE [sgtester].[{var:_sgtSessionId}_orders]"
+            }
+          },
+          "rawQueryType": {
+            "value": "other"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sd"
+    }
+  ]
+}

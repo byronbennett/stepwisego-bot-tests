@@ -1,0 +1,50 @@
+{
+  "test": {
+    "id": "tier1-features/database/live-pg-select-where",
+    "tier": 1,
+    "synthesizedAt": "2026-07-02T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "db-sql-query",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION_PG"
+    ],
+    "serialGroup": "live-pg"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "pred-rowcount-2",
+      "kind": "round-trip",
+      "description": "n>15 matches 2 rows (Bob, Cara)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "dddddddd-0000-0000-0000-000000000001",
+              "name": "rowCount"
+            }
+          },
+          2
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "test": {
+    "id": "tier1-features/files/base64-and-rows",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "get-file-base64",
+        "create-file-from-base64",
+        "get-file-rows",
+        "write-rows-to-file",
+        "file-find-replace",
+        "create-file",
+        "write-to-file",
+        "get-file-contents",
+        "if",
+        "add-to-list",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "binary-b64-roundtrip",
+      "kind": "round-trip",
+      "description": "create-file-from-base64 wrote raw bytes (payload includes NUL and 0xFF — invalid utf8, so this proves binary-safe write) and get-file-base64's independent read re-encoded to the identical literal. Checked in-bot (crumb) and out-of-band ($var equals literal).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "binB64"
+              },
+              "AAECA//+U0c="
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "crumbs"
+              },
+              [
+                "bin-b64-roundtrip-ok"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "text-b64-and-decode",
+      "kind": "round-trip",
+      "description": "get-file-base64 of a known utf8 text file equals the precomputed literal, and create-file-from-base64 fed that value back to produce a byte-identical decoded file — the harness reads it as utf8 and gets the original text.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "txtB64"
+              },
+              "c3RlcHdpc2Vnby1iNjQg4pyT"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/b64/note-decoded.txt"
+                  }
+                ]
+              },
+              "stepwisego-b64 ✓"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "rows-write-append-read",
+      "kind": "round-trip",
+      "description": "write-rows-to-file joins with \\n and no trailing newline; append glues with a single leading \\n; get-file-rows reads the exact 5-row list back; the harness's own read confirms the physical bytes.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "rowsRead"
+              },
+              [
+                "r1",
+                "r2",
+                "r3",
+                "r4",
+                "r5"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/b64/rows.txt"
+                  }
+                ]
+              },
+              "r1\nr2\nr3\nr4\nr5"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "rows-crlf-split",
+      "kind": "value",
+      "description": "get-file-rows splits on \\r\\n as well as \\n (regex /\\r?\\n/) — Windows-style files parse into clean rows with no stray \\r.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "rowsCrlf"
+          },
+          [
+            "win1",
+            "win2",
+            "win3"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "rows-empty-semantics",
+      "kind": "value",
+      "description": "Empty-list write produces a zero-byte file (physically confirmed), and get-file-rows on it returns [\"\"] — the split-of-empty-string contract, replacing the SENTINEL default (action-ran proof).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/b64/empty.txt"
+                  }
+                ]
+              },
+              ""
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "rowsEmpty"
+              },
+              [
+                ""
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "find-replace-literal",
+      "kind": "round-trip",
+      "description": "Literal find/replace hit all 3 occurrences in place.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "frLiteral"
+          },
+          "one bird two bird red bird; codes a1 b22 c333"
+        ]
+      }
+    },
+    {
+      "id": "find-replace-regex-and-nohit",
+      "kind": "round-trip",
+      "description": "Regex mode replaced every digit run globally; a subsequent no-match replace succeeded WITHOUT altering the file (frNoHit identical, physical bytes confirmed by the harness's own read).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "frRegex"
+              },
+              "one bird two bird red bird; codes a# b# c#"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "frNoHit"
+              },
+              {
+                "$var": "frRegex"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/b64/fr.txt"
+                  }
+                ]
+              },
+              "one bird two bird red bird; codes a# b# c#"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "buried-b64-left-sentinel",
+      "kind": "round-trip",
+      "description": "get-file-base64 on a missing file failed (buried) without touching its result variable — with smoke.expectErrorCount=0 this proves the error fired and was buried.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "b64Missing"
+          },
+          "UNTOUCHED"
+        ]
+      }
+    }
+  ]
+}

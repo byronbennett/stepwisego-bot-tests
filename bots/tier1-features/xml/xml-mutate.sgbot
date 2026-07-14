@@ -1,0 +1,111 @@
+{
+  "job": {
+    "jobName": "SGT xml — mutate (new, insert-node, update-node, set-attribute, delete-node, close-document)",
+    "jobGuid": "f3d00002-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "xdoc", "token": "{var:xdoc}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "xml", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "finalXml", "token": "{var:finalXml}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-000000000001",
+      "stepName": "new document with root <config>",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-new", "actionPropValues": { "xmlOrRoot": { "value": "root" }, "rootElement": { "value": "config" }, "resultVariable": { "value": "{var:xdoc}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-000000000002",
+      "stepName": "insert <settings> as child of root (empty anchor)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-insert-node", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "anchorXpath": { "value": "" }, "nodeName": { "value": "settings" }, "insertPosition": { "value": "Child" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-000000000003",
+      "stepName": "insert <timeout>30</timeout> as child of settings",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-insert-node", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "anchorXpath": { "value": "/config/settings" }, "nodeName": { "value": "timeout" }, "nodeValue": { "value": "30" }, "insertPosition": { "value": "Child" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-000000000004",
+      "stepName": "insert <first/> BEFORE settings",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-insert-node", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "anchorXpath": { "value": "/config/settings" }, "nodeName": { "value": "first" }, "insertPosition": { "value": "Before" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-000000000005",
+      "stepName": "insert <last/> AFTER settings",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-insert-node", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "anchorXpath": { "value": "/config/settings" }, "nodeName": { "value": "last" }, "insertPosition": { "value": "After" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-000000000006",
+      "stepName": "update timeout text 30 → 60",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-update-node", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "/config/settings/timeout" }, "newValue": { "value": "60" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-000000000007",
+      "stepName": "update missing node with createIfNotExists → creates config/audit/enabled chain",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-update-node", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "/config/audit/enabled" }, "newValue": { "value": "yes" }, "createIfNotExists": { "value": true } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-000000000008",
+      "stepName": "set version=2 attribute on root",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-set-attribute", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "/config" }, "attributeName": { "value": "version" }, "value": { "value": "2" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-000000000009",
+      "stepName": "delete <first/>",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-delete-node", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "/config/first" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-00000000000a",
+      "stepName": "update-node on missing xpath WITHOUT create (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-update-node", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "xpath": { "value": "/config/no/such/node" }, "newValue": { "value": "x" } }, "requiresChildSteps": false },
+      "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-00000000000b",
+      "stepName": "stringify final document (compact)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-stringify", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "pretty": { "value": false }, "resultVariable": { "value": "{var:finalXml}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00002-0000-0000-0000-00000000000c",
+      "stepName": "close document (variable becomes empty string)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-close-document", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 12, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

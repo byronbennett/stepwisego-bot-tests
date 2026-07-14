@@ -1,0 +1,56 @@
+{
+  "test": {
+    "id": "tier1-features/functions/function-invocation",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["function", "run-function"],
+      "pipeFns": ["count"],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "three-successful-calls-in-order",
+      "kind": "round-trip",
+      "description": "The Greet function body ran once per successful call, resolving {fn-var:} inputs per call: call 1 literal+whole-token bindings ('Hello, Ada!'), call 2 all defaults ('Hi, world!'), call 3 mixed-text binding resolved in the caller's scope ('Hey, Dr. Ada!'). Call 4 (bad guid) appended nothing.",
+      "expr": { "equals": [ { "$var": "calls" }, ["Hello, Ada!", "Hi, world!", "Hey, Dr. Ada!"] ] }
+    },
+    {
+      "id": "list-binding-carries-real-list",
+      "kind": "round-trip",
+      "description": "A whole-token listOfTexts binding hands the function a REAL list (count 2 for the seeded list), while an unbound or empty-string binding falls back to the declared default [] (count 0).",
+      "expr": { "equals": [ { "$var": "counts" }, ["2", "0", "0"] ] }
+    },
+    {
+      "id": "function-returns-via-bot-vars",
+      "kind": "round-trip",
+      "description": "Inputs-only contract: the function returned data by writing to a bot-scoped variable; the last successful call's greeting ('Hey') overwrote the NEVER-SET sentinel.",
+      "expr": { "equals": [ { "$var": "lastGreeting" }, "Hey" ] }
+    },
+    {
+      "id": "caller-vars-untouched",
+      "kind": "round-trip",
+      "description": "Binding caller variables into a function does not mutate them: person and seedList retain their initial values after all calls.",
+      "expr": {
+        "and": [
+          { "equals": [ { "$var": "person" }, "Ada" ] },
+          { "equals": [ { "$var": "seedList" }, ["alpha", "beta"] ] }
+        ]
+      }
+    }
+  ]
+}

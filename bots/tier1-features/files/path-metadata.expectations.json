@@ -1,0 +1,221 @@
+{
+  "test": {
+    "id": "tier1-features/files/path-metadata",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "get-filename",
+        "get-file-extension",
+        "get-folder-path",
+        "get-file-date-created",
+        "get-file-date-modified",
+        "get-random-filename",
+        "create-file",
+        "append-text-to-file",
+        "if",
+        "add-to-list",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "basename-multi-dot",
+      "kind": "value",
+      "description": "get-filename returns the full base name including all interior dots.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "fname"
+          },
+          "report.v2.csv"
+        ]
+      }
+    },
+    {
+      "id": "extension-variants",
+      "kind": "value",
+      "description": "get-file-extension: '.csv' for multi-dot names (LAST segment only, dot included); empty string for extensionless names and dotfiles (both overwrote a SENTINEL default, proving the action ran and wrote empty); '.gz' — not '.tar.gz' — for archive.tar.gz.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "extCsv"
+              },
+              ".csv"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "extNone"
+              },
+              ""
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "extDotfile"
+              },
+              ""
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "extTargz"
+              },
+              ".gz"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "dirname-literal-and-scratch",
+      "kind": "value",
+      "description": "get-folder-path: literal path dirname checked exactly here; the session-dependent scratch dirname is checked in-bot (equalsExact against the token-built '{var:_sgtScratchDir}/meta') — its crumb is asserted below.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "folderLiteral"
+          },
+          "/data/in"
+        ]
+      }
+    },
+    {
+      "id": "file-dates-iso-shape",
+      "kind": "value",
+      "description": "Both date actions return full ISO-8601 UTC instants (stat birthtime/mtime .toISOString()).",
+      "expr": {
+        "and": [
+          {
+            "matches_regex": [
+              {
+                "$var": "dateCreated"
+              },
+              "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+            ]
+          },
+          {
+            "matches_regex": [
+              {
+                "$var": "dateModified1"
+              },
+              "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+            ]
+          },
+          {
+            "matches_regex": [
+              {
+                "$var": "dateModified2"
+              },
+              "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "in-bot-crumbs-all-ok",
+      "kind": "round-trip",
+      "description": "The three in-bot checks passed in order: scratch dirname equalsExact the token-built folder; mtime2 >= mtime1 >= birthtime AND birthtime stable across the touch (date comparators); two random draws differ.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "crumbs"
+          },
+          [
+            "dirname-ok",
+            "dates-ordered",
+            "random-unique"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "buried-date-left-sentinel",
+      "kind": "round-trip",
+      "description": "get-file-date-modified on a missing file failed (buried) without touching its result variable — with smoke.expectErrorCount=0 this proves the error fired and was buried.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "dateMissing"
+          },
+          "UNTOUCHED"
+        ]
+      }
+    },
+    {
+      "id": "random-filename-shapes",
+      "kind": "value",
+      "description": "get-random-filename: 16 hex chars + extension; a leading dot in the extension is not doubled; omitted extension defaults to .tmp.",
+      "expr": {
+        "and": [
+          {
+            "matches_regex": [
+              {
+                "$var": "randCsvA"
+              },
+              "^[0-9a-f]{16}\\.csv$"
+            ]
+          },
+          {
+            "matches_regex": [
+              {
+                "$var": "randCsvB"
+              },
+              "^[0-9a-f]{16}\\.csv$"
+            ]
+          },
+          {
+            "matches_regex": [
+              {
+                "$var": "randDotted"
+              },
+              "^[0-9a-f]{16}\\.log$"
+            ]
+          },
+          {
+            "matches_regex": [
+              {
+                "$var": "randDefault"
+              },
+              "^[0-9a-f]{16}\\.tmp$"
+            ]
+          },
+          {
+            "not_equals": [
+              {
+                "$var": "randCsvA"
+              },
+              {
+                "$var": "randCsvB"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

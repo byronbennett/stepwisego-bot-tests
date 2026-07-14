@@ -1,0 +1,433 @@
+{
+  "job": {
+    "jobName": "SGT database — ODBC trio (modify DDL+DML with ? binds, select with ? bind, stored proc via {CALL}, bad-SQL buried error)",
+    "jobGuid": "a6d10004-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "odDt",
+      "token": "{var:odDt}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "spDt",
+      "token": "{var:spDt}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "fcb656bb-2801-4d70-93a0-07637b8a7064",
+      "stepName": "Require shared variables: sgtOdbcMssql",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtOdbcMssql"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10004-0000-0000-0000-000000000001",
+      "stepName": "arrange: drop stale table from any earlier aborted run",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-modify-odbc",
+        "actionPropValues": {
+          "connectionType": {
+            "value": "ODBC"
+          },
+          "connectionString": {
+            "value": "{svar:sgtOdbcMssql}"
+          },
+          "sql": {
+            "value": "DROP TABLE IF EXISTS sgtester.sgt_t6_odbc"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10004-0000-0000-0000-000000000002",
+      "stepName": "arrange: create people table",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-modify-odbc",
+        "actionPropValues": {
+          "connectionType": {
+            "value": "ODBC"
+          },
+          "connectionString": {
+            "value": "{svar:sgtOdbcMssql}"
+          },
+          "sql": {
+            "value": "CREATE TABLE sgtester.sgt_t6_odbc (id INT NOT NULL PRIMARY KEY, name NVARCHAR(50) NULL, n INT NULL)"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10004-0000-0000-0000-000000000003",
+      "stepName": "act: INSERT one row via positional ? parameters",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-modify-odbc",
+        "actionPropValues": {
+          "connectionType": {
+            "value": "ODBC"
+          },
+          "connectionString": {
+            "value": "{svar:sgtOdbcMssql}"
+          },
+          "sql": {
+            "value": "INSERT INTO sgtester.sgt_t6_odbc (id, name, n) VALUES (?, ?, ?)"
+          },
+          "parameters": {
+            "value": [
+              {
+                "name": "id",
+                "value": "1",
+                "dataType": "Int",
+                "direction": "Input"
+              },
+              {
+                "name": "name",
+                "value": "Alice",
+                "dataType": "NVarChar",
+                "direction": "Input"
+              },
+              {
+                "name": "n",
+                "value": "10",
+                "dataType": "Int",
+                "direction": "Input"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "odi1"
+    },
+    {
+      "stepGuid": "a6d10004-0000-0000-0000-000000000004",
+      "stepName": "act: INSERT two rows via plain SQL (affectedRows=2)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-modify-odbc",
+        "actionPropValues": {
+          "connectionType": {
+            "value": "ODBC"
+          },
+          "connectionString": {
+            "value": "{svar:sgtOdbcMssql}"
+          },
+          "sql": {
+            "value": "INSERT INTO sgtester.sgt_t6_odbc (id, name, n) VALUES (2,'Bob',20),(3,'Cara',30)"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "odi2"
+    },
+    {
+      "stepGuid": "a6d10004-0000-0000-0000-000000000005",
+      "stepName": "arrange: drop stale proc, then create proc returning rows with n >= @minN",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-modify-odbc",
+        "actionPropValues": {
+          "connectionType": {
+            "value": "ODBC"
+          },
+          "connectionString": {
+            "value": "{svar:sgtOdbcMssql}"
+          },
+          "sql": {
+            "value": "DROP PROCEDURE IF EXISTS sgtester.sgt_t6_odbc_top"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10004-0000-0000-0000-000000000006",
+      "stepName": "arrange: create stored procedure",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-modify-odbc",
+        "actionPropValues": {
+          "connectionType": {
+            "value": "ODBC"
+          },
+          "connectionString": {
+            "value": "{svar:sgtOdbcMssql}"
+          },
+          "sql": {
+            "value": "CREATE PROCEDURE sgtester.sgt_t6_odbc_top @minN INT AS BEGIN SET NOCOUNT ON; SELECT id, name FROM sgtester.sgt_t6_odbc WHERE n >= @minN ORDER BY id; END"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10004-0000-0000-0000-000000000007",
+      "stepName": "act: SELECT with ? bind (n > 15 → Bob, Cara)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-select-odbc",
+        "actionPropValues": {
+          "connectionType": {
+            "value": "ODBC"
+          },
+          "connectionString": {
+            "value": "{svar:sgtOdbcMssql}"
+          },
+          "sql": {
+            "value": "SELECT id, name FROM sgtester.sgt_t6_odbc WHERE n > ? ORDER BY id"
+          },
+          "parameters": {
+            "value": [
+              {
+                "name": "minN",
+                "value": "15",
+                "dataType": "Int",
+                "direction": "Input"
+              }
+            ]
+          },
+          "storeToVariable": {
+            "value": "{var:odDt}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "odsel"
+    },
+    {
+      "stepGuid": "a6d10004-0000-0000-0000-000000000008",
+      "stepName": "act: {CALL} stored proc with ? bind (minN=20 → Bob, Cara)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-stored-proc-odbc",
+        "actionPropValues": {
+          "connectionType": {
+            "value": "ODBC"
+          },
+          "connectionString": {
+            "value": "{svar:sgtOdbcMssql}"
+          },
+          "sql": {
+            "value": "{CALL sgtester.sgt_t6_odbc_top (?)}"
+          },
+          "parameters": {
+            "value": [
+              {
+                "name": "minN",
+                "value": "20",
+                "dataType": "Int",
+                "direction": "Input"
+              }
+            ]
+          },
+          "storeToVariable": {
+            "value": "{var:spDt}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "odsp"
+    },
+    {
+      "stepGuid": "a6d10004-0000-0000-0000-000000000009",
+      "stepName": "buried error: SELECT from a table that does not exist",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-select-odbc",
+        "actionPropValues": {
+          "connectionType": {
+            "value": "ODBC"
+          },
+          "connectionString": {
+            "value": "{svar:sgtOdbcMssql}"
+          },
+          "sql": {
+            "value": "SELECT id FROM sgtester.sgt_t6_odbc_no_such_table"
+          },
+          "storeToVariable": {
+            "value": "{var:odDt}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10004-0000-0000-0000-000000000010",
+      "stepName": "cleanup: drop the stored procedure (table is reaped by the harness after predictions)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-modify-odbc",
+        "actionPropValues": {
+          "connectionType": {
+            "value": "ODBC"
+          },
+          "connectionString": {
+            "value": "{svar:sgtOdbcMssql}"
+          },
+          "sql": {
+            "value": "DROP PROCEDURE IF EXISTS sgtester.sgt_t6_odbc_top"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

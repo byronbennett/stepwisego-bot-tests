@@ -1,0 +1,109 @@
+{
+  "test": {
+    "id": "tier3-hosted/excel-com/save-as-roundtrip",
+    "tier": 3,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xlcom-save-as",
+        "xl-create-new-workbook",
+        "xl-set-values",
+        "xl-save-as-xlsx",
+        "xl-open-existing-workbook",
+        "xl-get-value",
+        "xl-close-workbook",
+        "get-file-contents",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ],
+    "serialGroup": "vm-excel-com"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "csv-known-vector-harness",
+      "kind": "round-trip",
+      "description": "COM csv export of the 2x2 grid, read out-of-band by the harness (xlCSV: active sheet, CRLF rows).",
+      "expr": {
+        "starts_with": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/conv.csv"
+              }
+            ]
+          },
+          "hello,7"
+        ]
+      }
+    },
+    {
+      "id": "csv-known-vector-in-bot",
+      "kind": "round-trip",
+      "description": "The same csv read in-bot agrees with the harness read (dual witness).",
+      "expr": {
+        "starts_with": [
+          {
+            "$var": "csvText"
+          },
+          "hello,7"
+        ]
+      }
+    },
+    {
+      "id": "xls-roundtrip-com-read",
+      "kind": "round-trip",
+      "description": "The legacy .xls written from the VARIABLE input reopens in FULL mode; real Excel reads back both cells of row 2 (string + number rendering pinned).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "xlsA2"
+              },
+              "world"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "xlsB2"
+              },
+              "42"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "xls-file-exists",
+      "kind": "round-trip",
+      "description": "The .xls artifact exists in the scratch dir (pulled back from the VM).",
+      "expr": {
+        "file_exists": [
+          {
+            "file": "{var:_sgtScratchDir}/conv.xls"
+          }
+        ]
+      }
+    }
+  ]
+}

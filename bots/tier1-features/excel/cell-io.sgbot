@@ -1,0 +1,1516 @@
+{
+  "job": {
+    "jobName": "SGT excel — cell IO (set/get value, set/get values, clear-values, row/column reads, typing, offsets)",
+    "jobGuid": "e5a00003-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbC",
+      "token": "{var:wbC}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "emptyVal",
+      "token": "{var:emptyVal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valA1",
+      "token": "{var:valA1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valB1",
+      "token": "{var:valB1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valC1",
+      "token": "{var:valC1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valD1",
+      "token": "{var:valD1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valE1",
+      "token": "{var:valE1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valF1",
+      "token": "{var:valF1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valG1",
+      "token": "{var:valG1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valI2",
+      "token": "{var:valI2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valOffsetRead",
+      "token": "{var:valOffsetRead}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valDate",
+      "token": "{var:valDate}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valForcedNum",
+      "token": "{var:valForcedNum}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valEmptyList",
+      "token": "{var:valEmptyList}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "listAll",
+      "token": "{var:listAll}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "listAB",
+      "token": "{var:listAB}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "rowVals",
+      "token": "{var:rowVals}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "colNoHdr",
+      "token": "{var:colNoHdr}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "colWithHdr",
+      "token": "{var:colWithHdr}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "afterClearRange",
+      "token": "{var:afterClearRange}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "afterClearAll",
+      "token": "{var:afterClearAll}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "valMissingSheet",
+      "token": "{var:valMissingSheet}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "UNTOUCHED",
+      "defaultValue": "UNTOUCHED",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "1a791e9b-fc62-427b-b311-11211c3645d5",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "75c21957-3fd2-4a9f-908f-15b1b0d3afba",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000999",
+      "stepName": "pin bot time zone to UTC — Excel date cells round-trip wall-clock only when write/read share UTC (agent engine defaults to machine TZ)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-time-zone",
+        "actionPropValues": {
+          "timeZone": {
+            "value": "UTC"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000001",
+      "stepName": "create workbook, 2 sheets → wbC",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": 2
+          },
+          "storeToVariable": {
+            "value": "{var:wbC}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000002",
+      "stepName": "A1 auto '007' → Excel General strips leading zeros → number 7",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "value": {
+            "value": "007"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000003",
+      "stepName": "B1 valueType=text '007' → locked text, zeros preserved",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "B1"
+          },
+          "value": {
+            "value": "007"
+          },
+          "valueType": {
+            "value": "text"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000004",
+      "stepName": "C1 auto 'true' → boolean cell",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "C1"
+          },
+          "value": {
+            "value": "true"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000005",
+      "stepName": "D1 auto '$1,234.50' → currency-parsed number 1234.5",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "D1"
+          },
+          "value": {
+            "value": "$1,234.50"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000006",
+      "stepName": "E1 auto '50%' → 0.5",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "E1"
+          },
+          "value": {
+            "value": "50%"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000007",
+      "stepName": "F1 auto '(123)' → accounting negative -123",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "F1"
+          },
+          "value": {
+            "value": "(123)"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000008",
+      "stepName": "G1 preventFormulas=true '=SUM(1,2)' → apostrophe-escaped text, not a formula",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "G1"
+          },
+          "value": {
+            "value": "=SUM(1,2)"
+          },
+          "preventFormulas": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000009",
+      "stepName": "write at H1 with rowOffset=1, columnOffset=1 → lands at I2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "H1"
+          },
+          "value": {
+            "value": "offset-landed"
+          },
+          "rowOffset": {
+            "value": 1
+          },
+          "columnOffset": {
+            "value": 1
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000010",
+      "stepName": "A4 valueType=date '2028-02-29' (leap day) → Date cell at bot-TZ midnight",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "A4"
+          },
+          "value": {
+            "value": "2028-02-29"
+          },
+          "valueType": {
+            "value": "date"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000011",
+      "stepName": "A5 valueType=number 'abc' → unparseable, falls back to auto text + warning (still passes)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "A5"
+          },
+          "value": {
+            "value": "abc"
+          },
+          "valueType": {
+            "value": "number"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000012",
+      "stepName": "A6 empty value routed through a variable (pre-run validation rejects literal empties) → writes empty STRING, not null",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "A6"
+          },
+          "value": {
+            "value": "{var:emptyVal}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000013",
+      "stepName": "read A1 → '7'",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "storeToVariable": {
+            "value": "{var:valA1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000014",
+      "stepName": "read B1 → '007'",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "B1"
+          },
+          "storeToVariable": {
+            "value": "{var:valB1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000015",
+      "stepName": "read C1 → boolean readback",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "C1"
+          },
+          "storeToVariable": {
+            "value": "{var:valC1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000016",
+      "stepName": "read D1 → '1234.5'",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "D1"
+          },
+          "storeToVariable": {
+            "value": "{var:valD1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 19,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000017",
+      "stepName": "read E1 → '0.5'",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "E1"
+          },
+          "storeToVariable": {
+            "value": "{var:valE1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 20,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000018",
+      "stepName": "read F1 → '-123'",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "F1"
+          },
+          "storeToVariable": {
+            "value": "{var:valF1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 21,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000019",
+      "stepName": "read G1 → apostrophe-escaped literal",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "G1"
+          },
+          "storeToVariable": {
+            "value": "{var:valG1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 22,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000020",
+      "stepName": "read I2 plainly → the offset write landed there",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "I2"
+          },
+          "storeToVariable": {
+            "value": "{var:valI2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 23,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000021",
+      "stepName": "read H1 with rowOffset=1, columnOffset=1 → same cell via read-side offsets",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "H1"
+          },
+          "rowOffset": {
+            "value": 1
+          },
+          "columnOffset": {
+            "value": 1
+          },
+          "storeToVariable": {
+            "value": "{var:valOffsetRead}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 24,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000022",
+      "stepName": "read A4 → bot-TZ ISO date string",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "A4"
+          },
+          "storeToVariable": {
+            "value": "{var:valDate}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 25,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000023",
+      "stepName": "read A5 → 'abc' (the fallback wrote text)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "A5"
+          },
+          "storeToVariable": {
+            "value": "{var:valForcedNum}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 26,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000024",
+      "stepName": "read A6:A6 skipEmptyValues=false → [''] — empty-string write is a value, not a cleared cell",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "range": {
+            "value": "A6:A6"
+          },
+          "skipEmptyValues": {
+            "value": false
+          },
+          "storeToVariable": {
+            "value": "{var:valEmptyList}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 27,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000025",
+      "stepName": "Sheet2: set-values 'r1;r2;r3' at A1, default direction=down → A1:A3",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": "r1;r2;r3"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 28,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000026",
+      "stepName": "Sheet2: set-values array ['c1','c2','c3'] at B1, direction=right → B1,C1,D1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "B1"
+          },
+          "values": {
+            "value": [
+              "c1",
+              "c2",
+              "c3"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 29,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000027",
+      "stepName": "Sheet2: get-values A1:D3 (skipEmpty default true) → row-major, gaps dropped",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A1:D3"
+          },
+          "storeToVariable": {
+            "value": "{var:listAll}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 30,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000028",
+      "stepName": "Sheet2: get-values A1:B2 skipEmptyValues=false → gaps come back as ''",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A1:B2"
+          },
+          "skipEmptyValues": {
+            "value": false
+          },
+          "storeToVariable": {
+            "value": "{var:listAB}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 31,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000029",
+      "stepName": "Sheet2: get-values-for-row 1 → the whole first row",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values-for-row",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "rowNumber": {
+            "value": 1
+          },
+          "storeToVariable": {
+            "value": "{var:rowVals}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 32,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000030",
+      "stepName": "Sheet2: get-values-for-column A includeHeaders=false → starts at row 2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values-for-column",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "columnLetter": {
+            "value": "A"
+          },
+          "includeHeaders": {
+            "value": false
+          },
+          "storeToVariable": {
+            "value": "{var:colNoHdr}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 33,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000031",
+      "stepName": "Sheet2: get-values-for-column A (headers default true) → full column",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values-for-column",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "columnLetter": {
+            "value": "A"
+          },
+          "storeToVariable": {
+            "value": "{var:colWithHdr}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 34,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000032",
+      "stepName": "Sheet2: clear-values A2:A3",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-clear-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A2:A3"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 35,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000033",
+      "stepName": "Sheet2: get-values A1:A3 skipEmptyValues=false after ranged clear → cleared cells are null → ''",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A1:A3"
+          },
+          "skipEmptyValues": {
+            "value": false
+          },
+          "storeToVariable": {
+            "value": "{var:afterClearRange}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 36,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000034",
+      "stepName": "Sheet2: clear-values with NO range → clears the entire sheet",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-clear-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 37,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000035",
+      "stepName": "Sheet2: get-values A1:D3 after full clear → [] (SENTINEL default proves the read ran)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A1:D3"
+          },
+          "storeToVariable": {
+            "value": "{var:afterClearAll}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 38,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00003-0000-0000-0000-000000000036",
+      "stepName": "get-value on sheetName=Missing → sheet-not-found error, buried; sentinel untouched",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbC}"
+          },
+          "sheetName": {
+            "value": "Missing"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "storeToVariable": {
+            "value": "{var:valMissingSheet}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 39,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

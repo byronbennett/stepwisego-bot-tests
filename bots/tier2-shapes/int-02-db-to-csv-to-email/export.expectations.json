@@ -1,0 +1,212 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-02-db-to-csv-to-email",
+    "tier": 2,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "db-sql-query",
+        "csv-write-datatable",
+        "write-to-file",
+        "get-file-base64",
+        "send-email",
+        "get-emails-imap",
+        "delete-single-email-imap",
+        "loop",
+        "if",
+        "set-variable",
+        "delay",
+        "exit-loop",
+        "require-shared-vars"
+      ],
+      "pipeFns": [
+        "subject",
+        "attachmentCount",
+        "filePaths",
+        "add",
+        "replace"
+      ],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "public",
+        "tableTemplate": "sgt_int02_{var:_sgtSessionId}"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_MAIL_SMTP_HOST",
+      "SGT_MAIL_SMTP_PORT",
+      "SGT_MAIL_IMAP_HOST",
+      "SGT_MAIL_IMAP_PORT",
+      "SGT_MAIL_ACCOUNT",
+      "SGT_MAIL_PASSWORD",
+      "SGT_DEV_DB_CONNECTION_PG"
+    ],
+    "serialGroup": "mail-gmail"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 180000
+  },
+  "predictions": [
+    {
+      "id": "pred-delivered",
+      "kind": "round-trip",
+      "description": "the DB→CSV export was emailed (SMTP) and found by the IMAP fetch — cross-protocol witness",
+      "expr": {
+        "equals": [
+          {
+            "$var": "found"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-attachment-count",
+      "kind": "round-trip",
+      "description": "exactly one attachment rode along",
+      "expr": {
+        "equals": [
+          {
+            "$var": "attCount"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-bytes-exact",
+      "kind": "round-trip",
+      "description": "the downloaded attachment is BYTE-EXACT to the CSV that was sent (base64 compared in-bot)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "bytesOk"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-csv-decimal-and-date",
+      "kind": "round-trip",
+      "description": "DB→DataTable→CSV kept the exact decimal (1234.56, 0.10) and the leap-day date — read out-of-band from the CSV file on disk",
+      "expr": {
+        "and": [
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/int02-export.csv"
+                  }
+                ]
+              },
+              "1234.56"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/int02-export.csv"
+                  }
+                ]
+              },
+              "0.10"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/int02-export.csv"
+                  }
+                ]
+              },
+              "2028-02-29"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-csv-unicode-and-quoting",
+      "kind": "round-trip",
+      "description": "unicode survived and the comma/quote-bearing cell was CSV-quoted (out-of-band file read)",
+      "expr": {
+        "and": [
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/int02-export.csv"
+                  }
+                ]
+              },
+              "Ünïcødé 漢字"
+            ]
+          },
+          {
+            "contains": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/int02-export.csv"
+                  }
+                ]
+              },
+              "\"Comma, Inc.\""
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-db-row-count",
+      "kind": "round-trip",
+      "description": "out-of-band DB witness: the harness reads the seeded table directly and sees exactly 3 rows",
+      "expr": {
+        "equals": [
+          {
+            "count_rows_in": [
+              {
+                "table": {
+                  "schema": "public",
+                  "table": "sgt_int02_{var:_sgtSessionId}"
+                }
+              }
+            ]
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "pred-mailbox-clean",
+      "kind": "round-trip",
+      "description": "cleanup removed every session-marked message from the mailbox",
+      "expr": {
+        "equals": [
+          {
+            "$var": "afterCount"
+          },
+          "0"
+        ]
+      }
+    }
+  ]
+}

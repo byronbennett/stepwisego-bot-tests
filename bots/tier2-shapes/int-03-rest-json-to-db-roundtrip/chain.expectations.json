@@ -1,0 +1,504 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-03-rest-json-to-db-roundtrip/chain",
+    "tier": 2,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "rest-call",
+        "json-parse",
+        "json-get-property",
+        "json-to-datatable",
+        "dt-get-value",
+        "import-json-to-database",
+        "db-sql-query",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": [
+        "loopback-listener",
+        "lossless-number-revival",
+        "token-literal-in-data"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "{var:_sgtSessionId}_int03"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 45000
+  },
+  "predictions": [
+    {
+      "id": "listener-up",
+      "kind": "round-trip",
+      "description": "the launcher confirmed the detached listener wrote its port file",
+      "expr": {
+        "equals": [
+          {
+            "$var": "launchOut"
+          },
+          "server-up"
+        ]
+      }
+    },
+    {
+      "id": "meta-nested-unicode",
+      "kind": "round-trip",
+      "description": "json-get-property dot-path (meta.batch) navigated the nested object; Greek beta arrived intact through HTTP + parse",
+      "expr": {
+        "equals": [
+          {
+            "$var": "metaBatch"
+          },
+          "β-42"
+        ]
+      }
+    },
+    {
+      "id": "dt-amount-string-decimal",
+      "kind": "round-trip",
+      "description": "the JSON-STRING decimal \"1234.5600\" reached the DataTable cell with scale intact (strings are the exactness carrier)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "dtAmt"
+          },
+          "1234.5600"
+        ]
+      }
+    },
+    {
+      "id": "dt-bigid-revived-string",
+      "kind": "round-trip",
+      "description": "the >2^53 JSON NUMBER literal 9007199254740995 was revived by lossless json-parse as an exact string and reached the DT cell (a naive JSON.parse would yield 9007199254740996)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "dtBig"
+          },
+          "9007199254740995"
+        ]
+      }
+    },
+    {
+      "id": "rows-read",
+      "kind": "round-trip",
+      "description": "all 3 orders materialized as import source rows",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a7d20003-0000-0000-0000-00000000000a",
+              "name": "rowsRead"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "rows-imported",
+      "kind": "round-trip",
+      "description": "all 3 orders bulk-inserted into the auto-created session table",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a7d20003-0000-0000-0000-00000000000a",
+              "name": "rowsImported"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "inbot-select-r1",
+      "kind": "round-trip",
+      "description": "in-bot witness (db-sql-query): SELECT WHERE ref='R1' returns exactly 1 row",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a7d20003-0000-0000-0000-00000000000b",
+              "name": "rowCount"
+            }
+          },
+          1
+        ]
+      }
+    },
+    {
+      "id": "oob-row-count",
+      "kind": "round-trip",
+      "description": "out-of-band witness: exactly 3 rows landed",
+      "expr": {
+        "equals": [
+          {
+            "count_rows_in": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              }
+            ]
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "oob-bigid-r1-string-exact",
+      "kind": "round-trip",
+      "description": "big int 9007199254740993 (2^53+1) arrived in the DB string-exact — the read-side exactness chain end-to-end (HTTP → lossless parse → import → NVARCHAR)",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R1"
+              },
+              "bigid"
+            ]
+          },
+          "9007199254740993"
+        ]
+      }
+    },
+    {
+      "id": "oob-bigid-r3-small",
+      "kind": "round-trip",
+      "description": "a double-safe bigid (42) takes the native-number path and still lands as its canonical string",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R3"
+              },
+              "bigid"
+            ]
+          },
+          "42"
+        ]
+      }
+    },
+    {
+      "id": "oob-amount-r1-trailing-zeros",
+      "kind": "round-trip",
+      "description": "trailing-zero decimal carried as a JSON STRING (\"1234.5600\") arrives in the DB string-exact — scale intact",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R1"
+              },
+              "amount"
+            ]
+          },
+          "1234.5600"
+        ]
+      }
+    },
+    {
+      "id": "oob-amount-r2-negative",
+      "kind": "round-trip",
+      "description": "negative trailing-zero decimal string \"-0.10\" survives end-to-end",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R2"
+              },
+              "amount"
+            ]
+          },
+          "-0.10"
+        ]
+      }
+    },
+    {
+      "id": "oob-unit-r1-number-literal-scale",
+      "kind": "round-trip",
+      "description": "PINNED: a double-representable JSON NUMBER literal (123.4500) revives as the native number and lands as its canonical string \"123.45\" — VALUE-exact, scale-lossy. This is the documented lossless-json contract (numbers a double holds faithfully stay numbers); carriers needing scale must ship strings (see amount)",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R1"
+              },
+              "unit"
+            ]
+          },
+          "123.45"
+        ]
+      }
+    },
+    {
+      "id": "oob-unit-r2-long-decimal-exact",
+      "kind": "round-trip",
+      "description": "a 22-significant-digit JSON NUMBER literal (0.1000000000000000055511, not double-representable) revives as an exact string and arrives in the DB verbatim",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R2"
+              },
+              "unit"
+            ]
+          },
+          "0.1000000000000000055511"
+        ]
+      }
+    },
+    {
+      "id": "oob-note-token-literal",
+      "kind": "round-trip",
+      "description": "\"{var:leak}\" as a JSON VALUE lands in the DB literally — the response→variable→import seam does not double-resolve token-like text in data (the bot defines parm leak='LEAKED'; a leak would store that instead). Covers BOTH engines' import paths: in-process sourceField row lookup AND the agent-side {simpr-sourceFields:...} token migration",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R1"
+              },
+              "note"
+            ]
+          },
+          "{var:leak}"
+        ]
+      }
+    },
+    {
+      "id": "oob-note-null",
+      "kind": "human-approve",
+      "description": "KNOWN ENGINE SPLIT (see review + TODOS.md): JSON null lands as DB NULL in-process, but as EMPTY STRING under the agent — agent-load migration rewrites sourceField maps to {simpr-sourceFields:...} tokens and resolveTokens stringifies a null step variable to ''. Either way it must NOT be the 4-char string 'null' or a resolved token leak; the any_of pins today's split until the null-vs-blank decision",
+      "expr": {
+        "any_of": [
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "table": {
+                      "schema": "sgtester",
+                      "table": "{var:_sgtSessionId}_int03"
+                    }
+                  },
+                  {
+                    "ref": "R3"
+                  },
+                  "note"
+                ]
+              },
+              null
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "table": {
+                      "schema": "sgtester",
+                      "table": "{var:_sgtSessionId}_int03"
+                    }
+                  },
+                  {
+                    "ref": "R3"
+                  },
+                  "note"
+                ]
+              },
+              ""
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "oob-customer-unicode",
+      "kind": "round-trip",
+      "description": "umlauts + CJK + ampersand survive HTTP → JSON → SQL NVARCHAR end-to-end",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R1"
+              },
+              "customer"
+            ]
+          },
+          "Müller & Söhne 漢字"
+        ]
+      }
+    },
+    {
+      "id": "oob-customer-blank-not-null",
+      "kind": "round-trip",
+      "description": "empty JSON string stays an empty string in the DB (text-type blank ≠ NULL trichotomy)",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R2"
+              },
+              "customer"
+            ]
+          },
+          ""
+        ]
+      }
+    },
+    {
+      "id": "oob-customer-quotes",
+      "kind": "round-trip",
+      "description": "apostrophe + escaped double-quotes in data survive (SQL-injection-adjacent punctuation corpus)",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R3"
+              },
+              "customer"
+            ]
+          },
+          "O'Hara \"Q\""
+        ]
+      }
+    },
+    {
+      "id": "oob-ship-city-nested",
+      "kind": "round-trip",
+      "description": "nested JSON flattening pinned: source alias 'ship.city' (dot-path) fills the ship_city column",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R1"
+              },
+              "ship_city"
+            ]
+          },
+          "Köln"
+        ]
+      }
+    },
+    {
+      "id": "oob-literal-map",
+      "kind": "round-trip",
+      "description": "the literal-kind import map fills 'origin' on every row",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "{var:_sgtSessionId}_int03"
+                }
+              },
+              {
+                "ref": "R2"
+              },
+              "origin"
+            ]
+          },
+          "rest-import"
+        ]
+      }
+    }
+  ]
+}

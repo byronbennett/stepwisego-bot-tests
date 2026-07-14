@@ -1,0 +1,112 @@
+{
+  "test": {
+    "id": "tier1-features/web/heal-guard-off",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "click-element",
+        "send-keys-browser",
+        "wait-for-element",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": [
+        "heal-ladder-guard"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/heal.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 90000
+  },
+  "predictions": [
+    {
+      "id": "click-fails-exact-only",
+      "kind": "round-trip",
+      "description": "the stale webElement click under exactOnly fails (success=false) — no silent heal",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a9e1000e-0000-0000-0000-000000000003",
+              "name": "success"
+            }
+          },
+          "false"
+        ]
+      }
+    },
+    {
+      "id": "send-keys-fails-exact-only",
+      "kind": "round-trip",
+      "description": "the stale webElement fill under exactOnly fails (success=false)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a9e1000e-0000-0000-0000-000000000004",
+              "name": "success"
+            }
+          },
+          "false"
+        ]
+      }
+    },
+    {
+      "id": "wait-fails-exact-only",
+      "kind": "round-trip",
+      "description": "the stale webElement wait under exactOnly fails (success=false)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a9e1000e-0000-0000-0000-000000000005",
+              "name": "success"
+            }
+          },
+          "false"
+        ]
+      }
+    },
+    {
+      "id": "no-click-landed",
+      "kind": "round-trip",
+      "description": "the page's click counter proves no click reached the live button",
+      "expr": {
+        "equals": [
+          {
+            "$var": "healClickLog"
+          },
+          "0"
+        ]
+      }
+    },
+    {
+      "id": "no-keys-landed",
+      "kind": "round-trip",
+      "description": "the live input stayed empty — the failed fill never touched it",
+      "expr": {
+        "equals": [
+          {
+            "$var": "healFieldVal"
+          },
+          "[]"
+        ]
+      }
+    }
+  ]
+}

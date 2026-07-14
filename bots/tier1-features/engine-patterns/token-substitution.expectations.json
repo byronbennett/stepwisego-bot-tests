@@ -1,0 +1,63 @@
+{
+  "test": {
+    "id": "tier1-features/engine-patterns/token-substitution",
+    "tier": 1,
+    "synthesizedAt": "2026-07-08T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["set-variable"],
+      "pipeFns": ["upper", "lower", "left"],
+      "patterns": ["token:var"]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "embedded-token",
+      "kind": "round-trip",
+      "description": "token embedded in surrounding text resolves in place",
+      "expr": { "equals": [ { "$var": "greeting" }, "Hello World!" ] }
+    },
+    {
+      "id": "verbatim-storage",
+      "kind": "round-trip",
+      "description": "set-variable valueSource=none stores token syntax verbatim without resolving",
+      "expr": { "equals": [ { "$var": "literal" }, "{var:first}" ] }
+    },
+    {
+      "id": "no-double-resolve",
+      "kind": "round-trip",
+      "description": "substitution is SINGLE-PASS: resolving {var:literal} yields the stored text '{var:first}' and must NOT resolve again to 'World' (data that looks like a token stays data)",
+      "expr": { "equals": [ { "$var": "resolvedOnce" }, "{var:first}" ] }
+    },
+    {
+      "id": "pipe-single",
+      "kind": "round-trip",
+      "description": "single pipe function: {var:first|upper}",
+      "expr": { "equals": [ { "$var": "upperName" }, "WORLD" ] }
+    },
+    {
+      "id": "pipe-chained",
+      "kind": "round-trip",
+      "description": "chained pipe functions apply left to right: {var:first|lower|left:3}",
+      "expr": { "equals": [ { "$var": "chained" }, "wor" ] }
+    },
+    {
+      "id": "missing-var-verbatim",
+      "kind": "round-trip",
+      "description": "a token referencing a nonexistent variable is left VERBATIM in the output (not blanked, not an error) — pinned engine contract",
+      "expr": { "equals": [ { "$var": "missing" }, "A{var:doesNotExist}B" ] }
+    }
+  ]
+}

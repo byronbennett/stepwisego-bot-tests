@@ -1,0 +1,50 @@
+{
+  "test": {
+    "id": "tier1-features/engine-patterns/loop-datatable-subvars",
+    "tier": 1,
+    "synthesizedAt": "2026-07-08T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["loop", "json-parse", "json-to-datatable", "add-to-list"],
+      "pipeFns": [],
+      "patterns": ["loop", "subvar:sa-col", "token:sa"]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "datatable-column-subvars",
+      "kind": "round-trip",
+      "description": "dataTable loop publishes per-column sub-variables ({sld-currentDataRow:name} / :amt) that update every iteration; values carry through verbatim (string '10.50' keeps trailing zero)",
+      "expr": { "equals": [ { "$var": "crumbsRows" }, ["1:Alice=10.50", "2:Bob=3.25"] ] }
+    },
+    {
+      "id": "csv-column-subvars",
+      "kind": "round-trip",
+      "description": "csv loop over variable content: header row consumed, per-column sub-variables ({slv-currentDataRow:id} / :city) resolve per iteration",
+      "expr": { "equals": [ { "$var": "crumbsCsv" }, ["1:1-Oslo", "2:2-Lima"] ] }
+    },
+    {
+      "id": "csv-headers-output",
+      "kind": "round-trip",
+      "description": "csv loop exposes the parsed header list via its headers step-output variable",
+      "expr": {
+        "equals": [
+          { "$stepOut": { "stepGuid": "e1a00008-0000-0000-0000-000000000004", "name": "headers" } },
+          ["id", "city"]
+        ]
+      }
+    }
+  ]
+}

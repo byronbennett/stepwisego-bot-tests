@@ -1,0 +1,270 @@
+{
+  "job": {
+    "jobName": "SGT bot — run-bot-as-function: echo child round-trips a mapped value, inline AND isolateProcess (forked temp-file channel)",
+    "jobGuid": "b0700001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "greeting",
+      "token": "{var:greeting}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "héllo wörld ≤42",
+      "defaultValue": "héllo wörld ≤42",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "echoInline",
+      "token": "{var:echoInline}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "echoForked",
+      "token": "{var:echoForked}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "statusInline",
+      "token": "{var:statusInline}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": false,
+      "defaultValue": false,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "statusForked",
+      "token": "{var:statusForked}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": false,
+      "defaultValue": false,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "96349881-7cb2-47c3-833b-a7679dddc92d",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "30d9eb7b-f78a-4cf8-9491-f7a0646a5952",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b0700001-0000-0000-0000-000000000001",
+      "stepName": "call child-echo INLINE (default fast path): greeting in, upper-cased echo back bothWays",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "sinline",
+      "actionOp": {
+        "actionName": "run-bot-as-function",
+        "actionPropValues": {
+          "botSource": {
+            "value": "file"
+          },
+          "botFilePath": {
+            "value": "{var:_sgtScratchDir}/child-echo.sgbot"
+          },
+          "endOnFail": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:statusInline}"
+          },
+          "isolateProcess": {
+            "value": false
+          },
+          "childMachineControl": {
+            "value": "no"
+          },
+          "variableMappings": {
+            "value": [
+              {
+                "target": "{var:msgIn}",
+                "source": "{var:greeting}",
+                "bothWays": false
+              },
+              {
+                "target": "{var:msgOut}",
+                "source": "{var:echoInline}",
+                "bothWays": true
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b0700001-0000-0000-0000-000000000002",
+      "stepName": "call child-echo with isolateProcess=true (forked child agent, temp-file variable channel)",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "sforked",
+      "actionOp": {
+        "actionName": "run-bot-as-function",
+        "actionPropValues": {
+          "botSource": {
+            "value": "file"
+          },
+          "botFilePath": {
+            "value": "{var:_sgtScratchDir}/child-echo.sgbot"
+          },
+          "endOnFail": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:statusForked}"
+          },
+          "isolateProcess": {
+            "value": true
+          },
+          "childMachineControl": {
+            "value": "no"
+          },
+          "variableMappings": {
+            "value": [
+              {
+                "target": "{var:msgIn}",
+                "source": "{var:greeting}",
+                "bothWays": false
+              },
+              {
+                "target": "{var:msgOut}",
+                "source": "{var:echoForked}",
+                "bothWays": true
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

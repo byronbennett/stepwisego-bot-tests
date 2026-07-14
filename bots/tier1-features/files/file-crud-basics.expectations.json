@@ -1,0 +1,223 @@
+{
+  "test": {
+    "id": "tier1-features/files/file-crud-basics",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "create-file",
+        "write-to-file",
+        "append-text-to-file",
+        "get-file-contents",
+        "file-exists",
+        "delete-file",
+        "if",
+        "add-to-list",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "exists-probe-calibrated",
+      "kind": "round-trip",
+      "description": "file-exists is calibrated across both polarities on the SAME path: false before create-file ran (clean-slate proof), true after. A later true/false from this probe therefore means something.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "existsBefore"
+              },
+              false
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "existsAfterCreate"
+              },
+              true
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "unicode-overwrite-roundtrip",
+      "kind": "round-trip",
+      "description": "write-to-file (append=false) replaced create-file's content with the exact multi-line unicode string — also witnesses that the buried duplicate create-file did NOT write 'must-not-land'.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "readWritten"
+          },
+          "line1\nÜnïcødé 漢字 🎯"
+        ]
+      }
+    },
+    {
+      "id": "oob-final-content",
+      "kind": "round-trip",
+      "description": "OUT-OF-BAND witness: the harness reads crud/data.txt directly (its own fs read, not a plugin runner) and it must equal the bot's own final read — two independent readers agree on what physically landed on disk after create→overwrite→append-action→append-mode-write.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/crud/data.txt"
+                  }
+                ]
+              },
+              {
+                "$var": "readFinal"
+              }
+            ]
+          },
+          {
+            "starts_with": [
+              {
+                "$var": "readFinal"
+              },
+              "line1\nÜnïcødé 漢字 🎯\ntail-"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$var": "readFinal"
+              },
+              "+more"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "in-bot-crumbs-all-ok",
+      "kind": "round-trip",
+      "description": "The three in-bot equalsExact checks (create content, appended content, final content — each token-built against {var:_sgtSessionId}, which the DSL cannot express) all passed, in order.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "crumbs"
+          },
+          [
+            "create-content-ok",
+            "append-ok",
+            "final-ok"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "append-created-missing-file",
+      "kind": "round-trip",
+      "description": "append-text-to-file onto a missing path created the file (and its parent folder) with exactly the appended text.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "readAppendNew"
+              },
+              "born-by-append"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/crud/deep/appendnew.txt"
+                  }
+                ]
+              },
+              "born-by-append"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "latin1-roundtrip",
+      "kind": "round-trip",
+      "description": "latin1 write → latin1 read reproduces 'café ±' exactly (both chars are non-ASCII single-byte latin1 code points).",
+      "expr": {
+        "equals": [
+          {
+            "$var": "readLatin"
+          },
+          "café ±"
+        ]
+      }
+    },
+    {
+      "id": "delete-dual-witness",
+      "kind": "round-trip",
+      "description": "delete-file dual witness: in-bot file-exists flipped true→false across the delete, AND the harness's own file_exists confirms the victim is physically gone after the run.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "victimBefore"
+              },
+              true
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "victimAfter"
+              },
+              false
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/crud/victim.txt"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "buried-read-left-sentinel-untouched",
+      "kind": "round-trip",
+      "description": "The buried get-file-contents on a missing file failed BEFORE touching its result variable — the sentinel still holds its default. Together with smoke.expectErrorCount=0 this proves the three buried errors really fired and were really buried.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "readMissing"
+          },
+          "UNTOUCHED"
+        ]
+      }
+    }
+  ]
+}

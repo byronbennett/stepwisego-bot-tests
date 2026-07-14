@@ -1,0 +1,73 @@
+{
+  "test": {
+    "id": "tier1-features/regex/regex-matching",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["regex-is-match", "regex-match-all"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "is-match-boolean-results",
+      "kind": "round-trip",
+      "description": "regex-is-match stores real BOOLEANS: anchored ^h.llo$ with i flag matches 'Hello' (true); ^x against 'hello' is false.",
+      "expr": {
+        "and": [
+          { "equals": [ { "$var": "isHello" }, true ] },
+          { "equals": [ { "$var": "isX" }, false ] }
+        ]
+      }
+    },
+    {
+      "id": "default-flags-case-insensitive",
+      "kind": "round-trip",
+      "description": "Omitting flags defaults to 'i' (HELLO matches hello), while EXPLICITLY empty flags is case-sensitive (no match) — the default is a real default, not a forced flag.",
+      "expr": {
+        "and": [
+          { "equals": [ { "$var": "caseDefault" }, true ] },
+          { "equals": [ { "$var": "caseSensitive" }, false ] }
+        ]
+      }
+    },
+    {
+      "id": "match-all-whole-matches",
+      "kind": "round-trip",
+      "description": "regex-match-all with default groupIndex 0 collects every whole match in order.",
+      "expr": { "equals": [ { "$var": "numbers" }, ["1", "22", "333"] ] }
+    },
+    {
+      "id": "match-all-group-1",
+      "kind": "round-trip",
+      "description": "groupIndex 1 extracts the first capture group per match (usernames).",
+      "expr": { "equals": [ { "$var": "users" }, ["ann", "bob"] ] }
+    },
+    {
+      "id": "match-all-last-group-append",
+      "kind": "round-trip",
+      "description": "groupIndex -1 selects the LAST capture group (domains) and keepValues=true APPENDS after the pre-seeded entry instead of replacing.",
+      "expr": { "equals": [ { "$var": "domains" }, ["seeded", "foo", "bar"] ] }
+    },
+    {
+      "id": "match-all-no-matches-replaces",
+      "kind": "round-trip",
+      "description": "Zero matches with keepValues unset REPLACES the list with an empty one — the sentinel seed is gone.",
+      "expr": { "equals": [ { "$var": "noMatches" }, [] ] }
+    }
+  ]
+}

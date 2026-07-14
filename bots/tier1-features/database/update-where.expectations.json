@@ -1,0 +1,70 @@
+{
+  "test": {
+    "id": "tier1-features/database/update-where",
+    "tier": 1,
+    "synthesizedAt": "2026-05-03T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "db-sql-query",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "{var:_sgtSessionId}_orders"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "pred-pre-update-rowcount",
+      "kind": "round-trip",
+      "description": "Pre-UPDATE SELECT WHERE id=2 returns 1 row",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "11111111-cccc-cccc-cccc-000000000003",
+              "name": "rowCount"
+            }
+          },
+          1
+        ]
+      }
+    },
+    {
+      "id": "pred-post-update-rowcount",
+      "kind": "round-trip",
+      "description": "Post-UPDATE SELECT WHERE id=2 still returns 1 row (UPDATE didn't accidentally remove rows)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "11111111-cccc-cccc-cccc-000000000005",
+              "name": "rowCount"
+            }
+          },
+          1
+        ]
+      }
+    }
+  ]
+}

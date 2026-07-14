@@ -1,0 +1,166 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-07-run-bot-as-function-pipeline/pipeline",
+    "tier": 2,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-bot-as-function",
+        "csv-write-line",
+        "set-variable",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [
+        "upper"
+      ],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/child-transform.sgbot",
+      "fixtures/child-write-csv.sgbot"
+    ],
+    "sharePointSandboxLists": [],
+    "engines": [
+      "agent"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "both-children-passed",
+      "kind": "round-trip",
+      "description": "statusVariable captured true for both child runs (inline in-process children on the shared engine).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "child1Status"
+              },
+              true
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "child2Status"
+              },
+              true
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "list-mapped-in-and-out-exact",
+      "kind": "round-trip",
+      "description": "Parm mapping carries a LIST across both boundaries with full value fidelity: parent inputList seeds child inList (array, not stringified), child transforms per-item via {sloop:loopItem|upper}, bothWays returns child outList into parent resultList.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "resultList"
+          },
+          [
+            "ALPHA",
+            "BETA",
+            "GAMMA"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "decimal-exact-round-trip",
+      "kind": "round-trip",
+      "description": "An exact decimal (>2^53 integer part + 3 fraction digits — float round-trip would corrupt it) crosses parent→child via mapping, is copied inside the child by token substitution, and returns bothWays byte-exact.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "amountBack"
+          },
+          "9007199254740993.117"
+        ]
+      }
+    },
+    {
+      "id": "gbl-var-visibility-pinned",
+      "kind": "round-trip",
+      "description": "{gbl-var:} visibility across the child boundary: the parent resolves its own declared gbl-var parm ('parent-value'), but the child sees its OWN gbl-var default ('child-default') — a parent bot's gbl-var declaration does NOT cross; only the agent's fetched-globals snapshot merges into children, and standalone harness runs fetch none.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "gblParent"
+              },
+              "parent-value"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "gblSeen"
+              },
+              "child-default"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pipeline-output-file-exact",
+      "kind": "round-trip",
+      "description": "Child #2 wrote the transformed rows to the output CSV — file exists with exactly the three upper-cased lines (csv-write-line appends with a leading newline after the first line; no trailing newline).",
+      "expr": {
+        "and": [
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/pipeline-out.csv"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/pipeline-out.csv"
+                  }
+                ]
+              },
+              "ALPHA\nBETA\nGAMMA"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "shared-audit-trail-exact",
+      "kind": "round-trip",
+      "description": "Both children appended to the SAME audit CSV the parent opened (path passed as an inbound parm — the pattern all multi-bot triples copy). Order and content are deterministic: parent,start → child1 row (exact decimal + its gbl-var view) → child2,done → parent,end.",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/audit.csv"
+              }
+            ]
+          },
+          "parent,start\nchild1,9007199254740993.117,child-default\nchild2,done\nparent,end"
+        ]
+      }
+    }
+  ]
+}

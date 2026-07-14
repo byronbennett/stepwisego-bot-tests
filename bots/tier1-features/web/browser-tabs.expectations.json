@@ -1,0 +1,232 @@
+{
+  "test": {
+    "id": "tier1-features/web/browser-tabs",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "browser-tabs",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/tab-a.html",
+      "fixtures/tab-b.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 90000
+  },
+  "predictions": [
+    {
+      "id": "open-activates-new-tab",
+      "kind": "round-trip",
+      "description": "browser-tabs Open creates tab 2, activates it, and reports its title",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000003",
+                  "name": "tabCount"
+                }
+              },
+              2
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000003",
+                  "name": "activeIndex"
+                }
+              },
+              2
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000003",
+                  "name": "activeTitle"
+                }
+              },
+              "SGT Tab Beta"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "count-is-side-effect-free",
+      "kind": "round-trip",
+      "description": "Count reports 2 tabs and leaves tab 2 active",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000004",
+                  "name": "tabCount"
+                }
+              },
+              2
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000004",
+                  "name": "activeIndex"
+                }
+              },
+              2
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "switch-by-index-is-1-based",
+      "kind": "round-trip",
+      "description": "SwitchByIndex 1 activates the first tab (tab-a)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000005",
+                  "name": "activeIndex"
+                }
+              },
+              1
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000005",
+                  "name": "activeTitle"
+                }
+              },
+              "SGT Tab Alpha"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "switch-by-title-case-insensitive-substring",
+      "kind": "round-trip",
+      "description": "SwitchByTitle matches 'tab beta' against 'SGT Tab Beta' case-insensitively",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000006",
+                  "name": "activeIndex"
+                }
+              },
+              2
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000006",
+                  "name": "activeTitle"
+                }
+              },
+              "SGT Tab Beta"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "switch-by-url-substring",
+      "kind": "round-trip",
+      "description": "SwitchByUrl matches the tab-a file URL substring",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000007",
+                  "name": "activeIndex"
+                }
+              },
+              1
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000007",
+                  "name": "activeUrl"
+                }
+              },
+              "/tab-a.html"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "close-activates-last-remaining",
+      "kind": "round-trip",
+      "description": "Close on the active tab (tab-a) leaves 1 tab and activates the remaining tab-b",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000008",
+                  "name": "tabCount"
+                }
+              },
+              1
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10002-0000-0000-0000-000000000008",
+                  "name": "activeTitle"
+                }
+              },
+              "SGT Tab Beta"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

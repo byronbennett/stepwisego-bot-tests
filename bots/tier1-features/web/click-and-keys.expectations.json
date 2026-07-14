@@ -1,0 +1,129 @@
+{
+  "test": {
+    "id": "tier1-features/web/click-and-keys",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "click-element",
+        "send-keys-browser",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/interact.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 90000
+  },
+  "predictions": [
+    {
+      "id": "click-event-sequence",
+      "kind": "round-trip",
+      "description": "Single fires click; Double fires two clicks + dblclick; Right fires contextmenu only",
+      "expr": {
+        "equals": [
+          {
+            "$var": "clickLog"
+          },
+          "single;single;single;double;right;"
+        ]
+      }
+    },
+    {
+      "id": "click-success-outputs",
+      "kind": "round-trip",
+      "description": "each click step reports success=true",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10005-0000-0000-0000-000000000003",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10005-0000-0000-0000-000000000004",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10005-0000-0000-0000-000000000005",
+                  "name": "success"
+                }
+              },
+              "true"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fill-unicode-roundtrip",
+      "kind": "round-trip",
+      "description": "Fill mode sets the exact unicode + emoji value",
+      "expr": {
+        "equals": [
+          {
+            "$var": "fillVal"
+          },
+          "filled Ünïcødé 漢字 🎯"
+        ]
+      }
+    },
+    {
+      "id": "type-unicode-roundtrip",
+      "kind": "round-trip",
+      "description": "Type mode keystrokes the exact unicode value into the textarea",
+      "expr": {
+        "equals": [
+          {
+            "$var": "typeVal"
+          },
+          "typed Ünïcødé 漢字"
+        ]
+      }
+    },
+    {
+      "id": "press-named-key-to-focused",
+      "kind": "round-trip",
+      "description": "Press Enter reaches the element focused by the preceding click exactly once",
+      "expr": {
+        "equals": [
+          {
+            "$var": "enterCount"
+          },
+          "1"
+        ]
+      }
+    }
+  ]
+}

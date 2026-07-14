@@ -1,0 +1,95 @@
+{
+  "test": {
+    "id": "tier1-features/email/graph-folders",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "get-email-folders-graph",
+        "json-stringify",
+        "loop",
+        "set-variable",
+        "require-shared-vars"
+      ],
+      "pipeFns": [
+        "folderName",
+        "totalMessages",
+        "add"
+      ],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_SP_TENANT_ID",
+      "SGT_SP_CLIENT_ID",
+      "SGT_SP_CLIENT_SECRET",
+      "SGT_MAIL_GRAPH_UPN"
+    ],
+    "serialGroup": "mail-graph"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "pred-folder-count",
+      "kind": "round-trip",
+      "description": "the mailbox's folder list came back non-empty (read-only action — no mutation)",
+      "expr": {
+        "greater_than": [
+          {
+            "$var": "folderCount"
+          },
+          "0"
+        ]
+      }
+    },
+    {
+      "id": "pred-standing-folders",
+      "kind": "round-trip",
+      "description": "both Inbox and the standing sgt-bulk folder are found by reading each loop item's NAME directly (|folderName). GUARDS THE FIX shipped in this track: EmailFolder objects used to be unreachable from bot tokens — no pipe fn read .name, and {loopItem} stringifies an object to '[object Object]' — so this triple previously had to json-stringify the whole list and grep the serialized text.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "sawInbox"
+              },
+              "1"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "sawBulk"
+              },
+              "1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-folder-counts-real",
+      "kind": "round-trip",
+      "description": "Inbox reports a REAL message count via |totalMessages (the mailbox has mail). The IMAP folder runner used to hard-code totalMessages/unseenMessages to 0; Graph always reported real numbers, so the two families disagreed. Both are real now.",
+      "expr": {
+        "greater_than": [
+          {
+            "$var": "inboxTotal"
+          },
+          "0"
+        ]
+      }
+    }
+  ]
+}

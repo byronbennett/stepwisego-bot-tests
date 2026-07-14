@@ -1,0 +1,269 @@
+{
+  "test": {
+    "id": "tier1-features/excel/range-geometry",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "xl-get-last-used-row",
+        "xl-get-last-used-column",
+        "xl-get-first-empty-row",
+        "xl-get-first-row-in-range",
+        "xl-get-used-range",
+        "xl-get-number-rows-in-range",
+        "xl-get-number-columns-in-range",
+        "xl-get-region-for-range",
+        "xl-column-number-to-letter",
+        "xl-create-new-workbook",
+        "xl-set-value",
+        "xl-set-values",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "extent-probes",
+      "kind": "round-trip",
+      "description": "Over a two-island terrain (A1 header; B2:D4 block; empty row 5; F6:F7 island): last-used-row=7, last-used-column=6 (a NUMBER string, not a letter), first-empty-row=5 (the scan finds the interior gap, not lastRow+1). All geometry results are strings.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "lastRow"
+              },
+              "7"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "lastCol"
+              },
+              "6"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "firstEmpty"
+              },
+              "5"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "used-range-bounding-box",
+      "kind": "round-trip",
+      "description": "used-range is the bounding box of ALL data (both islands + header): A1:F7 — NOT the contiguous region of any single island.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "usedRange"
+          },
+          "A1:F7"
+        ]
+      }
+    },
+    {
+      "id": "current-region-semantics",
+      "kind": "round-trip",
+      "description": "region-for-range is Excel's CurrentRegion: B2 (corner) and C3 (middle) both expand to B2:D4; F7 expands only to F6:F7 because the empty row/columns isolate the island. The gap row is what separates this from used-range above.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "regionB2"
+              },
+              "B2:D4"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "regionMid"
+              },
+              "B2:D4"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "regionIsland"
+              },
+              "F6:F7"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "range-counts-explicit-and-expanded",
+      "kind": "round-trip",
+      "description": "number-rows/columns-in-range agree between an explicit B2:D4 and a single cell expanded via expandToRegion=true — the expansion path reuses the same CurrentRegion logic pinned above.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "rowsExplicit"
+              },
+              "3"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "rowsExpanded"
+              },
+              "3"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "colsExplicit"
+              },
+              "3"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "colsExpanded"
+              },
+              "3"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "first-row-is-string-property",
+      "kind": "round-trip",
+      "description": "first-row-in-range is a pure property of the range STRING (no sheet scan): B2:D9 → 2 even though rows 5..9 of that range are empty; a single cell D7 → 7.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "firstRowOfRange"
+              },
+              "2"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "firstRowSingleCell"
+              },
+              "7"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "column-letter-boundaries",
+      "kind": "round-trip",
+      "description": "column-number-to-letter across every carry boundary: 1→A, 26→Z, 27→AA, 703→AAA (bijective base-26). 0 is rejected at runtime (buried; sentinel untouched, expectErrorCount=0).",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "letter1"
+              },
+              "A"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "letter26"
+              },
+              "Z"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "letter27"
+              },
+              "AA"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "letter703"
+              },
+              "AAA"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "letterBad"
+              },
+              "UNTOUCHED"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "empty-sheet-zero-geometry",
+      "kind": "round-trip",
+      "description": "The untouched Sheet2 calibrates the empty-sheet convention: last-used-row '0', used-range '' (empty string), first-empty-row '1'. SENTINEL defaults prove all three reads ran.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "emptyLastRow"
+              },
+              "0"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "emptyUsedRange"
+              },
+              ""
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "emptyFirstEmpty"
+              },
+              "1"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

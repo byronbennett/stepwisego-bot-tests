@@ -1,0 +1,127 @@
+{
+  "test": {
+    "id": "tier1-features/files/well-known-folders",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "get-appdata-folder",
+        "get-desktop-folder",
+        "get-documents-folder",
+        "get-filename",
+        "get-folder-path",
+        "if",
+        "add-to-list",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "appdata-shape",
+      "kind": "value",
+      "description": "get-appdata-folder returns an absolute path whose leaf is the per-app 'stepwisego' folder (legacy GetAppDataPath contract) — leaf checked twice: regex on the raw path AND via a second action (get-filename).",
+      "expr": {
+        "and": [
+          {
+            "matches_regex": [
+              {
+                "$var": "appdataPath"
+              },
+              "^([A-Za-z]:\\\\|/).+[/\\\\]stepwisego$"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "appdataName"
+              },
+              "stepwisego"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "desktop-shape",
+      "kind": "value",
+      "description": "get-desktop-folder: absolute path with leaf 'Desktop' (exact leaf via get-filename — portable across OS/user).",
+      "expr": {
+        "and": [
+          {
+            "matches_regex": [
+              {
+                "$var": "desktopPath"
+              },
+              "^([A-Za-z]:\\\\|/).+[/\\\\]Desktop$"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "desktopName"
+              },
+              "Desktop"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "documents-shape",
+      "kind": "value",
+      "description": "get-documents-folder: absolute path with leaf 'Documents'.",
+      "expr": {
+        "and": [
+          {
+            "matches_regex": [
+              {
+                "$var": "documentsPath"
+              },
+              "^([A-Za-z]:\\\\|/).+[/\\\\]Documents$"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "documentsName"
+              },
+              "Documents"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cross-consistency",
+      "kind": "round-trip",
+      "description": "In-bot crumb: Desktop and Documents resolve under the SAME parent (the home dir — asserted by relation, not literal value, for portability) and the three paths are pairwise distinct.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "crumbs"
+          },
+          [
+            "same-home"
+          ]
+        ]
+      }
+    }
+  ]
+}

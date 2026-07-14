@@ -1,0 +1,179 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-01-sp-to-excel-report",
+    "tier": 2,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "sp-create-list",
+        "sp-insert-item",
+        "sp-select-items",
+        "loop",
+        "xl-set-value",
+        "xl-create-new-workbook",
+        "xl-get-values",
+        "xl-save-as-xlsx",
+        "xl-save-as-csv",
+        "get-file-contents",
+        "add-to-list",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": [
+        "sp-to-excel-report"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [
+      "sgt-{var:_sgtSessionId}-rpt"
+    ],
+    "requiresEnv": [
+      "SGT_SP_TENANT_ID",
+      "SGT_SP_CLIENT_ID",
+      "SGT_SP_CLIENT_SECRET",
+      "SGT_SP_SITE_URL",
+      "SGT_SP_CERT_FILE",
+      "SGT_SP_CERT_KEY_FILE"
+    ],
+    "exclusive": true
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "pred-source-rowcount",
+      "kind": "round-trip",
+      "description": "the select saw the seeded count, corroborated by the raw Graph count",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b80001-0000-4000-8000-000000000006",
+                  "name": "rowCount"
+                }
+              },
+              3
+            ]
+          },
+          {
+            "equals": [
+              {
+                "count_rows_in": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-rpt"
+                    }
+                  }
+                ]
+              },
+              3
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-per-iteration-freshness",
+      "kind": "round-trip",
+      "description": "column sub-variables changed every iteration (stale-binding catcher); exact decimals; missing Number renders '' — full breadcrumb sequence live-pinned 2026-07-12",
+      "expr": {
+        "equals": [
+          {
+            "$var": "amtCrumbs"
+          },
+          [
+            "1:r-1=1234.56",
+            "2:r-2=0.1",
+            "3:r-3="
+          ]
+        ]
+      }
+    },
+    {
+      "id": "pred-excel-reread",
+      "kind": "round-trip",
+      "description": "reopened region equals the SharePoint seed cell-by-cell (in-bot re-read; empty trailing cells omitted from the flat values array)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "reread"
+          },
+          [
+            "r-1",
+            "1234.56",
+            "2026-06-01T00:00:00.000+00:00",
+            "r-2",
+            "0.1",
+            "2026-12-31T23:00:00.000+00:00",
+            "r-3"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "pred-csv-known-vector",
+      "kind": "round-trip",
+      "description": "raw CSV equals the known vector byte-for-byte — in-bot get-file-contents AND the harness's independent file read agree (quoting/dates/nulls pinned)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "csvRaw"
+              },
+              "r-1,1234.56,2026-06-01T00:00:00.000+00:00\nr-2,0.1,2026-12-31T23:00:00.000+00:00\nr-3,,"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/int01-report.csv"
+                  }
+                ]
+              },
+              "r-1,1234.56,2026-06-01T00:00:00.000+00:00\nr-2,0.1,2026-12-31T23:00:00.000+00:00\nr-3,,"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-artifacts-exist",
+      "kind": "round-trip",
+      "description": "both saved artifacts exist on disk (harness-side witness)",
+      "expr": {
+        "and": [
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/int01-report.xlsx"
+              }
+            ]
+          },
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/int01-report.csv"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

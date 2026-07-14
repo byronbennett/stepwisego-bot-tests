@@ -1,0 +1,72 @@
+{
+  "test": {
+    "id": "tier1-features/engine-patterns/error-machinery",
+    "tier": 1,
+    "synthesizedAt": "2026-07-08T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["error-handler", "add-to-list"],
+      "pipeFns": [],
+      "patterns": ["error-handler"]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 1,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "control-flow-order",
+      "kind": "round-trip",
+      "description": "ignoreErrors buries a failure and continues to the next sibling; a failure inside an error-handler skips the handler's remaining children (no 'in-handler-after') and resumes at the handler's first sibling; a clean handler runs all children. Exact crumb order proves all three.",
+      "expr": {
+        "equals": [
+          { "$var": "crumbs" },
+          ["start", "after-ignored", "in-handler-before", "after-handler", "clean-handler-ran"]
+        ]
+      }
+    },
+    {
+      "id": "status-var-caught",
+      "kind": "round-trip",
+      "description": "error-handler statusVariable (boolean) flips to true when a child fails without ignoreErrors",
+      "expr": { "equals": [ { "$var": "errHappened" }, true ] }
+    },
+    {
+      "id": "status-var-clean-initialized",
+      "kind": "round-trip",
+      "description": "error-handler initializes its statusVariable to false ON ENTRY — a parm pre-set to true must read false after a clean handler run",
+      "expr": { "equals": [ { "$var": "errClean" }, false ] }
+    },
+    {
+      "id": "handler-error-message",
+      "kind": "round-trip",
+      "description": "handler surfaces the caught error's message via its errorMessage step-output variable",
+      "expr": {
+        "equals": [
+          { "$stepOut": { "stepGuid": "e1a00005-0000-0000-0000-000000000004", "name": "errorMessage" } },
+          "Variable \"noSuchList\" not found"
+        ]
+      }
+    },
+    {
+      "id": "handler-error-step-name",
+      "kind": "round-trip",
+      "description": "handler surfaces the failing step's name via its errorStepName step-output variable",
+      "expr": {
+        "equals": [
+          { "$stepOut": { "stepGuid": "e1a00005-0000-0000-0000-000000000004", "name": "errorStepName" } },
+          "failing step inside handler (missing list variable)"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,280 @@
+{
+  "job": {
+    "jobName": "SGT live SQL Server — builder SELECT WHERE",
+    "jobGuid": "dddddddd-0000-0000-0000-000000000006",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "ee071272-05fd-4215-9843-e499b7f86ce7",
+      "stepName": "Require shared variables: sgtDbMssql",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtDbMssql"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "dddddddd-0000-0000-0000-000000000002",
+      "stepName": "drop (idempotent)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDbMssql"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "other"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "IF OBJECT_ID('sgt_mssql_sw') IS NOT NULL DROP TABLE [sgt_mssql_sw]"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "dddddddd-0000-0000-0000-000000000003",
+      "stepName": "create",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDbMssql"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "other"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "CREATE TABLE [sgt_mssql_sw] (id INT NOT NULL PRIMARY KEY, customer NVARCHAR(100) NOT NULL, n INT NOT NULL)"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "dddddddd-0000-0000-0000-000000000004",
+      "stepName": "seed",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDbMssql"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "other"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "INSERT INTO [sgt_mssql_sw] (id, customer, n) VALUES (1,'Alice',10),(2,'Bob',20),(3,'Cara',30)"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "dddddddd-0000-0000-0000-000000000001",
+      "stepName": "Builder SELECT WHERE n > 15",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDbMssql"
+          },
+          "queryType": {
+            "value": "select"
+          },
+          "queryConfig": {
+            "value": {
+              "queryTables": [
+                {
+                  "name": "sgt_mssql_sw",
+                  "alias": "x",
+                  "schema": "",
+                  "columns": []
+                }
+              ],
+              "fromTable": {
+                "tableAlias": "x"
+              },
+              "selectFields": [
+                {
+                  "tableAlias": "x",
+                  "field": "id",
+                  "alias": "id",
+                  "aggregation": "none",
+                  "dataType": "int"
+                },
+                {
+                  "tableAlias": "x",
+                  "field": "customer",
+                  "alias": "customer",
+                  "aggregation": "none",
+                  "dataType": "text"
+                }
+              ],
+              "whereConditions": [
+                {
+                  "logic": "and",
+                  "openParens": 0,
+                  "closeParens": 0,
+                  "tableAlias": "x",
+                  "field": "n",
+                  "dataType": "int",
+                  "comparator": ">",
+                  "value": "15"
+                }
+              ],
+              "orderByFields": [
+                {
+                  "tableAlias": "x",
+                  "field": "id",
+                  "direction": "asc"
+                }
+              ]
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sqsel"
+    },
+    {
+      "stepGuid": "dddddddd-0000-0000-0000-000000000005",
+      "stepName": "drop (cleanup)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "db-sql-query",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "devDbMssql"
+          },
+          "queryType": {
+            "value": "rawSql"
+          },
+          "rawQueryType": {
+            "value": "other"
+          },
+          "queryConfig": {
+            "value": {
+              "rawSql": "IF OBJECT_ID('sgt_mssql_sw') IS NOT NULL DROP TABLE [sgt_mssql_sw]"
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

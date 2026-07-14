@@ -1,0 +1,203 @@
+{
+  "test": {
+    "id": "tier1-features/web/element-reads",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "get-web-element",
+        "get-all-web-elements",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/elements.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 90000
+  },
+  "predictions": [
+    {
+      "id": "unicode-inner-text",
+      "kind": "round-trip",
+      "description": "innerText round-trips multibyte unicode + emoji exactly",
+      "expr": {
+        "equals": [
+          {
+            "$var": "uniVal"
+          },
+          "Ünïcødé 漢字 🎯"
+        ]
+      }
+    },
+    {
+      "id": "inner-text-collapses-whitespace",
+      "kind": "round-trip",
+      "description": "innerText collapses source newlines/tabs/runs-of-spaces to single spaces and trims",
+      "expr": {
+        "equals": [
+          {
+            "$var": "spaceyVal"
+          },
+          "leading and tabbed trailing"
+        ]
+      }
+    },
+    {
+      "id": "data-attribute-read",
+      "kind": "round-trip",
+      "description": "attribute mode reads a data-* attribute",
+      "expr": {
+        "equals": [
+          {
+            "$var": "kindVal"
+          },
+          "primary"
+        ]
+      }
+    },
+    {
+      "id": "href-attribute-is-raw",
+      "kind": "round-trip",
+      "description": "attribute mode returns the RAW href attr text, not a resolved URL",
+      "expr": {
+        "equals": [
+          {
+            "$var": "hrefVal"
+          },
+          "https://example.invalid/path?q=1"
+        ]
+      }
+    },
+    {
+      "id": "missing-selector-found-false",
+      "kind": "round-trip",
+      "description": "buried missing-selector step sets found=false and never writes the result var",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10003-0000-0000-0000-000000000007",
+                  "name": "found"
+                }
+              },
+              "false"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "missVal"
+              },
+              "SENTINEL"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ambiguous-selector-fails-unhealed",
+      "kind": "round-trip",
+      "description": "a 2-match string selector fails (string selectors cannot heal) and never writes the result var",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10003-0000-0000-0000-000000000008",
+                  "name": "found"
+                }
+              },
+              "false"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "dupVal"
+              },
+              "SENTINEL"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "get-all-collects-in-dom-order",
+      "kind": "round-trip",
+      "description": "get-all-web-elements stores all matches' innerTexts in DOM order with count output",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "fruitList"
+              },
+              [
+                "apple",
+                "banana",
+                "cherry"
+              ]
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10003-0000-0000-0000-000000000009",
+                  "name": "count"
+                }
+              },
+              3
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "get-all-zero-matches-passes-empty",
+      "kind": "round-trip",
+      "description": "zero matches is a PASS with an empty list and count 0 (clobbers the sentinel list)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "emptyList"
+              },
+              []
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10003-0000-0000-0000-000000000010",
+                  "name": "count"
+                }
+              },
+              0
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

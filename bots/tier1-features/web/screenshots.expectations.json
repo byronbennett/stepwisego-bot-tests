@@ -1,0 +1,170 @@
+{
+  "test": {
+    "id": "tier1-features/web/screenshots",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "take-screenshot",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/screenshot.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "png-magic-bytes",
+      "kind": "round-trip",
+      "description": "Page/FullPage/Element captures are real PNGs (base64 of the PNG signature)",
+      "expr": {
+        "and": [
+          {
+            "starts_with": [
+              {
+                "$var": "pngB64"
+              },
+              "iVBOR"
+            ]
+          },
+          {
+            "starts_with": [
+              {
+                "$var": "fullB64"
+              },
+              "iVBOR"
+            ]
+          },
+          {
+            "starts_with": [
+              {
+                "$var": "elB64"
+              },
+              "iVBOR"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "jpeg-magic-bytes",
+      "kind": "round-trip",
+      "description": "format=jpeg produces a real JPEG (base64 of the FFD8 signature)",
+      "expr": {
+        "starts_with": [
+          {
+            "$var": "jpgB64"
+          },
+          "/9j/"
+        ]
+      }
+    },
+    {
+      "id": "file-path-outputs",
+      "kind": "round-trip",
+      "description": "each capture reports its saved filePath",
+      "expr": {
+        "and": [
+          {
+            "ends_with": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10010-0000-0000-0000-000000000003",
+                  "name": "filePath"
+                }
+              },
+              "/shot-page.png"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10010-0000-0000-0000-000000000004",
+                  "name": "filePath"
+                }
+              },
+              "/shot-full.png"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10010-0000-0000-0000-000000000005",
+                  "name": "filePath"
+                }
+              },
+              "/shot-el.png"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10010-0000-0000-0000-000000000006",
+                  "name": "filePath"
+                }
+              },
+              "/shot.jpg"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "files-exist-on-disk",
+      "kind": "external-write",
+      "description": "all four captures exist on disk (out-of-band witness)",
+      "expr": {
+        "and": [
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/shot-page.png"
+              }
+            ]
+          },
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/shot-full.png"
+              }
+            ]
+          },
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/shot-el.png"
+              }
+            ]
+          },
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/shot.jpg"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

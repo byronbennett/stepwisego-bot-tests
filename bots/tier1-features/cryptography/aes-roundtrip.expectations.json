@@ -1,0 +1,51 @@
+{
+  "test": {
+    "id": "tier1-features/cryptography/aes-roundtrip",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["aes-encrypt-string", "aes-decrypt-string", "regex-is-match"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "roundtrip-exact",
+      "kind": "round-trip",
+      "description": "decrypt(encrypt(x, pw), pw) === x, including multi-byte UTF-8 (é ö ✓ —). Ciphertext is random per run, so the ONLY stable contract is the round trip plus format.",
+      "expr": { "equals": [ { "$var": "decrypted" }, "héllo wörld ✓ — secret 42" ] }
+    },
+    {
+      "id": "ciphertext-format",
+      "kind": "round-trip",
+      "description": "Ciphertext is exactly three space-separated base64 blobs (salt, IV, data) — pinned via in-bot regex-is-match because the blobs themselves are random.",
+      "expr": { "equals": [ { "$var": "formatOk" }, true ] }
+    },
+    {
+      "id": "nondeterministic-ciphertext",
+      "kind": "round-trip",
+      "description": "Encrypting the same plaintext twice yields DIFFERENT ciphertexts (fresh random salt + IV each call) — equal outputs would mean the salt/IV generation broke.",
+      "expr": { "not_equals": [ { "$var": "encrypted" }, { "$var": "encrypted2" } ] }
+    },
+    {
+      "id": "failed-decrypts-leave-output-untouched",
+      "kind": "round-trip",
+      "description": "Both buried failures (wrong password → 'incorrect password or corrupted data'; malformed 2-part input → format error) fail BEFORE writing the output variable — the sentinel survives.",
+      "expr": { "equals": [ { "$var": "decrypted2" }, "UNTOUCHED" ] }
+    }
+  ]
+}

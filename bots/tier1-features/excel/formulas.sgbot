@@ -1,0 +1,1115 @@
+{
+  "job": {
+    "jobName": "SGT excel — formulas (set/get formula, formualizer compute, cached-result-first)",
+    "jobGuid": "e5a00004-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbF",
+      "token": "{var:wbF}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbX",
+      "token": "{var:wbX}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "emptyVal",
+      "token": "{var:emptyVal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "cachedFile",
+      "token": "{var:cachedFile}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "file",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false,
+      "fileMeta": {
+        "botFileId": "e5a00004-bf00-0000-0000-000000000001"
+      }
+    },
+    {
+      "name": "fixturePath",
+      "token": "{var:fixturePath}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "fSum",
+      "token": "{var:fSum}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "fIf",
+      "token": "{var:fIf}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "fUpper",
+      "token": "{var:fUpper}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "fVlookup",
+      "token": "{var:fVlookup}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "fOffset",
+      "token": "{var:fOffset}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "fBlock",
+      "token": "{var:fBlock}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "gSum",
+      "token": "{var:gSum}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "gIf",
+      "token": "{var:gIf}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "gNonFormula",
+      "token": "{var:gNonFormula}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "gEmptyCell",
+      "token": "{var:gEmptyCell}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "cachedVal",
+      "token": "{var:cachedVal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "engineVal",
+      "token": "{var:engineVal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "cachedFormula",
+      "token": "{var:cachedFormula}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [
+    {
+      "id": "e5a00004-bf00-0000-0000-000000000001",
+      "fileName": "cached.xlsx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "data": "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",
+      "sizeBytes": 6109,
+      "sha256": "7bf5e866df1407517c7303f0e4fbe884919172051abcf86f0c7fca86fab6d4c4",
+      "description": "ExcelJS-authored fixture: A1 formula 1+1 with deliberately WRONG cached result 99 (cached-first pin); A2 formula 10*2 with NO cached result (engine-compute pin)",
+      "addedAt": "2026-07-09T00:00:00Z"
+    }
+  ],
+  "steps": [
+    {
+      "stepGuid": "06778a7d-c48a-43f9-8ae2-0892d17b0650",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e8f0dc6a-03c7-48e2-8215-7e107846763c",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000001",
+      "stepName": "arrange: scratch subfolder",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}/fx"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000002",
+      "stepName": "create workbook → wbF",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": 1
+          },
+          "storeToVariable": {
+            "value": "{var:wbF}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000003",
+      "stepName": "operands: A1=10, A2=32 (set-values down)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "values": {
+            "value": "10;32"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000004",
+      "stepName": "operand: B1=Hello",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "B1"
+          },
+          "value": {
+            "value": "Hello"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000005",
+      "stepName": "lookup table row 1: D1=k1, E1=v1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "D1"
+          },
+          "values": {
+            "value": [
+              "k1",
+              "v1"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000006",
+      "stepName": "lookup table row 2: D2=k2, E2=v2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "D2"
+          },
+          "values": {
+            "value": [
+              "k2",
+              "v2"
+            ]
+          },
+          "direction": {
+            "value": "right"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000007",
+      "stepName": "C1 = =SUM(A1:A2) (leading = accepted and stripped for storage)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C1"
+          },
+          "formula": {
+            "value": "=SUM(A1:A2)"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000008",
+      "stepName": "C2 = IF(A1>5,\"big\",\"small\") (no leading = also accepted)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C2"
+          },
+          "formula": {
+            "value": "IF(A1>5,\"big\",\"small\")"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000009",
+      "stepName": "C3 = =UPPER(B1)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C3"
+          },
+          "formula": {
+            "value": "=UPPER(B1)"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000010",
+      "stepName": "C4 = =VLOOKUP(\"k2\",D1:E2,2,FALSE)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C4"
+          },
+          "formula": {
+            "value": "=VLOOKUP(\"k2\",D1:E2,2,FALSE)"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000011",
+      "stepName": "set-formula anchored C5 with rowOffset=1 → lands at C6: =A1*2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C5"
+          },
+          "rowOffset": {
+            "value": 1
+          },
+          "formula": {
+            "value": "=A1*2"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000012",
+      "stepName": "read C1 → formualizer computes SUM (no Agent, in-process engine)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C1"
+          },
+          "storeToVariable": {
+            "value": "{var:fSum}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000013",
+      "stepName": "read C2 → IF branch",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C2"
+          },
+          "storeToVariable": {
+            "value": "{var:fIf}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000014",
+      "stepName": "read C3 → UPPER",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C3"
+          },
+          "storeToVariable": {
+            "value": "{var:fUpper}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000015",
+      "stepName": "read C4 → VLOOKUP",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C4"
+          },
+          "storeToVariable": {
+            "value": "{var:fVlookup}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000016",
+      "stepName": "read anchored C5 with rowOffset=1 (C6) → offset write+read agree",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C5"
+          },
+          "rowOffset": {
+            "value": 1
+          },
+          "storeToVariable": {
+            "value": "{var:fOffset}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000017",
+      "stepName": "second reader: xl-get-values C1:C4 → the same four computed values as an array",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C1:C4"
+          },
+          "storeToVariable": {
+            "value": "{var:fBlock}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 19,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000018",
+      "stepName": "get-formula C1 → '=' prepended on readback",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C1"
+          },
+          "storeToVariable": {
+            "value": "{var:gSum}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 20,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000019",
+      "stepName": "get-formula C2 → the no-= input reads back WITH =",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C2"
+          },
+          "storeToVariable": {
+            "value": "{var:gIf}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 21,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000020",
+      "stepName": "get-formula on NON-formula cell A1 → raw value as string (pinned quirk)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "storeToVariable": {
+            "value": "{var:gNonFormula}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 22,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000021",
+      "stepName": "get-formula on empty cell Z9 → '' (SENTINEL default proves it ran)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "Z9"
+          },
+          "storeToVariable": {
+            "value": "{var:gEmptyCell}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 23,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000022",
+      "stepName": "unpack bundled cached.xlsx fixture into scratch",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "save-bundled-file",
+        "actionPropValues": {
+          "sourceFile": {
+            "value": "{var:cachedFile}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fx/cached.xlsx"
+          },
+          "resultVariable": {
+            "value": "{var:fixturePath}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 24,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000023",
+      "stepName": "open the fixture → wbX",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-open-existing-workbook",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/fx/cached.xlsx"
+          },
+          "storeToVariable": {
+            "value": "{var:wbX}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 25,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000024",
+      "stepName": "A1 has formula 1+1 with WRONG cached result 99 → cached ALWAYS beats the engine (H-1)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbX}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "storeToVariable": {
+            "value": "{var:cachedVal}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 26,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000025",
+      "stepName": "A2 has formula 10*2 with NO cached result → engine computes 20",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-value",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbX}"
+          },
+          "range": {
+            "value": "A2"
+          },
+          "storeToVariable": {
+            "value": "{var:engineVal}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 27,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000026",
+      "stepName": "get-formula A1 on the fixture → =1+1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbX}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "storeToVariable": {
+            "value": "{var:cachedFormula}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 28,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00004-0000-0000-0000-000000000027",
+      "stepName": "set-formula with EMPTY formula (via variable, past pre-run validation) → runtime error, buried",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-set-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbF}"
+          },
+          "range": {
+            "value": "C9"
+          },
+          "formula": {
+            "value": "{var:emptyVal}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 29,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

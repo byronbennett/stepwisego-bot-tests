@@ -1,0 +1,67 @@
+{
+  "test": {
+    "id": "tier1-features/clipboard/clipboard-roundtrip",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "set-clipboard",
+        "get-clipboard",
+        "check-clipboard-data",
+        "set-datatable-to-clipboard",
+        "clear-clipboard"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [],
+    "exclusive": true
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "set-get-roundtrip",
+      "kind": "round-trip",
+      "description": "set-clipboard → get-clipboard round-trips the exact payload through the real OS clipboard",
+      "expr": {
+        "equals": [{ "$var": "got1" }, "sgt-t6-clipboard-payload"]
+      }
+    },
+    {
+      "id": "check-after-set",
+      "kind": "round-trip",
+      "description": "check-clipboard-data reports true (boolean) while the payload is on the clipboard",
+      "expr": {
+        "equals": [{ "$var": "hasData1" }, true]
+      }
+    },
+    {
+      "id": "datatable-csv-rendering",
+      "kind": "round-trip",
+      "description": "set-datatable-to-clipboard renders the 2x2 DataTable as comma csv with headers, \\n newlines, no trailing newline (unparseRows contract)",
+      "expr": {
+        "equals": [{ "$var": "got2" }, "a,b\n1,x\n2,y"]
+      }
+    },
+    {
+      "id": "check-after-clear",
+      "kind": "round-trip",
+      "description": "clear-clipboard empties the clipboard; check-clipboard-data reports false",
+      "expr": {
+        "equals": [{ "$var": "hasData2" }, false]
+      }
+    }
+  ]
+}

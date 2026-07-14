@@ -1,0 +1,195 @@
+{
+  "test": {
+    "id": "tier1-features/email/imap-error-paths",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "error-handler",
+        "get-emails-imap",
+        "if",
+        "send-email",
+        "set-variable",
+        "write-to-file",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_MAIL_SMTP_HOST",
+      "SGT_MAIL_SMTP_PORT",
+      "SGT_MAIL_IMAP_HOST",
+      "SGT_MAIL_IMAP_PORT",
+      "SGT_MAIL_ACCOUNT",
+      "SGT_MAIL_PASSWORD"
+    ],
+    "serialGroup": "mail-gmail"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 2,
+    "maxDurationMs": 180000
+  },
+  "predictions": [
+    {
+      "id": "pred-calibration",
+      "kind": "round-trip",
+      "description": "the SAME fetch config with the RIGHT password against a REAL folder succeeds — so leg A's failure is attributable to the password and leg C's to the folder, not to a broken fetcher",
+      "expr": {
+        "equals": [
+          {
+            "$var": "calOk"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-failed-fetches-left-vars-untouched",
+      "kind": "round-trip",
+      "description": "leg A (wrong password) and leg C (non-existent folder) both left their result variables holding the SENTINEL — a failed IMAP fetch never stores a partial/empty result list",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "legAEmails"
+              },
+              "SENTINEL"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "legCEmails"
+              },
+              "SENTINEL"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-send-produced-no-outputs",
+      "kind": "round-trip",
+      "description": "leg B (unreachable SMTP) never wrote its messageId step output — the {ssnd:messageId} token stays UNRESOLVED (literal) because the step variable was never set. Observed contract: unset step tokens substitute to themselves, they do not blank out",
+      "expr": {
+        "equals": [
+          {
+            "$var": "legBMessageId"
+          },
+          "{ssnd:messageId}"
+        ]
+      }
+    },
+    {
+      "id": "pred-run-continued",
+      "kind": "round-trip",
+      "description": "crumb variable + crumb file (read out-of-band by the harness) prove the run continued to completion past all three buried failures",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "crumb"
+              },
+              "continued-after-failures"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/crumb.txt"
+                  }
+                ]
+              },
+              "crumb continued-after-failures"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-auth-error-is-specific",
+      "kind": "round-trip",
+      "description": "a wrong password reports an AUTHENTICATION failure with the server's own words. GUARDS THE FIX shipped in this track: imapflow's Error.message for any rejected command is the generic 'Command failed', and the runner surfaced only that — a bad password and a missing folder were indistinguishable in the run log. The detail (responseText / authenticationFailed) is now read off the error.",
+      "expr": {
+        "and": [
+          {
+            "contains": [
+              {
+                "$stepOut": {
+                  "stepGuid": "e14e0001-0000-4000-8000-000000000020",
+                  "name": "errorMessage"
+                }
+              },
+              "authentication failed"
+            ]
+          },
+          {
+            "not": [
+              {
+                "contains": [
+                  {
+                    "$stepOut": {
+                      "stepGuid": "e14e0001-0000-4000-8000-000000000020",
+                      "name": "errorMessage"
+                    }
+                  },
+                  "Command failed"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-folder-error-is-specific",
+      "kind": "round-trip",
+      "description": "a non-existent folder reports the mailbox by name — a different message from the auth failure above, which is the whole point: two very different operator problems used to look identical.",
+      "expr": {
+        "and": [
+          {
+            "contains": [
+              {
+                "$stepOut": {
+                  "stepGuid": "e14e0001-0000-4000-8000-000000000030",
+                  "name": "errorMessage"
+                }
+              },
+              "Unknown Mailbox"
+            ]
+          },
+          {
+            "not": [
+              {
+                "contains": [
+                  {
+                    "$stepOut": {
+                      "stepGuid": "e14e0001-0000-4000-8000-000000000030",
+                      "name": "errorMessage"
+                    }
+                  },
+                  "Command failed"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

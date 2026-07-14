@@ -1,0 +1,104 @@
+{
+  "test": {
+    "id": "tier1-features/scripts/run-script-node",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-script",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "stdout-captured",
+      "kind": "round-trip",
+      "description": "node script stdout captured (trimEnd'd by the runner: console.log's newline is stripped)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "sOut"
+          },
+          "script-done"
+        ]
+      }
+    },
+    {
+      "id": "stderr-captured",
+      "kind": "round-trip",
+      "description": "buried exit-3 script's stderr captured into storeErrorToVariable (trimEnd'd)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "sErr"
+          },
+          "boom"
+        ]
+      }
+    },
+    {
+      "id": "exit-code-three",
+      "kind": "round-trip",
+      "description": "failing script's exitCode output variable carries the real exit code 3 (regression: execFile reports it on err.code)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10007-0000-0000-0000-000000000002",
+              "name": "exitCode"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "inbot-file-witness",
+      "kind": "round-trip",
+      "description": "in-bot witness (get-file-contents): the script wrote its argv[2] file — proves user arguments reach the temp-file script",
+      "expr": {
+        "equals": [
+          {
+            "$var": "sBack"
+          },
+          "sgt-t6-script"
+        ]
+      }
+    },
+    {
+      "id": "oob-file-witness",
+      "kind": "round-trip",
+      "description": "out-of-band witness: harness fs read of the script-written scratch file",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/script-out.txt"
+              }
+            ]
+          },
+          "sgt-t6-script"
+        ]
+      }
+    }
+  ]
+}

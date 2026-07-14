@@ -1,0 +1,39 @@
+{
+  "job": {
+    "jobName": "SGT logic — require-shared-vars (behavior=fail) fails the run",
+    "jobGuid": "a4b00003-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbs", "token": "{var:crumbs}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "sgtPreflight", "token": "{var:sgtPreflight}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "a4b00003-0000-0000-0000-000000000001",
+      "stepName": "Require shared variables: sgtGateMissing (fail mode)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": { "value": "{svar:sgtGateMissing}" },
+          "behavior": { "value": "fail" },
+          "statusVariable": { "value": "{var:sgtPreflight}" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "a4b00003-0000-0000-0000-000000000002",
+      "stepName": "record after-gate (must never run)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "after-gate" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

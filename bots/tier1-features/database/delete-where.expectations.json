@@ -1,0 +1,70 @@
+{
+  "test": {
+    "id": "tier1-features/database/delete-where",
+    "tier": 1,
+    "synthesizedAt": "2026-05-03T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "db-sql-query",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "{var:_sgtSessionId}_orders"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "pred-pre-count",
+      "kind": "round-trip",
+      "description": "Pre-DELETE count is 3",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "11111111-dddd-dddd-dddd-000000000003",
+              "name": "rowCount"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "pred-post-count",
+      "kind": "round-trip",
+      "description": "Post-DELETE count is 2",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "11111111-dddd-dddd-dddd-000000000005",
+              "name": "rowCount"
+            }
+          },
+          2
+        ]
+      }
+    }
+  ]
+}

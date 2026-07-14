@@ -1,0 +1,424 @@
+{
+  "job": {
+    "jobName": "SGT engine-patterns — if/else comparator truth table",
+    "jobGuid": "e1a00004-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbs", "token": "{var:crumbs}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "emptyText", "token": "{var:emptyText}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "srcList", "token": "{var:srcList}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": ["x", "y", "z"], "defaultValue": ["x", "y", "z"], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-000000000001",
+      "stepName": "If 10 greaterThan 9 (numeric, lexically false)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "10", "comparator": "greaterThan", "rightOperand": "9" } ] }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000101",
+          "stepName": "then: num-gt",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000001",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "num-gt" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000102",
+          "stepName": "Else",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000001",
+          "actionType": "action",
+          "actionOp": { "actionName": "else", "actionPropValues": {}, "requiresChildSteps": true },
+          "children": [
+            {
+              "stepGuid": "e1a00004-0000-0000-0000-000000000103",
+              "stepName": "else: num-gt-else",
+              "parentGuid": "e1a00004-0000-0000-0000-000000000102",
+              "actionType": "action",
+              "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "num-gt-else" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+              "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            }
+          ],
+          "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-000000000002",
+      "stepName": "If 0.30 equals 0.3 (loose numeric)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "0.30", "comparator": "equals", "rightOperand": "0.3" } ] }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000201",
+          "stepName": "then: loose-num-eq",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000002",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "loose-num-eq" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-000000000003",
+      "stepName": "If CSV equals csv (case-insensitive loose)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "CSV", "comparator": "equals", "rightOperand": "csv" } ] }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000301",
+          "stepName": "then: ci-eq",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000003",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "ci-eq" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-000000000004",
+      "stepName": "If CSV equalsExact csv (case-sensitive, must go else)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "CSV", "comparator": "equalsExact", "rightOperand": "csv" } ] }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000401",
+          "stepName": "then: exact-hit",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000004",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "exact-hit" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000402",
+          "stepName": "Else",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000004",
+          "actionType": "action",
+          "actionOp": { "actionName": "else", "actionPropValues": {}, "requiresChildSteps": true },
+          "children": [
+            {
+              "stepGuid": "e1a00004-0000-0000-0000-000000000403",
+              "stepName": "else: exact-miss",
+              "parentGuid": "e1a00004-0000-0000-0000-000000000402",
+              "actionType": "action",
+              "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "exact-miss" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+              "children": [], "seq": 12, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            }
+          ],
+          "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-000000000005",
+      "stepName": "If 2/12/2026 equals 2026-02-12 (date instant)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "2/12/2026", "comparator": "equals", "rightOperand": "2026-02-12" } ] }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000501",
+          "stepName": "then: date-eq",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000005",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "date-eq" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 14, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 13, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-000000000006",
+      "stepName": "If emptyText isEmpty",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "{var:emptyText}", "comparator": "isEmpty", "rightOperand": "" } ] }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000601",
+          "stepName": "then: empty-yes",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000006",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "empty-yes" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 16, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 15, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-000000000007",
+      "stepName": "If emptyText hasValue (must go else)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "{var:emptyText}", "comparator": "hasValue", "rightOperand": "" } ] }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000701",
+          "stepName": "then: hasvalue-hit",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000007",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "hasvalue-hit" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 18, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000702",
+          "stepName": "Else",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000007",
+          "actionType": "action",
+          "actionOp": { "actionName": "else", "actionPropValues": {}, "requiresChildSteps": true },
+          "children": [
+            {
+              "stepGuid": "e1a00004-0000-0000-0000-000000000703",
+              "stepName": "else: hasvalue-miss",
+              "parentGuid": "e1a00004-0000-0000-0000-000000000702",
+              "actionType": "action",
+              "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "hasvalue-miss" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+              "children": [], "seq": 20, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            }
+          ],
+          "seq": 19, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 17, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-000000000008",
+      "stepName": "If (a=a AND b=c) OR x=x — left-to-right, no precedence",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              { "logic": "and", "leftOperand": "a", "comparator": "equals", "rightOperand": "a" },
+              { "logic": "and", "leftOperand": "b", "comparator": "equals", "rightOperand": "c" },
+              { "logic": "or", "leftOperand": "x", "comparator": "equals", "rightOperand": "x" }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000801",
+          "stepName": "then: andor-ltr",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000008",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "andor-ltr" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 22, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 21, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-000000000009",
+      "stepName": "If srcList contains Y (item-wise, case-insensitive)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "{var:srcList}", "comparator": "contains", "rightOperand": "Y" } ] }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000901",
+          "stepName": "then: list-contains",
+          "parentGuid": "e1a00004-0000-0000-0000-000000000009",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "list-contains" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 24, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 23, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-00000000000a",
+      "stepName": "Nested If: outer true, inner false → inner else",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "1", "comparator": "equals", "rightOperand": "1" } ] }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000a01",
+          "stepName": "then: outer-then",
+          "parentGuid": "e1a00004-0000-0000-0000-00000000000a",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "outer-then" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 26, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000a02",
+          "stepName": "inner If 1 equals 2 (false)",
+          "parentGuid": "e1a00004-0000-0000-0000-00000000000a",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": { "value": [ { "logic": "and", "leftOperand": "1", "comparator": "equals", "rightOperand": "2" } ] }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "e1a00004-0000-0000-0000-000000000a03",
+              "stepName": "then: inner-then",
+              "parentGuid": "e1a00004-0000-0000-0000-000000000a02",
+              "actionType": "action",
+              "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "inner-then" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+              "children": [], "seq": 28, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            },
+            {
+              "stepGuid": "e1a00004-0000-0000-0000-000000000a04",
+              "stepName": "Else",
+              "parentGuid": "e1a00004-0000-0000-0000-000000000a02",
+              "actionType": "action",
+              "actionOp": { "actionName": "else", "actionPropValues": {}, "requiresChildSteps": true },
+              "children": [
+                {
+                  "stepGuid": "e1a00004-0000-0000-0000-000000000a05",
+                  "stepName": "else: inner-else",
+                  "parentGuid": "e1a00004-0000-0000-0000-000000000a04",
+                  "actionType": "action",
+                  "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "inner-else" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+                  "children": [], "seq": 30, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+                }
+              ],
+              "seq": 29, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            }
+          ],
+          "seq": 27, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 25, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-00000000000b",
+      "stepName": "If 12.5 isNumber",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "12.5", "comparator": "isNumber", "rightOperand": "" } ] }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000b01",
+          "stepName": "then: isnum",
+          "parentGuid": "e1a00004-0000-0000-0000-00000000000b",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "isnum" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 32, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 31, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00004-0000-0000-0000-00000000000c",
+      "stepName": "If apple greaterThan banana (non-numeric ordering is FALSE, must go else)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": { "value": [ { "logic": "and", "leftOperand": "apple", "comparator": "greaterThan", "rightOperand": "banana" } ] }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000c01",
+          "stepName": "then: str-gt-hit",
+          "parentGuid": "e1a00004-0000-0000-0000-00000000000c",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "str-gt-hit" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 34, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00004-0000-0000-0000-000000000c02",
+          "stepName": "Else",
+          "parentGuid": "e1a00004-0000-0000-0000-00000000000c",
+          "actionType": "action",
+          "actionOp": { "actionName": "else", "actionPropValues": {}, "requiresChildSteps": true },
+          "children": [
+            {
+              "stepGuid": "e1a00004-0000-0000-0000-000000000c03",
+              "stepName": "else: str-gt-false",
+              "parentGuid": "e1a00004-0000-0000-0000-000000000c02",
+              "actionType": "action",
+              "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "str-gt-false" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+              "children": [], "seq": 36, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            }
+          ],
+          "seq": 35, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 33, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

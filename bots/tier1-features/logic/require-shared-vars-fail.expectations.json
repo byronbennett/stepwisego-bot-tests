@@ -1,0 +1,39 @@
+{
+  "test": {
+    "id": "tier1-features/logic/require-shared-vars-fail",
+    "tier": 1,
+    "synthesizedAt": "2026-07-13T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["require-shared-vars", "add-to-list"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": false,
+    "expectErrorCount": 1,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "fail-mode-stops-run",
+      "kind": "round-trip",
+      "description": "behavior=fail on a missing shared variable fails the step and the run — the following step never runs",
+      "expr": { "equals": [ { "$var": "crumbs" }, [] ] }
+    },
+    {
+      "id": "status-missing",
+      "kind": "round-trip",
+      "description": "the status variable records missing:<names> before the step fails (tolerates the {svar:...}-wrapped spelling of the name)",
+      "expr": { "equals": [ { "$var": "sgtPreflight" }, "missing:sgtGateMissing" ] }
+    }
+  ]
+}

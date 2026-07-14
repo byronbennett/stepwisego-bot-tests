@@ -1,0 +1,129 @@
+{
+  "test": {
+    "id": "tier1-features/apis/rest-call-localhost",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "rest-call",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "server-launched",
+      "kind": "round-trip",
+      "description": "the launcher script confirmed the detached loopback listener was up before the bot proceeded",
+      "expr": {
+        "equals": [
+          {
+            "$var": "launchOut"
+          },
+          "server-up"
+        ]
+      }
+    },
+    {
+      "id": "get-json-body",
+      "kind": "round-trip",
+      "description": "GET /hello stores the raw response body text (json, byte-exact)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "body1"
+          },
+          "{\"msg\":\"hello-sgt-t6\"}"
+        ]
+      }
+    },
+    {
+      "id": "get-status-200",
+      "kind": "round-trip",
+      "description": "responseCode step output is the STRING \"200\" (runner stores String(status))",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10008-0000-0000-0000-000000000003",
+              "name": "responseCode"
+            }
+          },
+          "200"
+        ]
+      }
+    },
+    {
+      "id": "post-raw-echo",
+      "kind": "round-trip",
+      "description": "POST bodyType=raw sends text/plain body; server echo proves the bytes arrived intact",
+      "expr": {
+        "equals": [
+          {
+            "$var": "body2"
+          },
+          "echo:ping-sgt-t6"
+        ]
+      }
+    },
+    {
+      "id": "buried-404-code",
+      "kind": "round-trip",
+      "description": "non-2xx fails the step (buried) but responseCode is still recorded as \"404\"",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10008-0000-0000-0000-000000000005",
+              "name": "responseCode"
+            }
+          },
+          "404"
+        ]
+      }
+    },
+    {
+      "id": "buried-404-body",
+      "kind": "round-trip",
+      "description": "the 404 response body is still stored in resultVariable despite the step failing",
+      "expr": {
+        "equals": [
+          {
+            "$var": "bodyMiss"
+          },
+          "nope"
+        ]
+      }
+    },
+    {
+      "id": "shutdown-ack",
+      "kind": "round-trip",
+      "description": "cleanup GET /shutdown was acknowledged — the listener exits instead of lingering to its 25s backstop",
+      "expr": {
+        "equals": [
+          {
+            "$var": "bodyDown"
+          },
+          "bye"
+        ]
+      }
+    }
+  ]
+}

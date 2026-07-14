@@ -1,0 +1,328 @@
+{
+  "test": {
+    "id": "tier1-features/email/smtp-send-matrix",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "send-email",
+        "get-emails-imap",
+        "delete-single-email-imap",
+        "write-to-file",
+        "create-file-from-base64",
+        "file-exists",
+        "loop",
+        "if",
+        "set-variable",
+        "delay",
+        "exit-loop",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [
+        "subject",
+        "recipients",
+        "ccRecipients",
+        "bccRecipients",
+        "priority",
+        "hasAttachments",
+        "attachmentCount",
+        "attachmentNames",
+        "filePaths",
+        "body",
+        "bodyText",
+        "add"
+      ],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_MAIL_SMTP_HOST",
+      "SGT_MAIL_SMTP_PORT",
+      "SGT_MAIL_IMAP_HOST",
+      "SGT_MAIL_IMAP_PORT",
+      "SGT_MAIL_ACCOUNT",
+      "SGT_MAIL_PASSWORD"
+    ],
+    "serialGroup": "mail-gmail"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 180000
+  },
+  "predictions": [
+    {
+      "id": "pred-attachment-fixtures",
+      "kind": "round-trip",
+      "description": "out-of-band: both attachment files exist on disk before the send, and the harness reads the text attachment's bytes back directly \u2014 the exact unicode payload handed to SMTP",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "textAttExists"
+              },
+              true
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "binAttExists"
+              },
+              true
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/att-\u00fcn\u00ef-\u6f22\u5b57.txt"
+                  }
+                ]
+              },
+              "sgt matrix attachment \u00dcn\u00efc\u00f8d\u00e9 \u6f22\u5b57 content \u2714"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-calibration",
+      "kind": "round-trip",
+      "description": "ARRANGE fetch saw the standing [sgt-calibration] email \u2014 the fetcher provably works before any zero-match claim",
+      "expr": {
+        "equals": [
+          {
+            "$var": "calFound"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-clean-slate",
+      "kind": "round-trip",
+      "description": "no message carrying this session's marker existed before ACT",
+      "expr": {
+        "equals": [
+          {
+            "$var": "preCount"
+          },
+          "0"
+        ]
+      }
+    },
+    {
+      "id": "pred-delivered",
+      "kind": "round-trip",
+      "description": "the matrix message was accepted by SMTP (a real Message-ID came back) and was then found by IMAP within the poll budget \u2014 cross-protocol witness: nodemailer writes, imapflow reads",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "found"
+              },
+              "1"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$var": "sentMessageId"
+              },
+              "@gmail.com>"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-single-copy",
+      "kind": "round-trip",
+      "description": "exactly ONE copy was delivered even though to, cc and bcc all name the same mailbox \u2014 the MTA de-duplicates by recipient (an environment/Gmail contract, not a StepwiseGO one; a flip to 2 is an environment finding, not a product regression)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "matchCount"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-subject-exact",
+      "kind": "round-trip",
+      "description": "the structured subject round-tripped byte-exact \u2014 commas, semicolons and double quotes survive SMTP encoding and the IMAP envelope decode, with no =?UTF-8?Q?...?= leakage (in-bot equalsExact pin; the DSL cannot expand {var:_sgtSessionId} inside a comparator literal)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "subjectOk"
+              },
+              "1"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$var": "foundSubject"
+              },
+              "] matrix, \"high;prio\", send"
+            ]
+          },
+          {
+            "starts_with": [
+              {
+                "$var": "foundSubject"
+              },
+              "[sgt-"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-to-and-cc",
+      "kind": "round-trip",
+      "description": "To and Cc both carry the configured test account (captured from {svar:sgtMailAccount} at run start)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "foundTo"
+              },
+              {
+                "$var": "mailAccountUsed"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "foundCc"
+              },
+              {
+                "$var": "mailAccountUsed"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-bcc-not-leaked",
+      "kind": "round-trip",
+      "description": "PRIVACY PIN \u2014 bcc was set on the send, and the delivered copy carries NO Bcc recipient. Independently confirmed against the raw RFC-822 headers of the delivered message (Return-Path/From/To/Cc present, Bcc absent): the MTA strips it, and bccRecipients is empty for received mail",
+      "expr": {
+        "equals": [
+          {
+            "$var": "foundBcc"
+          },
+          ""
+        ]
+      }
+    },
+    {
+      "id": "pred-priority-roundtrip",
+      "kind": "round-trip",
+      "description": "priority survives the IMAP round trip: the message was sent with priority=high and the fetched EmailObject reports importance 'High'. GUARDS THE FIX shipped in this track \u2014 buildEmailFromImapMessage used to hard-code 'Normal' because the ENVELOPE has no priority field and the runner never fetched headers; it now fetches X-Priority / Importance / X-MSMail-Priority and maps them.",
+      "expr": {
+        "equals": [
+          {
+            "$var": "foundPriority"
+          },
+          "High"
+        ]
+      }
+    },
+    {
+      "id": "pred-attachments-flagged",
+      "kind": "round-trip",
+      "description": "the 2-attachment message reports hasAttachments=true and attachmentCount '2' \u2014 attachments are counted by walking the BODYSTRUCTURE for parts carrying a filename, NOT by counting MIME children (the old countAttachments() returned childNodes.length, so this message reported '3' and any plain multipart/alternative mail reported hasAttachments=true; fixed in this track \u2014 this prediction guards it)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "foundHasAtt"
+              },
+              "true"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "foundAttCount"
+              },
+              "2"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-attachment-names-and-paths-empty",
+      "kind": "round-trip",
+      "description": "PRODUCT CONTRACT \u2014 with downloadAttachments off (the only usable setting, see the review: downloadAttachments:true DEADLOCKS the runner), the EmailObject.attachments array is never populated, so {..|attachmentNames} and {..|filePaths} are both empty strings. Attachment NAME and CONTENT fidelity are therefore not witnessable through the IMAP family today",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "foundAttNames"
+              },
+              ""
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "foundPaths"
+              },
+              ""
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-body-roundtrip",
+      "kind": "round-trip",
+      "description": "the HTML body round-trips through IMAP. GUARDS THE FIX shipped in this track \u2014 get-emails-imap fetched envelope + bodyStructure only, so body/bodyText came back EMPTY for every message while the Graph family returned real bodies. The runner now downloads the text/plain and text/html leaves (imapflow decodes quoted-printable/base64 and transcodes to UTF-8). Structural contains-check, not byte-exact: mail servers rewrap HTML.",
+      "expr": {
+        "contains": [
+          {
+            "$var": "foundBody"
+          },
+          "sgt html body"
+        ]
+      }
+    },
+    {
+      "id": "pred-deleted",
+      "kind": "round-trip",
+      "description": "after the targeted delete-single-email-imap (live {sfl:loopItem} step token), a re-fetch finds zero session-marked messages \u2014 the mailbox is left exactly as ARRANGE found it",
+      "expr": {
+        "equals": [
+          {
+            "$var": "afterCount"
+          },
+          "0"
+        ]
+      }
+    }
+  ]
+}

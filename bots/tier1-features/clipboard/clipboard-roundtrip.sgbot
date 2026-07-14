@@ -1,0 +1,280 @@
+{
+  "job": {
+    "jobName": "SGT clipboard — set → get → check → datatable → clear → check (real OS clipboard, self-contained)",
+    "jobGuid": "a6d10005-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "got1",
+      "token": "{var:got1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "got2",
+      "token": "{var:got2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "hasData1",
+      "token": "{var:hasData1}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "hasData2",
+      "token": "{var:hasData2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dtVar",
+      "token": "{var:dtVar}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "a6d10005-0000-0000-0000-000000000001",
+      "stepName": "act: set plain text",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-clipboard",
+        "actionPropValues": {
+          "content": {
+            "value": "sgt-t6-clipboard-payload"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10005-0000-0000-0000-000000000002",
+      "stepName": "act+witness: read it back",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-clipboard",
+        "actionPropValues": {
+          "storeToVariable": {
+            "value": "{var:got1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10005-0000-0000-0000-000000000003",
+      "stepName": "act: check reports data present",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "check-clipboard-data",
+        "actionPropValues": {
+          "resultVariable": {
+            "value": "{var:hasData1}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10005-0000-0000-0000-000000000004",
+      "stepName": "arrange: build a 2x2 DataTable from inline csv",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "csv-read",
+        "actionPropValues": {
+          "csvContent": {
+            "value": "a,b\n1,x\n2,y"
+          },
+          "hasHeaders": {
+            "value": true
+          },
+          "delimiter": {
+            "value": ","
+          },
+          "typingMode": {
+            "value": "string"
+          },
+          "dataTableVariable": {
+            "value": "{var:dtVar}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10005-0000-0000-0000-000000000005",
+      "stepName": "act: copy the DataTable (comma, headers)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-datatable-to-clipboard",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dtVar}"
+          },
+          "delimiter": {
+            "value": "comma"
+          },
+          "includeHeaders": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10005-0000-0000-0000-000000000006",
+      "stepName": "witness: clipboard now holds the csv rendering",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-clipboard",
+        "actionPropValues": {
+          "storeToVariable": {
+            "value": "{var:got2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10005-0000-0000-0000-000000000007",
+      "stepName": "act+cleanup: clear the clipboard",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "clear-clipboard",
+        "actionPropValues": {},
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a6d10005-0000-0000-0000-000000000008",
+      "stepName": "act: check reports empty after clear",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "check-clipboard-data",
+        "actionPropValues": {
+          "resultVariable": {
+            "value": "{var:hasData2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

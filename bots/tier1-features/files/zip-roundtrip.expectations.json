@@ -1,0 +1,172 @@
+{
+  "test": {
+    "id": "tier1-features/files/zip-roundtrip",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "zip-files",
+        "zip-folder",
+        "unzip-file",
+        "create-file",
+        "get-files",
+        "get-file-contents",
+        "file-exists",
+        "if",
+        "add-to-list",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 45000
+  },
+  "predictions": [
+    {
+      "id": "zip-files-roundtrip",
+      "kind": "round-trip",
+      "description": "zip-files (fed by get-files) → unzip-file reproduced both top-level files byte-for-byte: the harness re-reads the extracted files and they match the bot's reads AND the original seeds; entries land FLAT (basenames only) under the dest.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "zipExists"
+              },
+              true
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/zip/out-files/f1.txt"
+                  }
+                ]
+              },
+              {
+                "$var": "readF1"
+              }
+            ]
+          },
+          {
+            "starts_with": [
+              {
+                "$var": "readF1"
+              },
+              "zip-one "
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "readF2"
+              },
+              "zip-two"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "crumbs"
+              },
+              [
+                "zip-files-roundtrip-ok"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "zip-replace-existing-gate",
+      "kind": "round-trip",
+      "description": "zip-files onto an existing archive failed with replaceExisting=false (buried; smoke stays 0) and succeeded with replaceExisting=true — and the overwritten archive was still a valid zip (the extraction that follows worked).",
+      "expr": {
+        "file_exists": [
+          {
+            "file": "{var:_sgtScratchDir}/zip/files.zip"
+          }
+        ]
+      }
+    },
+    {
+      "id": "zip-folder-preserves-structure",
+      "kind": "round-trip",
+      "description": "zip-folder archived the tree WITHOUT a root prefix and unzip recreated the nested path: out-folder/nest/f3.txt readable in-bot, physically present with exact content for the harness, and the recursive listing counts all 3 extracted files.",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "readF3"
+              },
+              "zip-three"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/zip/out-folder/nest/f3.txt"
+                  }
+                ]
+              },
+              "zip-three"
+            ]
+          },
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/zip/out-folder/f1.txt"
+              }
+            ]
+          },
+          {
+            "equals": [
+              {
+                "size_of": [
+                  {
+                    "$var": "outFolderFiles"
+                  }
+                ]
+              },
+              3
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "unzip-missing-archive-buried",
+      "kind": "round-trip",
+      "description": "unzip-file on a missing archive failed (buried). Its dest folder may exist (mkdir happens before the stream opens) but must be empty — no phantom extraction.",
+      "expr": {
+        "not": [
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/zip/out-ghost/f1.txt"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

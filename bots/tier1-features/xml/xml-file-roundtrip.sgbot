@@ -1,0 +1,81 @@
+{
+  "job": {
+    "jobName": "SGT xml — file round-trip (save-document, open-document)",
+    "jobGuid": "f3d00003-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "xdoc", "token": "{var:xdoc}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "xml", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "reopened", "token": "{var:reopened}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "xml", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "msgValue", "token": "{var:msgValue}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "roundtripXml", "token": "{var:roundtripXml}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3d00003-0000-0000-0000-000000000001",
+      "stepName": "parse note fixture",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-parse", "actionPropValues": { "xmlContent": { "value": "<note lang=\"en\"><msg>hello</msg></note>" }, "resultVariable": { "value": "{var:xdoc}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00003-0000-0000-0000-000000000002",
+      "stepName": "save to session-scoped tmp path (file does not exist yet, replaceExisting=false)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-save-document", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "filePath": { "value": "/tmp/sgt-xml-{var:_sgtSessionId}/note.xml" }, "replaceExisting": { "value": false } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00003-0000-0000-0000-000000000003",
+      "stepName": "save again with replaceExisting=false (exists → representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-save-document", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "filePath": { "value": "/tmp/sgt-xml-{var:_sgtSessionId}/note.xml" }, "replaceExisting": { "value": false } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00003-0000-0000-0000-000000000004",
+      "stepName": "save again with replaceExisting=true (overwrite allowed)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-save-document", "actionPropValues": { "xmlVariable": { "value": "{var:xdoc}" }, "filePath": { "value": "/tmp/sgt-xml-{var:_sgtSessionId}/note.xml" }, "replaceExisting": { "value": true } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00003-0000-0000-0000-000000000005",
+      "stepName": "open the saved file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-open-document", "actionPropValues": { "filePath": { "value": "/tmp/sgt-xml-{var:_sgtSessionId}/note.xml" }, "resultVariable": { "value": "{var:reopened}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00003-0000-0000-0000-000000000006",
+      "stepName": "read msg from reopened doc",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-get-node", "actionPropValues": { "xmlVariable": { "value": "{var:reopened}" }, "xpath": { "value": "/note/msg" }, "resultVariable": { "value": "{var:msgValue}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00003-0000-0000-0000-000000000007",
+      "stepName": "stringify reopened doc (byte-for-byte round trip)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-stringify", "actionPropValues": { "xmlVariable": { "value": "{var:reopened}" }, "pretty": { "value": false }, "resultVariable": { "value": "{var:roundtripXml}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3d00003-0000-0000-0000-000000000008",
+      "stepName": "open a missing path (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "xml-open-document", "actionPropValues": { "filePath": { "value": "/tmp/sgt-xml-{var:_sgtSessionId}/does-not-exist.xml" }, "resultVariable": { "value": "{var:reopened}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

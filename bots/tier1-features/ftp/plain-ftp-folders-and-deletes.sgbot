@@ -1,0 +1,709 @@
+{
+  "job": {
+    "jobName": "SGT ftp — plain-FTP protocol leg: nested create-folder, folder listing, delete-files, recursive delete-folder over a loopback ftp-srv server",
+    "jobGuid": "aa18ff02-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "launchOut",
+      "token": "{var:launchOut}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "port",
+      "token": "{var:port}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folderExists",
+      "token": "{var:folderExists}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": false,
+      "defaultValue": false,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "workFolders",
+      "token": "{var:workFolders}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foldersSorted",
+      "token": "{var:foldersSorted}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "fileGone",
+      "token": "{var:fileGone}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": true,
+      "defaultValue": true,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folderGone",
+      "token": "{var:folderGone}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": true,
+      "defaultValue": true,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "34c70e21-48d8-4dc0-a900-57f7fda23b8a",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e35f70da-127f-44a7-924d-c052241b1d58",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000001",
+      "stepName": "arrange: spawn the detached loopback ftp-srv server, wait for its port file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-script",
+        "actionPropValues": {
+          "scriptLanguage": {
+            "value": "node"
+          },
+          "scriptText": {
+            "value": "const {spawn}=require('child_process');\nconst fs=require('fs');\nconst dir=process.argv[2];\nconst backstop=process.argv[3]||'45000';\nconst portFile=dir+'/ftp-port.txt';\ntry{fs.unlinkSync(portFile);}catch{}\nconst child=spawn(process.execPath,[dir+'/ftp-server.mjs'],{detached:true,stdio:'ignore',env:{...process.env,SGT_FTP_ROOT:dir+'/ftp-root',SGT_FTP_PORT_FILE:portFile,SGT_FTP_STOP_FILE:dir+'/ftp-stop.txt',SGT_FTP_BACKSTOP_MS:backstop}});\nchild.unref();\nconst t0=Date.now();\nwhile(!fs.existsSync(portFile)){\n  if(Date.now()-t0>10000){console.error('ftp server never started');process.exit(1);}\n  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,50);\n}\nconsole.log('server-up');"
+          },
+          "arguments": {
+            "value": "{var:_sgtScratchDir} 45000"
+          },
+          "timeoutSeconds": {
+            "value": 20
+          },
+          "storeToVariable": {
+            "value": "{var:launchOut}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "flaunch"
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000002",
+      "stepName": "arrange: read the ephemeral ftp port",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/ftp-port.txt"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:port}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000003",
+      "stepName": "arrange: local sentinel file",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/sentinel.txt"
+          },
+          "content": {
+            "value": "plain-ftp sentinel"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000004",
+      "stepName": "ftp-create-folder: nested /keep/nested/deep in one call (MKD walk on the ftp branch) — this tree is never deleted, so the jail dir is the post-run witness",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-create-folder",
+        "actionPropValues": {
+          "protocol": {
+            "value": "ftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr18-pass"
+          },
+          "remotePath": {
+            "value": "/keep/nested/deep"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000005",
+      "stepName": "ftp-check-folder-exists: /keep/nested/deep exists (CWD probe)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-check-folder-exists",
+        "actionPropValues": {
+          "protocol": {
+            "value": "ftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr18-pass"
+          },
+          "remotePath": {
+            "value": "/keep/nested/deep"
+          },
+          "resultVariable": {
+            "value": "{var:folderExists}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000006",
+      "stepName": "ftp-create-folder: /work/a/inner — the doomed tree for the recursive-delete pin",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-create-folder",
+        "actionPropValues": {
+          "protocol": {
+            "value": "ftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr18-pass"
+          },
+          "remotePath": {
+            "value": "/work/a/inner"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000007",
+      "stepName": "ftp-upload-files: single-file upload of the sentinel into /work/a (file localPath branch)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-upload-files",
+        "actionPropValues": {
+          "protocol": {
+            "value": "ftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr18-pass"
+          },
+          "localPath": {
+            "value": "{var:_sgtScratchDir}/sentinel.txt"
+          },
+          "remotePath": {
+            "value": "/work/a"
+          },
+          "onFileExists": {
+            "value": "overwrite"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "fup"
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000008",
+      "stepName": "ftp-get-folder-names: list folders under / (LIST dir-type parse)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-get-folder-names",
+        "actionPropValues": {
+          "protocol": {
+            "value": "ftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr18-pass"
+          },
+          "remotePath": {
+            "value": "/"
+          },
+          "folderFilter": {
+            "value": "*"
+          },
+          "resultVariable": {
+            "value": "{var:workFolders}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000009",
+      "stepName": "pin folder listing as a sorted join (server order is unspecified)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:foldersSorted}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{var:workFolders|sort|join:,}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000010",
+      "stepName": "ftp-delete-files: remove sentinel* from /work/a (DELE on the ftp branch)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-delete-files",
+        "actionPropValues": {
+          "protocol": {
+            "value": "ftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr18-pass"
+          },
+          "remotePath": {
+            "value": "/work/a"
+          },
+          "fileFilter": {
+            "value": "sentinel*"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000011",
+      "stepName": "ftp-check-file-exists: sentinel is gone after delete",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-check-file-exists",
+        "actionPropValues": {
+          "protocol": {
+            "value": "ftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr18-pass"
+          },
+          "remotePath": {
+            "value": "/work/a"
+          },
+          "fileName": {
+            "value": "sentinel.txt"
+          },
+          "resultVariable": {
+            "value": "{var:fileGone}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000012",
+      "stepName": "ftp-delete-folder: /work/a still contains inner/ — recursive removeDir pinned",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-delete-folder",
+        "actionPropValues": {
+          "protocol": {
+            "value": "ftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr18-pass"
+          },
+          "remotePath": {
+            "value": "/work/a"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000013",
+      "stepName": "ftp-check-folder-exists: /work/a is gone",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "ftp-check-folder-exists",
+        "actionPropValues": {
+          "protocol": {
+            "value": "ftp"
+          },
+          "host": {
+            "value": "127.0.0.1"
+          },
+          "port": {
+            "value": "{var:port}"
+          },
+          "username": {
+            "value": "sgt"
+          },
+          "password": {
+            "value": "sgt-tr18-pass"
+          },
+          "remotePath": {
+            "value": "/work/a"
+          },
+          "resultVariable": {
+            "value": "{var:folderGone}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "aa18ff02-0000-0000-0000-000000000014",
+      "stepName": "cleanup: write the stop file — the server watches it and exits",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-file",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/ftp-stop.txt"
+          },
+          "content": {
+            "value": "stop"
+          },
+          "append": {
+            "value": false
+          },
+          "encoding": {
+            "value": "utf8"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

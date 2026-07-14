@@ -1,0 +1,180 @@
+{
+  "test": {
+    "id": "tier1-features/email/imap-roundtrip",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "send-email",
+        "get-emails-imap",
+        "delete-single-email-imap",
+        "loop",
+        "if",
+        "set-variable",
+        "delay",
+        "exit-loop",
+        "require-shared-vars"
+      ],
+      "pipeFns": [
+        "subject",
+        "senderEmail",
+        "recipients",
+        "isRead",
+        "add"
+      ],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_MAIL_SMTP_HOST",
+      "SGT_MAIL_SMTP_PORT",
+      "SGT_MAIL_IMAP_HOST",
+      "SGT_MAIL_IMAP_PORT",
+      "SGT_MAIL_ACCOUNT",
+      "SGT_MAIL_PASSWORD"
+    ],
+    "serialGroup": "mail-gmail"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 180000
+  },
+  "predictions": [
+    {
+      "id": "pred-calibration",
+      "kind": "round-trip",
+      "description": "ARRANGE fetch saw the standing [sgt-calibration] email \u2014 the fetcher provably works before any zero-match claim",
+      "expr": {
+        "equals": [
+          {
+            "$var": "calFound"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-clean-slate",
+      "kind": "round-trip",
+      "description": "no message carrying this session's marker existed before ACT",
+      "expr": {
+        "equals": [
+          {
+            "$var": "preCount"
+          },
+          "0"
+        ]
+      }
+    },
+    {
+      "id": "pred-delivered",
+      "kind": "round-trip",
+      "description": "the SMTP-sent message arrived and was found by IMAP within the poll budget (cross-protocol witness: SMTP writer, IMAP reader)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "found"
+          },
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pred-subject-exact",
+      "kind": "round-trip",
+      "description": "subject round-tripped exactly (in-bot equalsExact pin incl. session marker) and ends with the unicode tail RFC-2047-decoded",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "subjectOk"
+              },
+              "1"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$var": "foundSubject"
+              },
+              "] roundtrip \u00dcn\u00efc\u00f8d\u00e9 \u6f22\u5b57"
+            ]
+          },
+          {
+            "starts_with": [
+              {
+                "$var": "foundSubject"
+              },
+              "[sgt-"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-sender",
+      "kind": "round-trip",
+      "description": "sender email is the configured test account (captured from {svar:sgtMailAccount} at run start)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "foundSender"
+          },
+          {
+            "$var": "mailAccountUsed"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-recipients",
+      "kind": "round-trip",
+      "description": "recipients field carries the configured test account (captured from {svar:sgtMailAccount} at run start)",
+      "expr": {
+        "contains": [
+          {
+            "$var": "foundRecipients"
+          },
+          {
+            "$var": "mailAccountUsed"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-unread",
+      "kind": "round-trip",
+      "description": "fetched with markAsRead=false \u2014 message still reads as unread",
+      "expr": {
+        "equals": [
+          {
+            "$var": "foundIsRead"
+          },
+          "false"
+        ]
+      }
+    },
+    {
+      "id": "pred-deleted",
+      "kind": "round-trip",
+      "description": "after the targeted delete-single-email-imap, a re-fetch finds zero session-marked messages",
+      "expr": {
+        "equals": [
+          {
+            "$var": "afterCount"
+          },
+          "0"
+        ]
+      }
+    }
+  ]
+}

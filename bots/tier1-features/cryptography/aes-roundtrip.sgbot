@@ -1,0 +1,68 @@
+{
+  "job": {
+    "jobName": "SGT cryptography — AES-256 string round-trip",
+    "jobGuid": "f4b00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "plaintext", "token": "{var:plaintext}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "héllo wörld ✓ — secret 42", "defaultValue": "héllo wörld ✓ — secret 42", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "password", "token": "{var:password}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "correct horse battery staple", "defaultValue": "correct horse battery staple", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "encrypted", "token": "{var:encrypted}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "encrypted2", "token": "{var:encrypted2}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "decrypted", "token": "{var:decrypted}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "decrypted2", "token": "{var:decrypted2}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "UNTOUCHED", "defaultValue": "UNTOUCHED", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "formatOk", "token": "{var:formatOk}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f4b00001-0000-0000-0000-000000000001",
+      "stepName": "encrypt plaintext",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "aes-encrypt-string", "actionPropValues": { "text": { "value": "{var:plaintext}" }, "password": { "value": "{var:password}" }, "outputVariable": { "value": "{var:encrypted}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4b00001-0000-0000-0000-000000000002",
+      "stepName": "encrypt the same plaintext again (fresh salt+IV)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "aes-encrypt-string", "actionPropValues": { "text": { "value": "{var:plaintext}" }, "password": { "value": "{var:password}" }, "outputVariable": { "value": "{var:encrypted2}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4b00001-0000-0000-0000-000000000003",
+      "stepName": "ciphertext format: three space-separated base64 blobs",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "regex-is-match", "actionPropValues": { "input": { "value": "{var:encrypted}" }, "pattern": { "value": "^[A-Za-z0-9+/]+=* [A-Za-z0-9+/]+=* [A-Za-z0-9+/]+=*$" }, "flags": { "value": "" }, "resultVariable": { "value": "{var:formatOk}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4b00001-0000-0000-0000-000000000004",
+      "stepName": "decrypt with the correct password",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "aes-decrypt-string", "actionPropValues": { "encryptedText": { "value": "{var:encrypted}" }, "password": { "value": "{var:password}" }, "outputVariable": { "value": "{var:decrypted}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4b00001-0000-0000-0000-000000000005",
+      "stepName": "decrypt with the WRONG password (representative error, buried, output untouched)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "aes-decrypt-string", "actionPropValues": { "encryptedText": { "value": "{var:encrypted}" }, "password": { "value": "wrong password" }, "outputVariable": { "value": "{var:decrypted2}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4b00001-0000-0000-0000-000000000006",
+      "stepName": "decrypt malformed input — 2 parts instead of 3 (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "aes-decrypt-string", "actionPropValues": { "encryptedText": { "value": "AAAA BBBB" }, "password": { "value": "{var:password}" }, "outputVariable": { "value": "{var:decrypted2}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

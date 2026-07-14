@@ -1,0 +1,93 @@
+{
+  "job": {
+    "jobName": "SGT regex — matching (is-match, match-all with groups/append)",
+    "jobGuid": "f4a00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "isHello", "token": "{var:isHello}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "isX", "token": "{var:isX}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "caseDefault", "token": "{var:caseDefault}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "caseSensitive", "token": "{var:caseSensitive}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "numbers", "token": "{var:numbers}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "users", "token": "{var:users}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "domains", "token": "{var:domains}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": ["seeded"], "defaultValue": ["seeded"], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "noMatches", "token": "{var:noMatches}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": ["sentinel"], "defaultValue": ["sentinel"], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f4a00001-0000-0000-0000-000000000001",
+      "stepName": "is-match anchored pattern with explicit i flag",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "regex-is-match", "actionPropValues": { "input": { "value": "Hello" }, "pattern": { "value": "^h.llo$" }, "flags": { "value": "i" }, "resultVariable": { "value": "{var:isHello}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00001-0000-0000-0000-000000000002",
+      "stepName": "is-match negative case",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "regex-is-match", "actionPropValues": { "input": { "value": "hello" }, "pattern": { "value": "^x" }, "flags": { "value": "i" }, "resultVariable": { "value": "{var:isX}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00001-0000-0000-0000-000000000003",
+      "stepName": "is-match with NO flags prop — default is case-insensitive",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "regex-is-match", "actionPropValues": { "input": { "value": "hello" }, "pattern": { "value": "HELLO" }, "resultVariable": { "value": "{var:caseDefault}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00001-0000-0000-0000-000000000004",
+      "stepName": "is-match with empty flags — case-sensitive, no match",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "regex-is-match", "actionPropValues": { "input": { "value": "hello" }, "pattern": { "value": "HELLO" }, "flags": { "value": "" }, "resultVariable": { "value": "{var:caseSensitive}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00001-0000-0000-0000-000000000005",
+      "stepName": "match-all whole-match (groupIndex 0 default)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "regex-match-all", "actionPropValues": { "input": { "value": "a1 b22 c333" }, "pattern": { "value": "\\d+" }, "listVariable": { "value": "{var:numbers}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00001-0000-0000-0000-000000000006",
+      "stepName": "match-all capture group 1 (usernames)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "regex-match-all", "actionPropValues": { "input": { "value": "ann@foo.com bob@bar.com" }, "pattern": { "value": "(\\w+)@(\\w+)\\.com" }, "groupIndex": { "value": "1" }, "listVariable": { "value": "{var:users}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00001-0000-0000-0000-000000000007",
+      "stepName": "match-all groupIndex -1 (LAST group) with keepValues=true appends to seeded list",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "regex-match-all", "actionPropValues": { "input": { "value": "ann@foo.com bob@bar.com" }, "pattern": { "value": "(\\w+)@(\\w+)\\.com" }, "groupIndex": { "value": "-1" }, "keepValues": { "value": true }, "listVariable": { "value": "{var:domains}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00001-0000-0000-0000-000000000008",
+      "stepName": "match-all with zero matches REPLACES (keepValues default false) → empty list",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "regex-match-all", "actionPropValues": { "input": { "value": "nothing here" }, "pattern": { "value": "\\d+" }, "listVariable": { "value": "{var:noMatches}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00001-0000-0000-0000-000000000009",
+      "stepName": "is-match invalid pattern (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "regex-is-match", "actionPropValues": { "input": { "value": "x" }, "pattern": { "value": "(" }, "resultVariable": { "value": "{var:isX}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

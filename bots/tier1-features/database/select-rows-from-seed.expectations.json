@@ -1,0 +1,54 @@
+{
+  "test": {
+    "id": "tier1-features/database/select-rows-from-seed",
+    "tier": 1,
+    "synthesizedAt": "2026-05-03T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "db-sql-query",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "{var:_sgtSessionId}_orders"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "pred-final-table-rowcount",
+      "kind": "round-trip",
+      "description": "After seed, the ephemeral orders table should NOT exist (drop succeeded — count via run-time SELECT against the dropped table would error; we check the SELECT step's reported row count instead).",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "11111111-aaaa-aaaa-aaaa-000000000003",
+              "name": "rowCount"
+            }
+          },
+          3
+        ]
+      }
+    }
+  ]
+}

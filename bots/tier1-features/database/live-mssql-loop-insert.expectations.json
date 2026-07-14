@@ -1,0 +1,66 @@
+{
+  "test": {
+    "id": "tier1-features/database/live-mssql-loop-insert",
+    "tier": 1,
+    "synthesizedAt": "2026-07-02T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "db-sql-query",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION_MSSQL"
+    ],
+    "serialGroup": "live-mssql"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "pred-affected-3",
+      "kind": "round-trip",
+      "description": "loop INSERT wrote all 3 rows",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "dddddddd-0000-0000-0000-000000000002",
+              "name": "affectedRows"
+            }
+          },
+          3
+        ]
+      }
+    },
+    {
+      "id": "pred-nofail",
+      "kind": "round-trip",
+      "description": "no failed items in the loop batch",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "dddddddd-0000-0000-0000-000000000002",
+              "name": "failedItemCount"
+            }
+          },
+          0
+        ]
+      }
+    }
+  ]
+}

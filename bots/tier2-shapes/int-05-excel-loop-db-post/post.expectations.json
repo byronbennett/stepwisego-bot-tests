@@ -1,0 +1,337 @@
+{
+  "test": {
+    "id": "tier2-shapes/int-05-excel-loop-db-post/post",
+    "tier": 2,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "save-bundled-file",
+        "xl-open-existing-workbook",
+        "xl-get-range-as-datatable",
+        "loop",
+        "error-handler",
+        "db-sql-query",
+        "csv-write-line",
+        "dt-get-value",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": [
+        "bundled-fixture",
+        "per-iteration-subvars",
+        "malformed-row-contract"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "sgt_int05_post"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_DB_CONNECTION"
+    ],
+    "serialGroup": "sgt_int05_post"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 1,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "posted-amounts-token-strings",
+      "kind": "round-trip",
+      "description": "5 good rows posted; the per-iteration amount sub-var yields Excel VALUE strings (canonical doubles: 0.1 not 0.10, 45 not 45.00 — Excel scale is number FORMAT, not value; the exactness carrier out of Excel is the double)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "postedAmounts"
+          },
+          [
+            "19.99",
+            "1234.56",
+            "0.1",
+            "45",
+            "7.25"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "failed-items",
+      "kind": "round-trip",
+      "description": "exactly the malformed row (text 'N/A' in the DECIMAL amount column) failed, and it failed at the INSERT contract — not structurally",
+      "expr": {
+        "equals": [
+          {
+            "$var": "failedItems"
+          },
+          [
+            "L6"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "sum-hand-computed",
+      "kind": "human-approve",
+      "description": "FINANCIAL-POSTING ASSERTION: sum of the posted amounts equals the hand-computed invoice total 1306.90 (19.99 + 1234.56 + 0.10 + 45.00 + 7.25). sum_of accumulates exactly (no float drift)",
+      "expr": {
+        "equals": [
+          {
+            "sum_of": [
+              {
+                "$var": "postedAmounts"
+              }
+            ]
+          },
+          1306.9
+        ]
+      }
+    },
+    {
+      "id": "db-sum-scale-exact",
+      "kind": "round-trip",
+      "description": "in-bot witness: SELECT SUM over the DECIMAL(18,2) column, CAST to NVARCHAR — '1306.90' with the .90 scale intact (SQL DECIMAL preserves scale where doubles cannot)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "dbTotal"
+          },
+          "1306.90"
+        ]
+      }
+    },
+    {
+      "id": "oob-row-count",
+      "kind": "round-trip",
+      "description": "out-of-band witness: exactly the 5 good rows landed (the failed row inserted nothing)",
+      "expr": {
+        "equals": [
+          {
+            "count_rows_in": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "sgt_int05_post"
+                }
+              }
+            ]
+          },
+          5
+        ]
+      }
+    },
+    {
+      "id": "oob-amount-l2",
+      "kind": "round-trip",
+      "description": "out-of-band per-row amount: L2 = 1234.56 (numeric compare via between — the mssql driver's DECIMAL return type varies)",
+      "expr": {
+        "between": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "sgt_int05_post"
+                }
+              },
+              {
+                "item": "L2"
+              },
+              "amount"
+            ]
+          },
+          1234.56,
+          1234.56
+        ]
+      }
+    },
+    {
+      "id": "oob-amount-l3-small",
+      "kind": "round-trip",
+      "description": "out-of-band per-row amount: L3 = 0.10 — the sub-cent decimal survived Excel → DT → token → DECIMAL(18,2)",
+      "expr": {
+        "between": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "sgt_int05_post"
+                }
+              },
+              {
+                "item": "L3"
+              },
+              "amount"
+            ]
+          },
+          0.1,
+          0.1
+        ]
+      }
+    },
+    {
+      "id": "oob-qty-l3",
+      "kind": "round-trip",
+      "description": "out-of-band: qty int column round-trips (L3 qty=10)",
+      "expr": {
+        "between": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "sgt_int05_post"
+                }
+              },
+              {
+                "item": "L3"
+              },
+              "qty"
+            ]
+          },
+          10,
+          10
+        ]
+      }
+    },
+    {
+      "id": "oob-descr-unicode",
+      "kind": "round-trip",
+      "description": "out-of-band: unicode descriptions survive Excel → SQL NVARCHAR (Ω and 日本語)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "table": {
+                      "schema": "sgtester",
+                      "table": "sgt_int05_post"
+                    }
+                  },
+                  {
+                    "item": "L1"
+                  },
+                  "descr"
+                ]
+              },
+              "Widget Ω"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "table": {
+                      "schema": "sgtester",
+                      "table": "sgt_int05_post"
+                    }
+                  },
+                  {
+                    "item": "L4"
+                  },
+                  "descr"
+                ]
+              },
+              "シールド"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "oob-descr-punctuation",
+      "kind": "round-trip",
+      "description": "out-of-band: em-dash and apostrophe survive (injection-adjacent punctuation)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "table": {
+                      "schema": "sgtester",
+                      "table": "sgt_int05_post"
+                    }
+                  },
+                  {
+                    "item": "L2"
+                  },
+                  "descr"
+                ]
+              },
+              "Gizmo – deluxe"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "table": {
+                      "schema": "sgtester",
+                      "table": "sgt_int05_post"
+                    }
+                  },
+                  {
+                    "item": "L5"
+                  },
+                  "descr"
+                ]
+              },
+              "O'Ring"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "oob-summary-csv-exact",
+      "kind": "round-trip",
+      "description": "posting-summary CSV recorded every row in loop order, the failure, and the DB total — byte-exact (csv-write-line separates records with a leading newline, no trailing newline)",
+      "expr": {
+        "equals": [
+          {
+            "read_value": [
+              {
+                "file": "{var:_sgtScratchDir}/posting-summary.csv"
+              }
+            ]
+          },
+          "item,status,amount\nL1,posted,19.99\nL2,posted,1234.56\nL3,posted,0.1\nL4,posted,45\nL5,posted,7.25\nL6,failed,N/A\ntotal,,1306.90"
+        ]
+      }
+    },
+    {
+      "id": "range-rowcount",
+      "kind": "round-trip",
+      "description": "xl-get-range-as-datatable produced 6 data rows under the header",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a7d20005-0000-0000-0000-000000000005",
+              "name": "rowCount"
+            }
+          },
+          6
+        ]
+      }
+    }
+  ]
+}

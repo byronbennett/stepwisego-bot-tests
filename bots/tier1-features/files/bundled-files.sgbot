@@ -1,0 +1,658 @@
+{
+  "job": {
+    "jobName": "SGT files — bundled files (save-bundled-file, use-bundled-file-as-template)",
+    "jobGuid": "f4a00008-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "crumbs",
+      "token": "{var:crumbs}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "noteFile",
+      "token": "{var:noteFile}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "file",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false,
+      "fileMeta": {
+        "botFileId": "f4a00008-bf00-0000-0000-000000000001"
+      }
+    },
+    {
+      "name": "tplFile",
+      "token": "{var:tplFile}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "file",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false,
+      "fileMeta": {
+        "botFileId": "f4a00008-bf00-0000-0000-000000000002"
+      }
+    },
+    {
+      "name": "notePath",
+      "token": "{var:notePath}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "tempPath",
+      "token": "{var:tempPath}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "tplPathA",
+      "token": "{var:tplPathA}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "tplPathB",
+      "token": "{var:tplPathB}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readNote",
+      "token": "{var:readNote}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readTemp",
+      "token": "{var:readTemp}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readTplA",
+      "token": "{var:readTplA}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "readTplB",
+      "token": "{var:readTplB}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "badSavePath",
+      "token": "{var:badSavePath}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "UNTOUCHED",
+      "defaultValue": "UNTOUCHED",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [
+    {
+      "id": "f4a00008-bf00-0000-0000-000000000001",
+      "fileName": "note.txt",
+      "mimeType": "text/plain",
+      "data": "SGVsbG8gTkFNRSDigJQgd2VsY29tZSB0byBDSVRZLg==",
+      "sizeBytes": 31,
+      "sha256": "b5bbbdd8b4786734433ccb38bf9b249c9fbee2b90e195d0f9d3ce8dfb030c69b",
+      "description": "Plain-text bundled file for save-bundled-file coverage",
+      "addedAt": "2026-07-09T00:00:00Z"
+    },
+    {
+      "id": "f4a00008-bf00-0000-0000-000000000002",
+      "fileName": "quantities.csv",
+      "mimeType": "text/csv",
+      "data": "aWQscXR5CndpZGdldCx7e1FUWX19CnRvdGFsLHt7UVRZfX0K",
+      "sizeBytes": 36,
+      "sha256": "90fab738afd666d54767bf912493b8b2ae87e85807f3ed77eadc9dc87e0094ba",
+      "description": "CSV template with {{QTY}} placeholders for use-bundled-file-as-template coverage",
+      "addedAt": "2026-07-09T00:00:00Z"
+    }
+  ],
+  "steps": [
+    {
+      "stepGuid": "a0b343b3-0b65-4809-9948-4613d2883b4a",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "2f42b7eb-4bbf-4c43-b2ea-39841568dd38",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00008-0000-0000-0000-000000000001",
+      "stepName": "save-bundled-file to an EXPLICIT scratch path, capture the path",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "save-bundled-file",
+        "actionPropValues": {
+          "sourceFile": {
+            "value": "{var:noteFile}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/bundled/note.txt"
+          },
+          "resultVariable": {
+            "value": "{var:notePath}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00008-0000-0000-0000-000000000002",
+      "stepName": "read the saved note back via the captured path variable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:notePath}"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:readNote}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00008-0000-0000-0000-000000000003",
+      "stepName": "save-bundled-file with BLANK destination → per-run temp path",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "save-bundled-file",
+        "actionPropValues": {
+          "sourceFile": {
+            "value": "{var:noteFile}"
+          },
+          "resultVariable": {
+            "value": "{var:tempPath}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00008-0000-0000-0000-000000000004",
+      "stepName": "read the temp-path copy back too",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:tempPath}"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:readTemp}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00008-0000-0000-0000-000000000005",
+      "stepName": "in-bot: both saved copies decode to the exact bundled text; temp path leaf is the original file name",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:readNote}",
+                "comparator": "equalsExact",
+                "rightOperand": "Hello NAME — welcome to CITY."
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:readTemp}",
+                "comparator": "equalsExact",
+                "rightOperand": "{var:readNote}"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:tempPath}",
+                "comparator": "endsWith",
+                "rightOperand": "note.txt"
+              },
+              {
+                "logic": "and",
+                "leftOperand": "{var:tempPath}",
+                "comparator": "notEqualsExact",
+                "rightOperand": "{var:notePath}"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "f4a00008-0000-0000-0000-000000000501",
+          "stepName": "crumb: bundled-save-ok",
+          "parentGuid": "f4a00008-0000-0000-0000-000000000005",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "bundled-save-ok"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 8,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00008-0000-0000-0000-000000000006",
+      "stepName": "use-bundled-file-as-template → working copy A",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "use-bundled-file-as-template",
+        "actionPropValues": {
+          "sourceFile": {
+            "value": "{var:tplFile}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/bundled/tplA.csv"
+          },
+          "resultVariable": {
+            "value": "{var:tplPathA}"
+          },
+          "openAsWorkbook": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00008-0000-0000-0000-000000000007",
+      "stepName": "use-bundled-file-as-template again → independent working copy B",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "use-bundled-file-as-template",
+        "actionPropValues": {
+          "sourceFile": {
+            "value": "{var:tplFile}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/bundled/tplB.csv"
+          },
+          "resultVariable": {
+            "value": "{var:tplPathB}"
+          },
+          "openAsWorkbook": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00008-0000-0000-0000-000000000008",
+      "stepName": "fill copy A's placeholders ({{QTY}} → 7) — the template-workflow point",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "file-find-replace",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/bundled/tplA.csv"
+          },
+          "findText": {
+            "value": "{{QTY}}"
+          },
+          "replaceText": {
+            "value": "7"
+          },
+          "useRegex": {
+            "value": false
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00008-0000-0000-0000-000000000009",
+      "stepName": "read filled copy A",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/bundled/tplA.csv"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:readTplA}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00008-0000-0000-0000-00000000000a",
+      "stepName": "read copy B — must still be the PRISTINE template (copies are independent)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-file-contents",
+        "actionPropValues": {
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/bundled/tplB.csv"
+          },
+          "readAs": {
+            "value": "text"
+          },
+          "encoding": {
+            "value": "utf8"
+          },
+          "resultVariable": {
+            "value": "{var:readTplB}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4a00008-0000-0000-0000-00000000000b",
+      "stepName": "save-bundled-file pointed at a NON-file variable (error, buried; sentinel untouched)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "save-bundled-file",
+        "actionPropValues": {
+          "sourceFile": {
+            "value": "{var:crumbs}"
+          },
+          "filePath": {
+            "value": "{var:_sgtScratchDir}/bundled/bad.txt"
+          },
+          "resultVariable": {
+            "value": "{var:badSavePath}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

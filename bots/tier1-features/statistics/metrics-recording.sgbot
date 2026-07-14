@@ -1,0 +1,97 @@
+{
+  "job": {
+    "jobName": "SGT statistics — metrics recording (record-metric, increment-counter, record-amount, record-transaction-outcome)",
+    "jobGuid": "f4c00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapPass0", "token": "{var:snapPass0}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "X", "defaultValue": "X", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapFail0", "token": "{var:snapFail0}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "X", "defaultValue": "X", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapPass1", "token": "{var:snapPass1}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "X", "defaultValue": "X", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "snapFail1", "token": "{var:snapFail1}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "X", "defaultValue": "X", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f4c00001-0000-0000-0000-000000000001",
+      "stepName": "snapshot passCount before (0 — nothing has completed yet)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapPass0}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:_sgtSessionId|passCount}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4c00001-0000-0000-0000-000000000002",
+      "stepName": "snapshot failCount before (0)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapFail0}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:_sgtSessionId|failCount}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4c00001-0000-0000-0000-000000000003",
+      "stepName": "record-metric gauge with 1-decimal scale",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "record-metric", "actionPropValues": { "metricName": { "value": "sgt.gauge" }, "kind": { "value": "gauge" }, "value": { "value": "12.5" }, "scale": { "value": 1 }, "unit": { "value": "items" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4c00001-0000-0000-0000-000000000004",
+      "stepName": "increment-counter with default amount (1)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "increment-counter", "actionPropValues": { "metricName": { "value": "sgt.count" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4c00001-0000-0000-0000-000000000005",
+      "stepName": "record-amount USD 12.34 (scale 2)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "record-amount", "actionPropValues": { "metricName": { "value": "sgt.amount" }, "amount": { "value": "12.34" }, "currency": { "value": "USD" }, "scale": { "value": 2 }, "unit": { "value": "reconciled" }, "tags": { "value": [ { "key": "env", "value": "dev" } ] } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4c00001-0000-0000-0000-000000000006",
+      "stepName": "record-transaction-outcome pass ×2 (feeds the bot-level pass rollup)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "record-transaction-outcome", "actionPropValues": { "transactionName": { "value": "txn-ok" }, "outcome": { "value": "pass" }, "count": { "value": 2 } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4c00001-0000-0000-0000-000000000007",
+      "stepName": "record-transaction-outcome fail ×1",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "record-transaction-outcome", "actionPropValues": { "transactionName": { "value": "txn-bad" }, "outcome": { "value": "fail" }, "count": { "value": 1 } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4c00001-0000-0000-0000-000000000008",
+      "stepName": "snapshot passCount after (7 auto step-passes + 2 explicit = 9)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapPass1}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:_sgtSessionId|passCount}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4c00001-0000-0000-0000-000000000009",
+      "stepName": "snapshot failCount after (1 — explicit only)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:snapFail1}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:_sgtSessionId|failCount}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f4c00001-0000-0000-0000-00000000000a",
+      "stepName": "record-metric with a non-decimal value (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "record-metric", "actionPropValues": { "metricName": { "value": "sgt.bad" }, "kind": { "value": "gauge" }, "value": { "value": "not-a-number" }, "scale": { "value": 0 } }, "requiresChildSteps": false },
+      "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

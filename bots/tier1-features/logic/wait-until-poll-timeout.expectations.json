@@ -1,0 +1,57 @@
+{
+  "test": {
+    "id": "tier1-features/logic/wait-until-poll-timeout",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["wait-until", "add-to-list"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "immediate-not-timed-out",
+      "kind": "round-trip",
+      "description": "Condition true at first check → timedOut=false without any polling wait",
+      "expr": { "equals": [ { "$stepOut": { "stepGuid": "f3a00002-0000-0000-0000-000000000001", "name": "timedOut" } }, false ] }
+    },
+    {
+      "id": "immediate-elapsed-near-zero",
+      "kind": "round-trip",
+      "description": "Immediate-true wait reports (well) under 1 second elapsed",
+      "expr": { "less_than": [ { "$stepOut": { "stepGuid": "f3a00002-0000-0000-0000-000000000001", "name": "elapsedSeconds" } }, 1 ] }
+    },
+    {
+      "id": "timeout-flag-true",
+      "kind": "round-trip",
+      "description": "Condition never true → timedOut=true after the 1s timeout — and the STEP STILL PASSES (timeout is reported via the output variable, not a step failure)",
+      "expr": { "equals": [ { "$stepOut": { "stepGuid": "f3a00002-0000-0000-0000-000000000003", "name": "timedOut" } }, true ] }
+    },
+    {
+      "id": "timeout-elapsed-at-least-timeout",
+      "kind": "round-trip",
+      "description": "Timed-out wait reports elapsedSeconds within [1, 5] — at least the declared 1s timeout, bounded well under the smoke ceiling",
+      "expr": { "between": [ { "$stepOut": { "stepGuid": "f3a00002-0000-0000-0000-000000000003", "name": "elapsedSeconds" } }, 1, 5 ] }
+    },
+    {
+      "id": "flow-continues-after-both",
+      "kind": "round-trip",
+      "description": "Both wait-until shapes let execution continue: exact crumb order proves neither halted the run",
+      "expr": { "equals": [ { "$var": "crumbs" }, ["after-immediate", "after-timeout"] ] }
+    }
+  ]
+}

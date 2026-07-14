@@ -1,0 +1,2478 @@
+{
+  "job": {
+    "jobName": "email-imap-folders-and-move",
+    "jobGuid": "e13a0002-0000-4000-8000-000000000000",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "bb340982-c4f1-4457-96c4-05fd222c708e",
+      "stepName": "Require shared variables: sgtMailAccount, sgtMailImapHost, sgtMailImapPort, sgtMailPassword, sgtMailSmtpHost, sgtMailSmtpPort",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtMailAccount\nsgtMailImapHost\nsgtMailImapPort\nsgtMailPassword\nsgtMailSmtpHost\nsgtMailSmtpPort"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000001",
+      "stepName": "arrange: fetch INBOX (calibration + clean slate)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:calEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "scal"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000006",
+      "stepName": "arrange: scan calibration + session stragglers",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:calEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000003",
+          "stepName": "calibration email visible?",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000006",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{slc:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-calibration]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 4,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000002",
+              "stepName": "set {var:calFound}",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000003",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:calFound}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 5,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000005",
+          "stepName": "this session already present? (must not be)",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000006",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{slc:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 6,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000004",
+              "stepName": "set {var:preCount}",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000005",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:preCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:preCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 7,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "slc"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000007",
+      "stepName": "arrange/act: list IMAP folders (action under test #1)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-email-folders-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "resultVariable": {
+            "value": "{var:folders}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sfld"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000008",
+      "stepName": "capture step-output folderCount",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:folderCountStep}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{sfld:folderCount}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000009",
+      "stepName": "capture pipe-fn count of the folder list",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:folderCountPipe}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{var:folders|count}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000013",
+      "stepName": "probe: what is observable on a folder loop item?",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:folders}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000010",
+          "stepName": "capture raw stringification of a folder item",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000013",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "set-variable",
+            "actionPropValues": {
+              "variableToken": {
+                "value": "{var:folderItemRaw}"
+              },
+              "valueSource": {
+                "value": "substitute"
+              },
+              "value": {
+                "value": "{sflp:loopItem}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 12,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000012",
+          "stepName": "is the folder NAME reachable from the loop item?",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000013",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sflp:loopItem}",
+                    "comparator": "contains",
+                    "rightOperand": "sgt-archive"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 13,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000011",
+              "stepName": "set {var:folderNameVisible}",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000012",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:folderNameVisible}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 14,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e14f0001-0000-4000-8000-000000000090",
+          "stepName": "INBOX? (read the NAME via |folderName)",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000013",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sflp:loopItem|folderName}",
+                    "comparator": "equalsExact",
+                    "rightOperand": "INBOX"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 15,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e14f0001-0000-4000-8000-000000000091",
+              "stepName": "set {var:sawInbox}",
+              "parentGuid": "e14f0001-0000-4000-8000-000000000090",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:sawInbox}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 16,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            },
+            {
+              "stepGuid": "e14f0001-0000-4000-8000-000000000092",
+              "stepName": "set {var:inboxTotal}",
+              "parentGuid": "e14f0001-0000-4000-8000-000000000090",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:inboxTotal}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{sflp:loopItem|totalMessages}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 17,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e14f0001-0000-4000-8000-000000000093",
+          "stepName": "sgt-archive?",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000013",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sflp:loopItem|folderName}",
+                    "comparator": "equalsExact",
+                    "rightOperand": "sgt-archive"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 18,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e14f0001-0000-4000-8000-000000000094",
+              "stepName": "set {var:sawArchive}",
+              "parentGuid": "e14f0001-0000-4000-8000-000000000093",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:sawArchive}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 19,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e14f0001-0000-4000-8000-000000000095",
+          "stepName": "sgt-bulk?",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000013",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sflp:loopItem|folderName}",
+                    "comparator": "equalsExact",
+                    "rightOperand": "sgt-bulk"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 20,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e14f0001-0000-4000-8000-000000000096",
+              "stepName": "set {var:sawBulk}",
+              "parentGuid": "e14f0001-0000-4000-8000-000000000095",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:sawBulk}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 21,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "sflp"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000015",
+      "stepName": "pin: step-output folderCount agrees with |count",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:folderCountStep}",
+                "comparator": "equalsExact",
+                "rightOperand": "{var:folderCountPipe}"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 22,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000014",
+          "stepName": "set {var:countAgree}",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000015",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "set-variable",
+            "actionPropValues": {
+              "variableToken": {
+                "value": "{var:countAgree}"
+              },
+              "valueSource": {
+                "value": "substitute"
+              },
+              "value": {
+                "value": "1"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 23,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000017",
+      "stepName": "pin: at least one folder returned",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "if",
+        "actionPropValues": {
+          "conditions": {
+            "value": [
+              {
+                "logic": "and",
+                "leftOperand": "{var:folderCountStep}",
+                "comparator": "greaterThan",
+                "rightOperand": "0"
+              }
+            ]
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 24,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000016",
+          "stepName": "set {var:foldersNonEmpty}",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000017",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "set-variable",
+            "actionPropValues": {
+              "variableToken": {
+                "value": "{var:foldersNonEmpty}"
+              },
+              "valueSource": {
+                "value": "substitute"
+              },
+              "value": {
+                "value": "1"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 25,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000018",
+      "stepName": "act: send session-marked message via SMTP",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "send-email",
+        "actionPropValues": {
+          "useConnectionVariable": {
+            "value": false
+          },
+          "smtpServer": {
+            "value": "{svar:sgtMailSmtpHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailSmtpPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "requiresAuth": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "from": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "to": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "cc": {
+            "value": ""
+          },
+          "bcc": {
+            "value": ""
+          },
+          "priority": {
+            "value": "normal"
+          },
+          "subject": {
+            "value": "[sgt-{var:_sgtSessionId}] folders-and-move"
+          },
+          "isHtml": {
+            "value": false
+          },
+          "body": {
+            "value": "sgt imap folders-and-move body {var:_sgtSessionId}"
+          },
+          "attachments": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 26,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssnd"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000031",
+      "stepName": "assert: bounded delivery poll (12 x 5s), then MOVE (action under test #2)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "count"
+          },
+          "count": {
+            "value": 12
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 27,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000020",
+          "stepName": "already moved? stop polling",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000031",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:found}",
+                    "comparator": "equals",
+                    "rightOperand": "1"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 28,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000019",
+              "stepName": "exit poll",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000020",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "exit-loop",
+                "actionPropValues": {},
+                "requiresChildSteps": false
+              },
+              "seq": 29,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000021",
+          "stepName": "wait for delivery",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000031",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "delay",
+            "actionPropValues": {
+              "delayType": {
+                "value": "seconds"
+              },
+              "duration": {
+                "value": 5
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 30,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000022",
+          "stepName": "fetch INBOX",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000031",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "get-emails-imap",
+            "actionPropValues": {
+              "imapServer": {
+                "value": "{svar:sgtMailImapHost}"
+              },
+              "port": {
+                "value": "{svar:sgtMailImapPort}"
+              },
+              "useSsl": {
+                "value": true
+              },
+              "emailAccount": {
+                "value": "{svar:sgtMailAccount}"
+              },
+              "password": {
+                "value": "{svar:sgtMailPassword}"
+              },
+              "folder": {
+                "value": "INBOX"
+              },
+              "unreadOnly": {
+                "value": false
+              },
+              "markAsRead": {
+                "value": false
+              },
+              "maxEmails": {
+                "value": 50
+              },
+              "resultVariable": {
+                "value": "{var:inboxEmails}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 31,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": "sgf"
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000030",
+          "stepName": "scan fetched INBOX",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000031",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "loop",
+            "actionPropValues": {
+              "loopType": {
+                "value": "list"
+              },
+              "listVariable": {
+                "value": "{var:inboxEmails}"
+              },
+              "maxIterations": {
+                "value": 1000
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 32,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000029",
+              "stepName": "session marker match?",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000030",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "if",
+                "actionPropValues": {
+                  "conditions": {
+                    "value": [
+                      {
+                        "logic": "and",
+                        "leftOperand": "{sfl:loopItem|subject}",
+                        "comparator": "contains",
+                        "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": true
+              },
+              "seq": 33,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000023",
+                  "stepName": "set {var:foundSubject}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000029",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundSubject}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|subject}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 34,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000024",
+                  "stepName": "set {var:foundFolder}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000029",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundFolder}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|parentFolderId}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 35,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000025",
+                  "stepName": "set {var:found}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000029",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:found}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "1"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 36,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000026",
+                  "stepName": "move INBOX -> sgt-archive (targeted, live step token)",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000029",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "move-single-email-imap",
+                    "actionPropValues": {
+                      "imapServer": {
+                        "value": "{svar:sgtMailImapHost}"
+                      },
+                      "port": {
+                        "value": "{svar:sgtMailImapPort}"
+                      },
+                      "useSsl": {
+                        "value": true
+                      },
+                      "emailAccount": {
+                        "value": "{svar:sgtMailAccount}"
+                      },
+                      "password": {
+                        "value": "{svar:sgtMailPassword}"
+                      },
+                      "emailVariable": {
+                        "value": "{sfl:loopItem}"
+                      },
+                      "sourceFolder": {
+                        "value": "INBOX"
+                      },
+                      "targetFolder": {
+                        "value": "sgt-archive"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 37,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": [],
+                  "stepPrefix": "smv"
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000027",
+                  "stepName": "capture move step-output success",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000029",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:moveSuccess}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{smv:success}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 38,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000028",
+                  "stepName": "exit scan",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000029",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "exit-loop",
+                    "actionPropValues": {},
+                    "requiresChildSteps": false
+                  },
+                  "seq": 39,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "stepPrefix": "sfl"
+        }
+      ],
+      "stepPrefix": "spol"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000044",
+      "stepName": "assert: bounded poll of sgt-archive (12 x 5s)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "count"
+          },
+          "count": {
+            "value": 12
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 40,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000033",
+          "stepName": "already found in archive? stop polling",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000044",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:archFound}",
+                    "comparator": "equals",
+                    "rightOperand": "1"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 41,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000032",
+              "stepName": "exit archive poll",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000033",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "exit-loop",
+                "actionPropValues": {},
+                "requiresChildSteps": false
+              },
+              "seq": 42,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000034",
+          "stepName": "wait for delivery",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000044",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "delay",
+            "actionPropValues": {
+              "delayType": {
+                "value": "seconds"
+              },
+              "duration": {
+                "value": 5
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 43,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000035",
+          "stepName": "fetch sgt-archive",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000044",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "get-emails-imap",
+            "actionPropValues": {
+              "imapServer": {
+                "value": "{svar:sgtMailImapHost}"
+              },
+              "port": {
+                "value": "{svar:sgtMailImapPort}"
+              },
+              "useSsl": {
+                "value": true
+              },
+              "emailAccount": {
+                "value": "{svar:sgtMailAccount}"
+              },
+              "password": {
+                "value": "{svar:sgtMailPassword}"
+              },
+              "folder": {
+                "value": "sgt-archive"
+              },
+              "unreadOnly": {
+                "value": false
+              },
+              "markAsRead": {
+                "value": false
+              },
+              "maxEmails": {
+                "value": 50
+              },
+              "resultVariable": {
+                "value": "{var:archiveEmails}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 44,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [],
+          "stepPrefix": "sga"
+        },
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000043",
+          "stepName": "scan sgt-archive",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000044",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "loop",
+            "actionPropValues": {
+              "loopType": {
+                "value": "list"
+              },
+              "listVariable": {
+                "value": "{var:archiveEmails}"
+              },
+              "maxIterations": {
+                "value": 1000
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 45,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000042",
+              "stepName": "session marker match in archive?",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000043",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "if",
+                "actionPropValues": {
+                  "conditions": {
+                    "value": [
+                      {
+                        "logic": "and",
+                        "leftOperand": "{sal:loopItem|subject}",
+                        "comparator": "contains",
+                        "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": true
+              },
+              "seq": 46,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000036",
+                  "stepName": "set {var:archSubject}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000042",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:archSubject}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sal:loopItem|subject}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 47,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000037",
+                  "stepName": "set {var:archFolder}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000042",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:archFolder}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sal:loopItem|parentFolderId}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 48,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000038",
+                  "stepName": "set {var:archFound}",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000042",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:archFound}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "1"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 49,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000040",
+                  "stepName": "pin: archived subject equalsExact (in-bot)",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000042",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "if",
+                    "actionPropValues": {
+                      "conditions": {
+                        "value": [
+                          {
+                            "logic": "and",
+                            "leftOperand": "{sal:loopItem|subject}",
+                            "comparator": "equalsExact",
+                            "rightOperand": "[sgt-{var:_sgtSessionId}] folders-and-move"
+                          }
+                        ]
+                      }
+                    },
+                    "requiresChildSteps": true
+                  },
+                  "seq": 50,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": [
+                    {
+                      "stepGuid": "e13a0002-0000-4000-8000-000000000039",
+                      "stepName": "set {var:archSubjectOk}",
+                      "parentGuid": "e13a0002-0000-4000-8000-000000000040",
+                      "actionType": "action",
+                      "actionOp": {
+                        "actionName": "set-variable",
+                        "actionPropValues": {
+                          "variableToken": {
+                            "value": "{var:archSubjectOk}"
+                          },
+                          "valueSource": {
+                            "value": "substitute"
+                          },
+                          "value": {
+                            "value": "1"
+                          }
+                        },
+                        "requiresChildSteps": false
+                      },
+                      "seq": 51,
+                      "status": "enabled",
+                      "isBreakpoint": false,
+                      "ignoreErrors": false,
+                      "comments": "",
+                      "backgroundColor": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "stepGuid": "e13a0002-0000-4000-8000-000000000041",
+                  "stepName": "exit archive scan",
+                  "parentGuid": "e13a0002-0000-4000-8000-000000000042",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "exit-loop",
+                    "actionPropValues": {},
+                    "requiresChildSteps": false
+                  },
+                  "seq": 52,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "stepPrefix": "sal"
+        }
+      ],
+      "stepPrefix": "sapl"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000045",
+      "stepName": "assert: re-fetch INBOX (message must be gone)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:inboxAfterEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 53,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sib"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000048",
+      "stepName": "assert: count session messages left in INBOX (expect 0)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:inboxAfterEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 54,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000047",
+          "stepName": "session message still in INBOX?",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000048",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sil:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 55,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000046",
+              "stepName": "set {var:inboxRemaining}",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000047",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:inboxRemaining}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:inboxRemaining|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 56,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "sil"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000049",
+      "stepName": "cleanup: fetch sgt-archive",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "sgt-archive"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:cleanupEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 57,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sca"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000053",
+      "stepName": "cleanup: delete session messages from sgt-archive",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:cleanupEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 58,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000052",
+          "stepName": "session marker match?",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000053",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{scl:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 59,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000050",
+              "stepName": "delete the session message from sgt-archive (targeted)",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000052",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "delete-single-email-imap",
+                "actionPropValues": {
+                  "imapServer": {
+                    "value": "{svar:sgtMailImapHost}"
+                  },
+                  "port": {
+                    "value": "{svar:sgtMailImapPort}"
+                  },
+                  "useSsl": {
+                    "value": true
+                  },
+                  "emailAccount": {
+                    "value": "{svar:sgtMailAccount}"
+                  },
+                  "password": {
+                    "value": "{svar:sgtMailPassword}"
+                  },
+                  "emailVariable": {
+                    "value": "{scl:loopItem}"
+                  },
+                  "folder": {
+                    "value": "sgt-archive"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 60,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": true,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [],
+              "stepPrefix": "sdl"
+            },
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000051",
+              "stepName": "set {var:deletedCount}",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000052",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:deletedCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:deletedCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 61,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "scl"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000054",
+      "stepName": "cleanup: re-fetch sgt-archive (expect zero matches)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "sgt-archive"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:finalEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 62,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sfin"
+    },
+    {
+      "stepGuid": "e13a0002-0000-4000-8000-000000000057",
+      "stepName": "cleanup: count session leftovers in sgt-archive (expect 0)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:finalEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 63,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [
+        {
+          "stepGuid": "e13a0002-0000-4000-8000-000000000056",
+          "stepName": "session message still in sgt-archive?",
+          "parentGuid": "e13a0002-0000-4000-8000-000000000057",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sfnl:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 64,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0002-0000-4000-8000-000000000055",
+              "stepName": "set {var:afterCount}",
+              "parentGuid": "e13a0002-0000-4000-8000-000000000056",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:afterCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:afterCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 65,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "stepPrefix": "sfnl"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "calEmails",
+      "token": "{var:calEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "inboxEmails",
+      "token": "{var:inboxEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "archiveEmails",
+      "token": "{var:archiveEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "inboxAfterEmails",
+      "token": "{var:inboxAfterEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "cleanupEmails",
+      "token": "{var:cleanupEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "finalEmails",
+      "token": "{var:finalEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folders",
+      "token": "{var:folders}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "calFound",
+      "token": "{var:calFound}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "preCount",
+      "token": "{var:preCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "found",
+      "token": "{var:found}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "archFound",
+      "token": "{var:archFound}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "inboxRemaining",
+      "token": "{var:inboxRemaining}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "deletedCount",
+      "token": "{var:deletedCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "afterCount",
+      "token": "{var:afterCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folderCountStep",
+      "token": "{var:folderCountStep}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folderCountPipe",
+      "token": "{var:folderCountPipe}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folderItemRaw",
+      "token": "{var:folderItemRaw}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundSubject",
+      "token": "{var:foundSubject}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundFolder",
+      "token": "{var:foundFolder}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "archSubject",
+      "token": "{var:archSubject}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "archFolder",
+      "token": "{var:archFolder}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "moveSuccess",
+      "token": "{var:moveSuccess}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "folderNameVisible",
+      "token": "{var:folderNameVisible}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "countAgree",
+      "token": "{var:countAgree}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foldersNonEmpty",
+      "token": "{var:foldersNonEmpty}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "archSubjectOk",
+      "token": "{var:archSubjectOk}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sawInbox",
+      "token": "{var:sawInbox}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sawArchive",
+      "token": "{var:sawArchive}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sawBulk",
+      "token": "{var:sawBulk}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "inboxTotal",
+      "token": "{var:inboxTotal}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.176"
+}

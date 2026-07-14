@@ -1,0 +1,169 @@
+{
+  "job": {
+    "jobName": "SGT logic — section/comment/write-to-log/delay structural + logging actions",
+    "jobGuid": "f3a00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbs", "token": "{var:crumbs}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "badDuration", "token": "{var:badDuration}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "not-a-number", "defaultValue": "not-a-number", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-000000000001",
+      "stepName": "record start",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "start" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-000000000002",
+      "stepName": "Section: SGT structural container",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "section",
+        "actionPropValues": {
+          "sectionName": { "value": "SGT structural container" },
+          "sectionDescription": { "value": "Section must execute its children exactly once, in order." }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "f3a00001-0000-0000-0000-000000000201",
+          "stepName": "record in-section",
+          "parentGuid": "f3a00001-0000-0000-0000-000000000002",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "in-section" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-000000000003",
+      "stepName": "Comment: documentation-only step",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "comment",
+        "actionPropValues": {
+          "text": { "value": "SGT comment step — session {var:_sgtSessionId}. Must pass and have no side effects." }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-000000000004",
+      "stepName": "record after-comment",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "after-comment" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-000000000005",
+      "stepName": "write-to-log info",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-log",
+        "actionPropValues": {
+          "message": { "value": "SGT info log line — session {var:_sgtSessionId}" },
+          "logLevel": { "value": "info" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-000000000006",
+      "stepName": "write-to-log error level (must NOT count as a run error)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-log",
+        "actionPropValues": {
+          "message": { "value": "SGT error-level log line (log severity only, not a step failure)" },
+          "logLevel": { "value": "error" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-000000000007",
+      "stepName": "write-to-log empty message (allowed — logs empty line)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "write-to-log",
+        "actionPropValues": {
+          "message": { "value": "" },
+          "logLevel": { "value": "debug" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-000000000008",
+      "stepName": "record after-logs",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "after-logs" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-000000000009",
+      "stepName": "delay 150 milliseconds",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "delay",
+        "actionPropValues": {
+          "delayType": { "value": "milliseconds" },
+          "duration": { "value": 150 }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-00000000000a",
+      "stepName": "record after-delay",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "after-delay" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-00000000000b",
+      "stepName": "delay with non-numeric duration (Continue on Error — must fail loudly, never zero-wait)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "delay",
+        "actionPropValues": {
+          "delayType": { "value": "seconds" },
+          "duration": { "value": "{var:badDuration}" }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 12, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3a00001-0000-0000-0000-00000000000c",
+      "stepName": "record end",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "end" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 13, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

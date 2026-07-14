@@ -1,0 +1,100 @@
+{
+  "test": {
+    "id": "tier1-features/engine-patterns/token-gbl-var",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "set-variable",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [
+        "upper",
+        "left"
+      ],
+      "patterns": [
+        "token:gbl-var"
+      ]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "gbl-var-reads-inline",
+      "kind": "round-trip",
+      "description": "{gbl-var:} tokens substitute inline like {var:} tokens",
+      "expr": {
+        "equals": [
+          {
+            "$var": "readOut"
+          },
+          "got:seed-value"
+        ]
+      }
+    },
+    {
+      "id": "gbl-var-pipe-functions",
+      "kind": "round-trip",
+      "description": "pipe functions chain on gbl-var tokens ({gbl-var:gShared|upper|left:4})",
+      "expr": {
+        "equals": [
+          {
+            "$var": "pipeOut"
+          },
+          "SEED"
+        ]
+      }
+    },
+    {
+      "id": "set-variable-writes-gbl-var-target",
+      "kind": "round-trip",
+      "description": "set-variable targets a {gbl-var:} token and the write is readable through the same prefix",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "gShared2"
+              },
+              "updated-seed-value"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$var": "afterWrite"
+              },
+              "updated-seed-value"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "source-gbl-var-untouched",
+      "kind": "round-trip",
+      "description": "the source gbl-var kept its seed value — writes went to the target only",
+      "expr": {
+        "equals": [
+          {
+            "$var": "gShared"
+          },
+          "seed-value"
+        ]
+      }
+    }
+  ]
+}

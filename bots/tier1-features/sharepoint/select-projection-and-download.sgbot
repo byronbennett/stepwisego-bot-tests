@@ -1,0 +1,835 @@
+{
+  "job": {
+    "jobName": "sharepoint-select-projection-and-download",
+    "jobGuid": "51b70004-0000-4000-8000-000000000001",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "7957bcc5-9c4f-4ab9-9430-92c216d59920",
+      "stepName": "Require shared variables: sgtSharePoint",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtSharePoint"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000002",
+      "stepName": "arrange: create session projection list",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-create-list",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "newListName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "newIsLibrary": {
+            "value": false
+          },
+          "newListDescription": {
+            "value": "sgtester Track 15 projection/filter list"
+          },
+          "fieldsConfig": {
+            "value": {
+              "fields": [
+                {
+                  "displayName": "SgtText",
+                  "internalName": "SgtText",
+                  "fieldType": "Text"
+                },
+                {
+                  "displayName": "SgtNum",
+                  "internalName": "SgtNum",
+                  "fieldType": "Number"
+                },
+                {
+                  "displayName": "SgtWhen",
+                  "internalName": "SgtWhen",
+                  "fieldType": "DateTime"
+                }
+              ]
+            }
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "scl"
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000003",
+      "stepName": "arrange: row p-1 (all fields set)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "p-1"
+                },
+                {
+                  "internalName": "SgtText",
+                  "displayName": "SgtText",
+                  "value": "alpha"
+                },
+                {
+                  "internalName": "SgtNum",
+                  "displayName": "SgtNum",
+                  "fieldType": "Number",
+                  "value": "5"
+                },
+                {
+                  "internalName": "SgtWhen",
+                  "displayName": "SgtWhen",
+                  "fieldType": "DateTime",
+                  "value": "2026-06-01T00:00:00Z"
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sp1"
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000004",
+      "stepName": "arrange: row p-2 (num 15, empty-string text, no date)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "p-2"
+                },
+                {
+                  "internalName": "SgtText",
+                  "displayName": "SgtText",
+                  "value": ""
+                },
+                {
+                  "internalName": "SgtNum",
+                  "displayName": "SgtNum",
+                  "fieldType": "Number",
+                  "value": "15"
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sp2"
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000005",
+      "stepName": "arrange: row p-3 (no num, text bravo, date set)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-insert-item",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "listId": {
+            "value": "{scl:listId}"
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "insertMode": {
+            "value": "single"
+          },
+          "insertConfig": {
+            "value": {
+              "mappings": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title",
+                  "value": "p-3"
+                },
+                {
+                  "internalName": "SgtText",
+                  "displayName": "SgtText",
+                  "value": "bravo"
+                },
+                {
+                  "internalName": "SgtWhen",
+                  "displayName": "SgtWhen",
+                  "fieldType": "DateTime",
+                  "value": "2026-06-15T12:00:00Z"
+                }
+              ]
+            }
+          },
+          "folderPath": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sp3"
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000006",
+      "stepName": "assert: subset projection [Title, SgtNum]",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-select-items",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "queryConfig": {
+            "value": {
+              "selectedFields": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title"
+                },
+                {
+                  "internalName": "SgtNum",
+                  "displayName": "SgtNum",
+                  "fieldType": "Number"
+                }
+              ]
+            }
+          },
+          "maxItems": 50,
+          "includeSubfolders": {
+            "value": false
+          },
+          "folderPath": {
+            "value": ""
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssub"
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000007",
+      "stepName": "assert: all-fields select (no projection)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-select-items",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "queryConfig": {
+            "value": {}
+          },
+          "maxItems": 50,
+          "includeSubfolders": {
+            "value": false
+          },
+          "folderPath": {
+            "value": ""
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sall"
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000008",
+      "stepName": "assert: system-field projection [ID, Modified, Title]",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-select-items",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "queryConfig": {
+            "value": {
+              "selectedFields": [
+                {
+                  "internalName": "ID",
+                  "displayName": "ID"
+                },
+                {
+                  "internalName": "Modified",
+                  "displayName": "Modified",
+                  "fieldType": "DateTime"
+                },
+                {
+                  "internalName": "Title",
+                  "displayName": "Title"
+                }
+              ]
+            }
+          },
+          "maxItems": 50,
+          "includeSubfolders": {
+            "value": false
+          },
+          "folderPath": {
+            "value": ""
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "ssys"
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000009",
+      "stepName": "assert: filter SgtNum gt 10 (matches only p-2)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-select-items",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "queryConfig": {
+            "value": {
+              "selectedFields": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title"
+                },
+                {
+                  "internalName": "SgtNum",
+                  "displayName": "SgtNum",
+                  "fieldType": "Number"
+                }
+              ],
+              "filters": [
+                {
+                  "logic": "and",
+                  "field": "SgtNum",
+                  "comparator": "gt",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "maxItems": 50,
+          "includeSubfolders": {
+            "value": false
+          },
+          "folderPath": {
+            "value": ""
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sgt10"
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000010",
+      "stepName": "assert: filter isNull SgtNum (matches only p-3)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-select-items",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "queryConfig": {
+            "value": {
+              "selectedFields": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title"
+                }
+              ],
+              "filters": [
+                {
+                  "logic": "and",
+                  "field": "SgtNum",
+                  "comparator": "isNull",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "maxItems": 50,
+          "includeSubfolders": {
+            "value": false
+          },
+          "folderPath": {
+            "value": ""
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "snul"
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000011",
+      "stepName": "assert: filter eq zero-match (0-row DT keeps its columns)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-select-items",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "queryConfig": {
+            "value": {
+              "selectedFields": [
+                {
+                  "internalName": "Title",
+                  "displayName": "Title"
+                },
+                {
+                  "internalName": "SgtNum",
+                  "displayName": "SgtNum",
+                  "fieldType": "Number"
+                }
+              ],
+              "filters": [
+                {
+                  "logic": "and",
+                  "field": "Title",
+                  "comparator": "eq",
+                  "value": "no-such-row"
+                }
+              ]
+            }
+          },
+          "maxItems": 50,
+          "includeSubfolders": {
+            "value": false
+          },
+          "folderPath": {
+            "value": ""
+          },
+          "downloadAttachments": {
+            "value": false
+          },
+          "attachmentFolder": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "szero"
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000012",
+      "stepName": "assert: download list as raw JSON (all fields)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-download-list",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "selectedFields": {
+            "value": ""
+          },
+          "maxItems": {
+            "value": 0
+          },
+          "resultVariable": {
+            "value": "{var:itemsJson}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sdl"
+    },
+    {
+      "stepGuid": "51b70004-0000-4000-8000-000000000013",
+      "stepName": "assert: download with narrowed fields + maxItems 2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "sp-download-list",
+        "actionPropValues": {
+          "connectionVariable": {
+            "value": "{svar:sgtSharePoint}"
+          },
+          "listName": {
+            "value": "sgt-{var:_sgtSessionId}-proj"
+          },
+          "listId": {
+            "value": ""
+          },
+          "listInternalName": {
+            "value": ""
+          },
+          "isLibrary": {
+            "value": false
+          },
+          "selectedFields": {
+            "value": [
+              "Title",
+              "SgtNum"
+            ]
+          },
+          "maxItems": {
+            "value": 2
+          },
+          "resultVariable": {
+            "value": "{var:cappedJson}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "children": [],
+      "stepPrefix": "sdc"
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "itemsJson",
+      "token": "{var:itemsJson}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "json",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "cappedJson",
+      "token": "{var:cappedJson}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "json",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.180"
+}

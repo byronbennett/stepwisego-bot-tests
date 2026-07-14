@@ -1,0 +1,111 @@
+{
+  "job": {
+    "jobName": "SGT datatable — core reads + select + html (get-column-names, get-row-count, get-value, get-row, select-rows, to-html)",
+    "jobGuid": "f3f00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "dt", "token": "{var:dt}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "dataTable", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "cols", "token": "{var:cols}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "rowCount", "token": "{var:rowCount}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "number", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "cellByName", "token": "{var:cellByName}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "cellByIndex", "token": "{var:cellByIndex}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "row2", "token": "{var:row2}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "dataRow", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "row2Text", "token": "{var:row2Text}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "selected", "token": "{var:selected}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "dataTable", "value": null, "defaultValue": null, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "selectedCsv", "token": "{var:selectedCsv}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "htmlOut", "token": "{var:htmlOut}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "", "defaultValue": "", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "f3f00001-0000-0000-0000-000000000001",
+      "stepName": "build table (dynamic typing → scores are numbers; D&E tests HTML escaping)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-read", "actionPropValues": { "csvContent": { "value": "name,dept,score\nAlice,eng,42\nBob,ops,17\nCara,eng,9\nD&E,ops,5" }, "hasHeaders": { "value": true }, "typingMode": { "value": "dynamic" }, "dataTableVariable": { "value": "{var:dt}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3f00001-0000-0000-0000-000000000002",
+      "stepName": "get column names",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "dt-get-column-names", "actionPropValues": { "dataTableVariable": { "value": "{var:dt}" }, "resultVariable": { "value": "{var:cols}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3f00001-0000-0000-0000-000000000003",
+      "stepName": "get row count",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "dt-get-row-count", "actionPropValues": { "dataTableVariable": { "value": "{var:dt}" }, "resultVariable": { "value": "{var:rowCount}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3f00001-0000-0000-0000-000000000004",
+      "stepName": "get value by column NAME (row 1 → Bob)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "dt-get-value", "actionPropValues": { "dataTableVariable": { "value": "{var:dt}" }, "rowIndex": { "value": "1" }, "column": { "value": "name" }, "resultVariable": { "value": "{var:cellByName}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3f00001-0000-0000-0000-000000000005",
+      "stepName": "get value by column INDEX (row 0, col 2 → 42 as number)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "dt-get-value", "actionPropValues": { "dataTableVariable": { "value": "{var:dt}" }, "rowIndex": { "value": "0" }, "column": { "value": "2" }, "resultVariable": { "value": "{var:cellByIndex}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3f00001-0000-0000-0000-000000000006",
+      "stepName": "get row 2 as DataRow",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "dt-get-row", "actionPropValues": { "dataTableVariable": { "value": "{var:dt}" }, "rowIndex": { "value": "2" }, "resultVariable": { "value": "{var:row2}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3f00001-0000-0000-0000-000000000007",
+      "stepName": "witness the DataRow shape via json-stringify",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "json-stringify", "actionPropValues": { "jsonVariable": { "value": "{var:row2}" }, "pretty": { "value": false }, "resultVariable": { "value": "{var:row2Text}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3f00001-0000-0000-0000-000000000008",
+      "stepName": "select rows where dept='eng' order by score DESC",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "dt-select-rows", "actionPropValues": { "dataTableVariable": { "value": "{var:dt}" }, "whereStatement": { "value": "dept = 'eng'" }, "orderBy": { "value": "score DESC" }, "resultVariable": { "value": "{var:selected}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3f00001-0000-0000-0000-000000000009",
+      "stepName": "witness the selection via csv-write-datatable",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "csv-write-datatable", "actionPropValues": { "dataTableVariable": { "value": "{var:selected}" }, "includeHeaders": { "value": true }, "resultVariable": { "value": "{var:selectedCsv}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 9, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3f00001-0000-0000-0000-00000000000a",
+      "stepName": "dt-to-html of full table (escapes & in D&E)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "dt-to-html", "actionPropValues": { "dataTableVariable": { "value": "{var:dt}" }, "resultVariable": { "value": "{var:htmlOut}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 10, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f3f00001-0000-0000-0000-00000000000b",
+      "stepName": "dt-get-value out-of-range row (representative error, buried)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "dt-get-value", "actionPropValues": { "dataTableVariable": { "value": "{var:dt}" }, "rowIndex": { "value": "99" }, "column": { "value": "name" }, "resultVariable": { "value": "{var:cellByName}" } }, "requiresChildSteps": false },
+      "children": [], "seq": 11, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

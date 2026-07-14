@@ -1,0 +1,217 @@
+{
+  "test": {
+    "id": "tier1-features/sharepoint/items-batch-modes",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "sp-create-list",
+        "sp-insert-item",
+        "sp-update-item",
+        "sp-delete-item",
+        "add-to-list",
+        "json-parse",
+        "json-to-datatable",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [
+      "sgt-{var:_sgtSessionId}-batch"
+    ],
+    "requiresEnv": [
+      "SGT_SP_TENANT_ID",
+      "SGT_SP_CLIENT_ID",
+      "SGT_SP_CLIENT_SECRET",
+      "SGT_SP_SITE_URL",
+      "SGT_SP_CERT_FILE",
+      "SGT_SP_CERT_KEY_FILE"
+    ],
+    "exclusive": true
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 420000
+  },
+  "predictions": [
+    {
+      "id": "pred-batch-insert-clean",
+      "kind": "round-trip",
+      "description": "withList batch insert reported zero failures across the three iterations",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "51b70003-0000-4000-8000-000000000006",
+              "name": "failedCount"
+            }
+          },
+          0
+        ]
+      }
+    },
+    {
+      "id": "pred-update-matched-two",
+      "kind": "round-trip",
+      "description": "withDataTable update patched exactly the two matching keys; the unmatched k-9 row neither failed the step nor updated anything",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70003-0000-4000-8000-000000000009",
+                  "name": "affectedRows"
+                }
+              },
+              2
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70003-0000-4000-8000-000000000009",
+                  "name": "failedCount"
+                }
+              },
+              0
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-oob-updated-values",
+      "kind": "round-trip",
+      "description": "raw Graph state: k-1/k-2 carry the DataTable-driven values, and the iteration-value mapping ('Value') landed each key in both Title and SgtKey",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-batch"
+                    }
+                  },
+                  {
+                    "SgtKey": "k-1"
+                  },
+                  "SgtVal"
+                ]
+              },
+              10.5
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-batch"
+                    }
+                  },
+                  {
+                    "SgtKey": "k-2"
+                  },
+                  "SgtVal"
+                ]
+              },
+              20.25
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_cell": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-batch"
+                    }
+                  },
+                  {
+                    "SgtKey": "k-1"
+                  },
+                  "Title"
+                ]
+              },
+              "k-1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pred-delete-by-match",
+      "kind": "round-trip",
+      "description": "withList delete removed exactly the k-3 row (deletedCount 1; Graph shows 2 survivors)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "51b70003-0000-4000-8000-000000000011",
+                  "name": "deletedCount"
+                }
+              },
+              1
+            ]
+          },
+          {
+            "equals": [
+              {
+                "count_rows_in": [
+                  {
+                    "list": {
+                      "siteId": "",
+                      "listId": "sgt-{var:_sgtSessionId}-batch"
+                    }
+                  }
+                ]
+              },
+              2
+            ]
+          },
+          {
+            "equals": [
+              {
+                "size_of": [
+                  {
+                    "read_rows": [
+                      {
+                        "list": {
+                          "siteId": "",
+                          "listId": "sgt-{var:_sgtSessionId}-batch"
+                        }
+                      },
+                      {
+                        "SgtKey": "k-3"
+                      }
+                    ]
+                  }
+                ]
+              },
+              0
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "test": {
+    "id": "tier1-features/engine-patterns/end-bot-run-pass",
+    "tier": 1,
+    "synthesizedAt": "2026-07-08T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["end-bot-run", "add-to-list"],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "stops-at-end-bot",
+      "kind": "round-trip",
+      "description": "end-bot-run (pass) terminates execution immediately — steps after it never run (no 'after-end' crumb) — while the run still classifies complete with zero errors",
+      "expr": { "equals": [ { "$var": "crumbs" }, ["before-end"] ] }
+    }
+  ]
+}

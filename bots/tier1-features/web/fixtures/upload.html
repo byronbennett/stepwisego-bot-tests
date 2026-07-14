@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>SGT Upload</title></head>
+<body>
+<input id="file-in" type="file" multiple>
+<div id="upload-names">none</div>
+<div id="upload-size">0</div>
+<div id="upload-content">none</div>
+<script>
+  document.getElementById("file-in").addEventListener("change", async (e) => {
+    const files = [...e.target.files];
+    document.getElementById("upload-names").textContent =
+      files.map((f) => f.name).join(";");
+    document.getElementById("upload-size").textContent =
+      String(files.reduce((s, f) => s + f.size, 0));
+    document.getElementById("upload-content").textContent = await files[0].text();
+  });
+</script>
+</body>
+</html>

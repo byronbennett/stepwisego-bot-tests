@@ -1,0 +1,91 @@
+{
+  "job": {
+    "jobName": "SGT functions — define + run-function (bindings, defaults, list handle, bad guid)",
+    "jobGuid": "f6a00001-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "person", "token": "{var:person}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "Ada", "defaultValue": "Ada", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "seedList", "token": "{var:seedList}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": ["alpha", "beta"], "defaultValue": ["alpha", "beta"], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "calls", "token": "{var:calls}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "counts", "token": "{var:counts}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "lastGreeting", "token": "{var:lastGreeting}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "NEVER-SET", "defaultValue": "NEVER-SET", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "functions": [
+    {
+      "stepGuid": "f6a00001-0000-0000-0000-00000000f001",
+      "stepName": "Function: Greet",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "function", "actionPropValues": { "functionName": { "value": "Greet" }, "functionDescription": { "value": "Appends a greeting to {var:calls}, an item count to {var:counts}, and records the greeting used." } }, "requiresChildSteps": true },
+      "functionInputs": [
+        { "name": "greeting", "token": "{fn-var:greeting}", "tokenPrefix": "fn-var", "valueSource": "function", "dataType": "text", "value": null, "defaultValue": "Hi", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+        { "name": "who", "token": "{fn-var:who}", "tokenPrefix": "fn-var", "valueSource": "function", "dataType": "text", "value": null, "defaultValue": "world", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+        { "name": "items", "token": "{fn-var:items}", "tokenPrefix": "fn-var", "valueSource": "function", "dataType": "listOfTexts", "value": null, "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+      ],
+      "children": [
+        {
+          "stepGuid": "f6a00001-0000-0000-0000-00000000f002",
+          "stepName": "body: append greeting line",
+          "parentGuid": "f6a00001-0000-0000-0000-00000000f001",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:calls}" }, "value": { "value": "{fn-var:greeting}, {fn-var:who}!" } }, "requiresChildSteps": false },
+          "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "f6a00001-0000-0000-0000-00000000f003",
+          "stepName": "body: append items count (proves list binding carried a real list)",
+          "parentGuid": "f6a00001-0000-0000-0000-00000000f001",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:counts}" }, "value": { "value": "{fn-var:items|count}" } }, "requiresChildSteps": false },
+          "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "f6a00001-0000-0000-0000-00000000f004",
+          "stepName": "body: write result to a bot variable (functions return via bot vars)",
+          "parentGuid": "f6a00001-0000-0000-0000-00000000f001",
+          "actionType": "action",
+          "actionOp": { "actionName": "set-variable", "actionPropValues": { "variableToken": { "value": "{var:lastGreeting}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{fn-var:greeting}" } }, "requiresChildSteps": false },
+          "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ],
+  "steps": [
+    {
+      "stepGuid": "f6a00001-0000-0000-0000-000000000001",
+      "stepName": "call 1: bind all inputs (literal, whole-token var, whole-token list)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "run-function", "actionPropValues": { "functionGuid": { "value": "f6a00001-0000-0000-0000-00000000f001" }, "functionName": { "value": "Greet" }, "inputBindings": { "value": { "greeting": "Hello", "who": "{var:person}", "items": "{var:seedList}" } } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f6a00001-0000-0000-0000-000000000002",
+      "stepName": "call 2: no bindings — every input falls back to its declared default",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "run-function", "actionPropValues": { "functionGuid": { "value": "f6a00001-0000-0000-0000-00000000f001" }, "functionName": { "value": "Greet" }, "inputBindings": { "value": {} } }, "requiresChildSteps": false },
+      "children": [], "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f6a00001-0000-0000-0000-000000000003",
+      "stepName": "call 3: mixed-text binding resolves in CALLER scope; empty-string binding = unbound",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "run-function", "actionPropValues": { "functionGuid": { "value": "f6a00001-0000-0000-0000-00000000f001" }, "functionName": { "value": "Greet" }, "inputBindings": { "value": { "greeting": "Hey", "who": "Dr. {var:person}", "items": "" } } }, "requiresChildSteps": false },
+      "children": [], "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "f6a00001-0000-0000-0000-000000000004",
+      "stepName": "call 4: unknown functionGuid — runtime failure, buried",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "run-function", "actionPropValues": { "functionGuid": { "value": "f6a00001-0000-0000-0000-00000000dead" }, "functionName": { "value": "Ghost" }, "inputBindings": { "value": {} } }, "requiresChildSteps": false },
+      "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    }
+  ]
+}

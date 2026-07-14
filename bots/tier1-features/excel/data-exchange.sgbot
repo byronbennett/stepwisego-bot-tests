@@ -1,0 +1,1091 @@
+{
+  "job": {
+    "jobName": "SGT excel — data exchange (datatable bridge, jsonl, workbook json, copy-range, clipboard)",
+    "jobGuid": "e5a00008-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbD",
+      "token": "{var:wbD}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbTarget",
+      "token": "{var:wbTarget}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "excelWorkbook",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dtSrc",
+      "token": "{var:dtSrc}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dt2",
+      "token": "{var:dt2}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dtNoHdr",
+      "token": "{var:dtNoHdr}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dtRegion",
+      "token": "{var:dtRegion}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "written",
+      "token": "{var:written}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dt2Cols",
+      "token": "{var:dt2Cols}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dt2Rows",
+      "token": "{var:dt2Rows}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dt2Cell",
+      "token": "{var:dt2Cell}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "noHdrCols",
+      "token": "{var:noHdrCols}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "noHdrCell",
+      "token": "{var:noHdrCell}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "regionRows",
+      "token": "{var:regionRows}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "jsonl",
+      "token": "{var:jsonl}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "wbJson",
+      "token": "{var:wbJson}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "copiedSameWb",
+      "token": "{var:copiedSameWb}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "copiedCrossWb",
+      "token": "{var:copiedCrossWb}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "pasted",
+      "token": "{var:pasted}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [
+        "SENTINEL"
+      ],
+      "defaultValue": [
+        "SENTINEL"
+      ],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "pasteTypeCheck",
+      "token": "{var:pasteTypeCheck}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "SENTINEL",
+      "defaultValue": "SENTINEL",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "dtBad",
+      "token": "{var:dtBad}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "dataTable",
+      "value": null,
+      "defaultValue": null,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "fdb5530a-d6b3-487f-ad65-0f470ed48f29",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "a99f9601-1702-4ef7-8fca-7554c67538ef",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000001",
+      "stepName": "build source DataTable via csv-read (canonical producer, dynamic typing → qty is a number)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "csv-read",
+        "actionPropValues": {
+          "csvContent": {
+            "value": "name,qty\nfoo,2\nbar,10"
+          },
+          "hasHeaders": {
+            "value": true
+          },
+          "typingMode": {
+            "value": "dynamic"
+          },
+          "dataTableVariable": {
+            "value": "{var:dtSrc}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000002",
+      "stepName": "create workbook, 2 sheets → wbD",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": 2
+          },
+          "storeToVariable": {
+            "value": "{var:wbD}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000003",
+      "stepName": "write-data-table at A1 (includeHeaders default true) → A1:B3",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-write-data-table",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "startCell": {
+            "value": "A1"
+          },
+          "dataTableVariable": {
+            "value": "{var:dtSrc}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000004",
+      "stepName": "read back A1:B3 with a DIFFERENT reader (get-values)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "range": {
+            "value": "A1:B3"
+          },
+          "storeToVariable": {
+            "value": "{var:written}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000005",
+      "stepName": "workbook-as-json snapshot (Sheet2 still empty → [])",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-workbook-as-json",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "storeToVariable": {
+            "value": "{var:wbJson}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 7,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000006",
+      "stepName": "sheet-as-jsonl (headers default) → two JSON lines keyed by header row",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-sheet-as-jsonl",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "storeToVariable": {
+            "value": "{var:jsonl}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 8,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000007",
+      "stepName": "get-range-as-datatable A1:B3 (includeHeaders default) → dt2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-range-as-datatable",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "range": {
+            "value": "A1:B3"
+          },
+          "storeToVariable": {
+            "value": "{var:dt2}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000008",
+      "stepName": "dt2 column names → [name, qty] (DataTable-plugin reader)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "dt-get-column-names",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dt2}"
+          },
+          "resultVariable": {
+            "value": "{var:dt2Cols}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000009",
+      "stepName": "dt2 row count → 2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "dt-get-row-count",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dt2}"
+          },
+          "resultVariable": {
+            "value": "{var:dt2Rows}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000010",
+      "stepName": "dt2[1].qty → 10 (full circle: csv-read → xl grid → DataTable)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "dt-get-value",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dt2}"
+          },
+          "rowIndex": {
+            "value": 1
+          },
+          "column": {
+            "value": "qty"
+          },
+          "resultVariable": {
+            "value": "{var:dt2Cell}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 12,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000011",
+      "stepName": "get-range-as-datatable A1:B2 includeHeaders=false → positional column names",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-range-as-datatable",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "range": {
+            "value": "A1:B2"
+          },
+          "includeHeaders": {
+            "value": false
+          },
+          "storeToVariable": {
+            "value": "{var:dtNoHdr}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 13,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000012",
+      "stepName": "no-header columns → ['0','1']",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "dt-get-column-names",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dtNoHdr}"
+          },
+          "resultVariable": {
+            "value": "{var:noHdrCols}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 14,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000013",
+      "stepName": "no-header dt[0].'1' → qty (the header row became a data row)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "dt-get-value",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dtNoHdr}"
+          },
+          "rowIndex": {
+            "value": 0
+          },
+          "column": {
+            "value": "1"
+          },
+          "resultVariable": {
+            "value": "{var:noHdrCell}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 15,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000014",
+      "stepName": "get-range-as-datatable from single cell A1 expandToRegion=true → same 2-row table",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-range-as-datatable",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "range": {
+            "value": "A1"
+          },
+          "expandToRegion": {
+            "value": true
+          },
+          "storeToVariable": {
+            "value": "{var:dtRegion}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 16,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000015",
+      "stepName": "region dt row count → 2",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "dt-get-row-count",
+        "actionPropValues": {
+          "dataTableVariable": {
+            "value": "{var:dtRegion}"
+          },
+          "resultVariable": {
+            "value": "{var:regionRows}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 17,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000016",
+      "stepName": "copy-range-to-range A1:B3 → Sheet2!C5 (same workbook, cross-sheet)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-copy-range-to-range",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "range": {
+            "value": "A1:B3"
+          },
+          "targetSheetName": {
+            "value": "Sheet2"
+          },
+          "targetRange": {
+            "value": "C5"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 18,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000017",
+      "stepName": "read Sheet2!C5:D7 → the copied block",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "C5:D7"
+          },
+          "storeToVariable": {
+            "value": "{var:copiedSameWb}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 19,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000018",
+      "stepName": "create a SECOND workbook → wbTarget",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-create-new-workbook",
+        "actionPropValues": {
+          "numberOfSheets": {
+            "value": 1
+          },
+          "storeToVariable": {
+            "value": "{var:wbTarget}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 20,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000019",
+      "stepName": "copy-range-to-range A1:B3 → wbTarget!A1 (CROSS-workbook)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-copy-range-to-range",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "range": {
+            "value": "A1:B3"
+          },
+          "targetWorkbookVariable": {
+            "value": "{var:wbTarget}"
+          },
+          "targetRange": {
+            "value": "A1"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 21,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000020",
+      "stepName": "read wbTarget A1:B3 → the block crossed workbook variables",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbTarget}"
+          },
+          "range": {
+            "value": "A1:B3"
+          },
+          "storeToVariable": {
+            "value": "{var:copiedCrossWb}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 22,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000021",
+      "stepName": "copy-to-clipboard Sheet1 A1:B2 (bot-scoped __xl_clipboard, OS clipboard untouched)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-copy-to-clipboard",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "range": {
+            "value": "A1:B2"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 23,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000022",
+      "stepName": "paste-from-clipboard at Sheet2!A10",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-paste-from-clipboard",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A10"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 24,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000023",
+      "stepName": "read Sheet2!A10:B11 → pasted block",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-values",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "A10:B11"
+          },
+          "storeToVariable": {
+            "value": "{var:pasted}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 25,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000024",
+      "stepName": "pasted B11 came through as a real formula-free NUMBER cell → get-formula returns the raw value",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-formula",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "sheetName": {
+            "value": "Sheet2"
+          },
+          "range": {
+            "value": "B11"
+          },
+          "storeToVariable": {
+            "value": "{var:pasteTypeCheck}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 26,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e5a00008-0000-0000-0000-000000000025",
+      "stepName": "get-range-as-datatable on missing sheet → error, buried",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "xl-get-range-as-datatable",
+        "actionPropValues": {
+          "workbookVariable": {
+            "value": "{var:wbD}"
+          },
+          "sheetName": {
+            "value": "Missing"
+          },
+          "range": {
+            "value": "A1:B2"
+          },
+          "storeToVariable": {
+            "value": "{var:dtBad}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 27,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

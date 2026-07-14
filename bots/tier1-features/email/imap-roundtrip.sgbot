@@ -1,0 +1,1191 @@
+{
+  "job": {
+    "jobName": "email-imap-roundtrip",
+    "jobGuid": "e13a0001-0000-4000-8000-000000000000",
+    "dateCreated": "2026-07-12T00:00:00Z",
+    "dateUpdated": "2026-07-12T00:00:00Z",
+    "userCanRun": true,
+    "userCanEdit": true,
+    "isPrivate": false,
+    "isActive": true,
+    "autoLogon": false,
+    "minLogging": false,
+    "runMinimized": false
+  },
+  "steps": [
+    {
+      "stepGuid": "c4d59f09-9321-44ed-a1c4-30b6347817c6",
+      "stepName": "Require shared variables: sgtMailAccount, sgtMailImapHost, sgtMailImapPort, sgtMailPassword, sgtMailSmtpHost, sgtMailSmtpPort",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": "sgtMailAccount\nsgtMailImapHost\nsgtMailImapPort\nsgtMailPassword\nsgtMailSmtpHost\nsgtMailSmtpPort"
+          },
+          "behavior": {
+            "value": "skip"
+          },
+          "message": {
+            "value": "See the stepwisego-bot-tests README (Shared variables) for setup."
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          },
+          "initializeSessionVars": {
+            "value": true
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "ccda351b-76f0-4478-ba42-5372f8ea64a5",
+      "stepName": "capture configured mail account",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": {
+          "variableToken": {
+            "value": "{var:mailAccountUsed}"
+          },
+          "valueSource": {
+            "value": "substitute"
+          },
+          "value": {
+            "value": "{svar:sgtMailAccount}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "e13a0001-0000-4000-8000-000000000001",
+      "stepName": "arrange: fetch INBOX (calibration + clean slate)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:calEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "scal",
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0001-0000-4000-8000-000000000002",
+      "stepName": "arrange: scan calibration + session stragglers",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:calEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "slc",
+      "children": [
+        {
+          "stepGuid": "e13a0001-0000-4000-8000-000000000003",
+          "stepName": "calibration email visible?",
+          "parentGuid": "e13a0001-0000-4000-8000-000000000002",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{slc:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-calibration]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 5,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0001-0000-4000-8000-000000000004",
+              "stepName": "set {var:calFound}",
+              "parentGuid": "e13a0001-0000-4000-8000-000000000003",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:calFound}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "1"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 6,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0001-0000-4000-8000-000000000005",
+          "stepName": "this session already present? (must not be)",
+          "parentGuid": "e13a0001-0000-4000-8000-000000000002",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{slc:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 7,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0001-0000-4000-8000-000000000006",
+              "stepName": "set {var:preCount}",
+              "parentGuid": "e13a0001-0000-4000-8000-000000000005",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:preCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:preCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 8,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stepGuid": "e13a0001-0000-4000-8000-000000000010",
+      "stepName": "act: send-email via SMTP (plain body, unicode subject)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "send-email",
+        "actionPropValues": {
+          "useConnectionVariable": {
+            "value": false
+          },
+          "smtpServer": {
+            "value": "{svar:sgtMailSmtpHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailSmtpPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "requiresAuth": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "from": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "to": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "cc": {
+            "value": ""
+          },
+          "bcc": {
+            "value": ""
+          },
+          "priority": {
+            "value": "normal"
+          },
+          "subject": {
+            "value": "[sgt-{var:_sgtSessionId}] roundtrip \u00dcn\u00efc\u00f8d\u00e9 \u6f22\u5b57"
+          },
+          "isHtml": {
+            "value": false
+          },
+          "body": {
+            "value": "sgt imap roundtrip body {var:_sgtSessionId}"
+          },
+          "attachments": {
+            "value": ""
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "ssnd",
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0001-0000-4000-8000-000000000020",
+      "stepName": "assert: bounded delivery poll (12 x 5s)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "count"
+          },
+          "count": {
+            "value": 12
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "spol",
+      "children": [
+        {
+          "stepGuid": "e13a0001-0000-4000-8000-000000000021",
+          "stepName": "already found? stop polling",
+          "parentGuid": "e13a0001-0000-4000-8000-000000000020",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{var:found}",
+                    "comparator": "equals",
+                    "rightOperand": "1"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 11,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0001-0000-4000-8000-000000000022",
+              "stepName": "exit poll",
+              "parentGuid": "e13a0001-0000-4000-8000-000000000021",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "exit-loop",
+                "actionPropValues": {},
+                "requiresChildSteps": false
+              },
+              "seq": 12,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "stepGuid": "e13a0001-0000-4000-8000-000000000023",
+          "stepName": "wait for delivery",
+          "parentGuid": "e13a0001-0000-4000-8000-000000000020",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "delay",
+            "actionPropValues": {
+              "delayType": {
+                "value": "seconds"
+              },
+              "duration": {
+                "value": 5
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 13,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": []
+        },
+        {
+          "stepGuid": "e13a0001-0000-4000-8000-000000000024",
+          "stepName": "fetch INBOX",
+          "parentGuid": "e13a0001-0000-4000-8000-000000000020",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "get-emails-imap",
+            "actionPropValues": {
+              "imapServer": {
+                "value": "{svar:sgtMailImapHost}"
+              },
+              "port": {
+                "value": "{svar:sgtMailImapPort}"
+              },
+              "useSsl": {
+                "value": true
+              },
+              "emailAccount": {
+                "value": "{svar:sgtMailAccount}"
+              },
+              "password": {
+                "value": "{svar:sgtMailPassword}"
+              },
+              "folder": {
+                "value": "INBOX"
+              },
+              "unreadOnly": {
+                "value": false
+              },
+              "markAsRead": {
+                "value": false
+              },
+              "maxEmails": {
+                "value": 50
+              },
+              "resultVariable": {
+                "value": "{var:inboxEmails}"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "seq": 14,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "stepPrefix": "sgf",
+          "children": []
+        },
+        {
+          "stepGuid": "e13a0001-0000-4000-8000-000000000025",
+          "stepName": "scan fetched",
+          "parentGuid": "e13a0001-0000-4000-8000-000000000020",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "loop",
+            "actionPropValues": {
+              "loopType": {
+                "value": "list"
+              },
+              "listVariable": {
+                "value": "{var:inboxEmails}"
+              },
+              "maxIterations": {
+                "value": 1000
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 15,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "stepPrefix": "sfl",
+          "children": [
+            {
+              "stepGuid": "e13a0001-0000-4000-8000-000000000026",
+              "stepName": "session marker match?",
+              "parentGuid": "e13a0001-0000-4000-8000-000000000025",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "if",
+                "actionPropValues": {
+                  "conditions": {
+                    "value": [
+                      {
+                        "logic": "and",
+                        "leftOperand": "{sfl:loopItem|subject}",
+                        "comparator": "contains",
+                        "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                      }
+                    ]
+                  }
+                },
+                "requiresChildSteps": true
+              },
+              "seq": 16,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": [
+                {
+                  "stepGuid": "e13a0001-0000-4000-8000-000000000027",
+                  "stepName": "set {var:foundSubject}",
+                  "parentGuid": "e13a0001-0000-4000-8000-000000000026",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundSubject}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|subject}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 17,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0001-0000-4000-8000-000000000028",
+                  "stepName": "set {var:foundSender}",
+                  "parentGuid": "e13a0001-0000-4000-8000-000000000026",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundSender}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|senderEmail}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 18,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0001-0000-4000-8000-000000000029",
+                  "stepName": "set {var:foundRecipients}",
+                  "parentGuid": "e13a0001-0000-4000-8000-000000000026",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundRecipients}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|recipients}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 19,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0001-0000-4000-8000-000000000030",
+                  "stepName": "set {var:foundIsRead}",
+                  "parentGuid": "e13a0001-0000-4000-8000-000000000026",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:foundIsRead}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "{sfl:loopItem|isRead}"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 20,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0001-0000-4000-8000-000000000031",
+                  "stepName": "set {var:found}",
+                  "parentGuid": "e13a0001-0000-4000-8000-000000000026",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "set-variable",
+                    "actionPropValues": {
+                      "variableToken": {
+                        "value": "{var:found}"
+                      },
+                      "valueSource": {
+                        "value": "substitute"
+                      },
+                      "value": {
+                        "value": "1"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 21,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0001-0000-4000-8000-000000000034",
+                  "stepName": "pin: subject equalsExact (in-bot, tokens resolve here)",
+                  "parentGuid": "e13a0001-0000-4000-8000-000000000026",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "if",
+                    "actionPropValues": {
+                      "conditions": {
+                        "value": [
+                          {
+                            "logic": "and",
+                            "leftOperand": "{sfl:loopItem|subject}",
+                            "comparator": "equalsExact",
+                            "rightOperand": "[sgt-{var:_sgtSessionId}] roundtrip \u00dcn\u00efc\u00f8d\u00e9 \u6f22\u5b57"
+                          }
+                        ]
+                      }
+                    },
+                    "requiresChildSteps": true
+                  },
+                  "seq": 22,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": [
+                    {
+                      "stepGuid": "e13a0001-0000-4000-8000-000000000035",
+                      "stepName": "set {var:subjectOk}",
+                      "parentGuid": "e13a0001-0000-4000-8000-000000000034",
+                      "actionType": "action",
+                      "actionOp": {
+                        "actionName": "set-variable",
+                        "actionPropValues": {
+                          "variableToken": {
+                            "value": "{var:subjectOk}"
+                          },
+                          "valueSource": {
+                            "value": "substitute"
+                          },
+                          "value": {
+                            "value": "1"
+                          }
+                        },
+                        "requiresChildSteps": false
+                      },
+                      "seq": 23,
+                      "status": "enabled",
+                      "isBreakpoint": false,
+                      "ignoreErrors": false,
+                      "comments": "",
+                      "backgroundColor": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "stepGuid": "e13a0001-0000-4000-8000-000000000032",
+                  "stepName": "delete the session message (targeted)",
+                  "parentGuid": "e13a0001-0000-4000-8000-000000000026",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "delete-single-email-imap",
+                    "actionPropValues": {
+                      "imapServer": {
+                        "value": "{svar:sgtMailImapHost}"
+                      },
+                      "port": {
+                        "value": "{svar:sgtMailImapPort}"
+                      },
+                      "useSsl": {
+                        "value": true
+                      },
+                      "emailAccount": {
+                        "value": "{svar:sgtMailAccount}"
+                      },
+                      "password": {
+                        "value": "{svar:sgtMailPassword}"
+                      },
+                      "emailVariable": {
+                        "value": "{sfl:loopItem}"
+                      },
+                      "folder": {
+                        "value": "INBOX"
+                      }
+                    },
+                    "requiresChildSteps": false
+                  },
+                  "seq": 24,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "stepPrefix": "sdel",
+                  "children": []
+                },
+                {
+                  "stepGuid": "e13a0001-0000-4000-8000-000000000033",
+                  "stepName": "exit scan",
+                  "parentGuid": "e13a0001-0000-4000-8000-000000000026",
+                  "actionType": "action",
+                  "actionOp": {
+                    "actionName": "exit-loop",
+                    "actionPropValues": {},
+                    "requiresChildSteps": false
+                  },
+                  "seq": 25,
+                  "status": "enabled",
+                  "isBreakpoint": false,
+                  "ignoreErrors": false,
+                  "comments": "",
+                  "backgroundColor": null,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stepGuid": "e13a0001-0000-4000-8000-000000000040",
+      "stepName": "cleanup: re-fetch INBOX",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "get-emails-imap",
+        "actionPropValues": {
+          "imapServer": {
+            "value": "{svar:sgtMailImapHost}"
+          },
+          "port": {
+            "value": "{svar:sgtMailImapPort}"
+          },
+          "useSsl": {
+            "value": true
+          },
+          "emailAccount": {
+            "value": "{svar:sgtMailAccount}"
+          },
+          "password": {
+            "value": "{svar:sgtMailPassword}"
+          },
+          "folder": {
+            "value": "INBOX"
+          },
+          "unreadOnly": {
+            "value": false
+          },
+          "markAsRead": {
+            "value": false
+          },
+          "maxEmails": {
+            "value": 50
+          },
+          "resultVariable": {
+            "value": "{var:afterEmails}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "seq": 26,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "saf",
+      "children": []
+    },
+    {
+      "stepGuid": "e13a0001-0000-4000-8000-000000000041",
+      "stepName": "cleanup: count session leftovers (expect 0)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "loop",
+        "actionPropValues": {
+          "loopType": {
+            "value": "list"
+          },
+          "listVariable": {
+            "value": "{var:afterEmails}"
+          },
+          "maxIterations": {
+            "value": 1000
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "seq": 27,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null,
+      "stepPrefix": "sal",
+      "children": [
+        {
+          "stepGuid": "e13a0001-0000-4000-8000-000000000042",
+          "stepName": "session message still present?",
+          "parentGuid": "e13a0001-0000-4000-8000-000000000041",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": {
+                "value": [
+                  {
+                    "logic": "and",
+                    "leftOperand": "{sal:loopItem|subject}",
+                    "comparator": "contains",
+                    "rightOperand": "[sgt-{var:_sgtSessionId}]"
+                  }
+                ]
+              }
+            },
+            "requiresChildSteps": true
+          },
+          "seq": 28,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null,
+          "children": [
+            {
+              "stepGuid": "e13a0001-0000-4000-8000-000000000043",
+              "stepName": "set {var:afterCount}",
+              "parentGuid": "e13a0001-0000-4000-8000-000000000042",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "set-variable",
+                "actionPropValues": {
+                  "variableToken": {
+                    "value": "{var:afterCount}"
+                  },
+                  "valueSource": {
+                    "value": "substitute"
+                  },
+                  "value": {
+                    "value": "{var:afterCount|add:1}"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 29,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": false,
+              "comments": "",
+              "backgroundColor": null,
+              "children": []
+            },
+            {
+              "stepGuid": "e13a0001-0000-4000-8000-000000000044",
+              "stepName": "self-heal: delete leftover",
+              "parentGuid": "e13a0001-0000-4000-8000-000000000042",
+              "actionType": "action",
+              "actionOp": {
+                "actionName": "delete-single-email-imap",
+                "actionPropValues": {
+                  "imapServer": {
+                    "value": "{svar:sgtMailImapHost}"
+                  },
+                  "port": {
+                    "value": "{svar:sgtMailImapPort}"
+                  },
+                  "useSsl": {
+                    "value": true
+                  },
+                  "emailAccount": {
+                    "value": "{svar:sgtMailAccount}"
+                  },
+                  "password": {
+                    "value": "{svar:sgtMailPassword}"
+                  },
+                  "emailVariable": {
+                    "value": "{sal:loopItem}"
+                  },
+                  "folder": {
+                    "value": "INBOX"
+                  }
+                },
+                "requiresChildSteps": false
+              },
+              "seq": 30,
+              "status": "enabled",
+              "isBreakpoint": false,
+              "ignoreErrors": true,
+              "comments": "",
+              "backgroundColor": null,
+              "stepPrefix": "shl",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "calEmails",
+      "token": "{var:calEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "inboxEmails",
+      "token": "{var:inboxEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "afterEmails",
+      "token": "{var:afterEmails}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfEmails",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "calFound",
+      "token": "{var:calFound}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "preCount",
+      "token": "{var:preCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "found",
+      "token": "{var:found}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "afterCount",
+      "token": "{var:afterCount}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "number",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundSubject",
+      "token": "{var:foundSubject}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundSender",
+      "token": "{var:foundSender}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundRecipients",
+      "token": "{var:foundRecipients}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "foundIsRead",
+      "token": "{var:foundIsRead}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "subjectOk",
+      "token": "{var:subjectOk}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "0",
+      "defaultValue": "0",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "mailAccountUsed",
+      "token": "{var:mailAccountUsed}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "botVersion": 1,
+  "stepwiseVersion": "0.2.176"
+}

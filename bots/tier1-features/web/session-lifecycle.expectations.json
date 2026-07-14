@@ -1,0 +1,156 @@
+{
+  "test": {
+    "id": "tier1-features/web/session-lifecycle",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "open-browser-session",
+        "close-browser-session",
+        "navigate-to-url",
+        "get-page-data",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/session-page.html"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "web-browser"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 60000
+  },
+  "predictions": [
+    {
+      "id": "session-id-is-uuid",
+      "kind": "round-trip",
+      "description": "open-browser-session stored a UUID session id in the sessionVariable bot parm",
+      "expr": {
+        "matches_regex": [
+          {
+            "$var": "browser"
+          },
+          "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        ]
+      }
+    },
+    {
+      "id": "session-id-step-output",
+      "kind": "round-trip",
+      "description": "the sessionId step output equals the value written into the sessionVariable parm",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a9e10001-0000-0000-0000-000000000001",
+              "name": "sessionId"
+            }
+          },
+          {
+            "$var": "browser"
+          }
+        ]
+      }
+    },
+    {
+      "id": "navigate-title-output",
+      "kind": "round-trip",
+      "description": "navigate-to-url reports the fixture page's <title> exactly",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a9e10001-0000-0000-0000-000000000002",
+              "name": "pageTitle"
+            }
+          },
+          "SGT Session Page"
+        ]
+      }
+    },
+    {
+      "id": "navigate-url-output",
+      "kind": "round-trip",
+      "description": "navigate-to-url reports the post-navigation file:// URL of the staged fixture",
+      "expr": {
+        "and": [
+          {
+            "starts_with": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10001-0000-0000-0000-000000000002",
+                  "name": "pageUrl"
+                }
+              },
+              "file://"
+            ]
+          },
+          {
+            "ends_with": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10001-0000-0000-0000-000000000002",
+                  "name": "pageUrl"
+                }
+              },
+              "/session-page.html"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-title-roundtrip",
+      "kind": "round-trip",
+      "description": "get-page-data PageTitle stores the exact title into the result variable (and step output)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "titleVal"
+              },
+              "SGT Session Page"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "$stepOut": {
+                  "stepGuid": "a9e10001-0000-0000-0000-000000000003",
+                  "name": "value"
+                }
+              },
+              "SGT Session Page"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "dead-session-does-not-clobber",
+      "kind": "round-trip",
+      "description": "the failed get-page-data on the closed session never wrote its result variable — titleVal keeps its step-3 value",
+      "expr": {
+        "equals": [
+          {
+            "$var": "titleVal"
+          },
+          "SGT Session Page"
+        ]
+      }
+    }
+  ]
+}

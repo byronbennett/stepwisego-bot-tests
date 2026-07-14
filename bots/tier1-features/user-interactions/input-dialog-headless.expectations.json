@@ -1,0 +1,75 @@
+{
+  "test": {
+    "id": "tier1-features/user-interactions/input-dialog-headless",
+    "tier": 1,
+    "synthesizedAt": "2026-07-10T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "input-dialog",
+        "set-variable",
+        "write-to-file",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "prompt-timed-out-not-hung",
+      "kind": "round-trip",
+      "description": "the headless contract: the unanswerable prompt FAILED the step at the harness's 5s deadline instead of hanging — the store-to variable kept its SENTINEL",
+      "expr": {
+        "equals": [
+          {
+            "$var": "answer"
+          },
+          "SENTINEL"
+        ]
+      }
+    },
+    {
+      "id": "run-continued",
+      "kind": "round-trip",
+      "description": "crumb variable + crumb file prove execution continued past the buried dialog",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "crumb"
+              },
+              "continued-after-dialog"
+            ]
+          },
+          {
+            "equals": [
+              {
+                "read_value": [
+                  {
+                    "file": "{var:_sgtScratchDir}/crumb.txt"
+                  }
+                ]
+              },
+              "crumb continued-after-dialog"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

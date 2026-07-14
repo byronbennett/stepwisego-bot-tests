@@ -1,0 +1,26 @@
+{
+  "job": {
+    "jobName": "SGT bot-category child — echo: upper-cases msgIn into msgOut",
+    "jobGuid": "b0700001-c100-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "msgIn", "token": "{var:msgIn}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "CHILD-DEFAULT-IN", "defaultValue": "CHILD-DEFAULT-IN", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "msgOut", "token": "{var:msgOut}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "CHILD-DEFAULT-OUT", "defaultValue": "CHILD-DEFAULT-OUT", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "b0700001-c100-0000-0000-000000000001",
+      "stepName": "msgOut = upper(msgIn)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "set-variable",
+        "actionPropValues": { "variableToken": { "value": "{var:msgOut}" }, "valueSource": { "value": "substitute" }, "value": { "value": "{var:msgIn|upper}" } },
+        "requiresChildSteps": false
+      },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}

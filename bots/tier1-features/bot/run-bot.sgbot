@@ -1,0 +1,384 @@
+{
+  "job": {
+    "jobName": "SGT bot — run-bot: spawn child agent (wait success, wait failure caught by handler, fire-and-forget)",
+    "jobGuid": "b0700002-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    {
+      "name": "_sgtSessionId",
+      "token": "{var:_sgtSessionId}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "_sgtScratchDir",
+      "token": "{var:_sgtScratchDir}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "PLACEHOLDER",
+      "defaultValue": "PLACEHOLDER",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "crumbs",
+      "token": "{var:crumbs}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "listOfTexts",
+      "value": [],
+      "defaultValue": [],
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "caught",
+      "token": "{var:caught}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "boolean",
+      "value": false,
+      "defaultValue": false,
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    },
+    {
+      "name": "sgtPreflight",
+      "token": "{var:sgtPreflight}",
+      "tokenPrefix": "var",
+      "valueSource": "bot",
+      "dataType": "text",
+      "value": "",
+      "defaultValue": "",
+      "isPrivate": false,
+      "isSecureText": false,
+      "saveValue": false,
+      "isStep": false
+    }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "b42f1e2d-d18a-48c3-9d0d-0bf45b242897",
+      "stepName": "Initialize test session",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "require-shared-vars",
+        "actionPropValues": {
+          "sharedVarNames": {
+            "value": ""
+          },
+          "initializeSessionVars": {
+            "value": true
+          },
+          "statusVariable": {
+            "value": "{var:sgtPreflight}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 1,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b7294ab4-f5c5-4d5a-9185-4a49f9be7910",
+      "stepName": "ensure scratch folder exists",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "create-folder",
+        "actionPropValues": {
+          "folderPath": {
+            "value": "{var:_sgtScratchDir}"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 2,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b0700002-0000-0000-0000-000000000001",
+      "stepName": "record start",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:crumbs}"
+          },
+          "value": {
+            "value": "start"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 3,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b0700002-0000-0000-0000-000000000002",
+      "stepName": "run child-echo, waitForCompletion=true (child exits 0 → step passes)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-bot",
+        "actionPropValues": {
+          "botSource": {
+            "value": "file"
+          },
+          "botFilePath": {
+            "value": "{var:_sgtScratchDir}/child-echo.sgbot"
+          },
+          "waitForCompletion": {
+            "value": true
+          },
+          "childMachineControl": {
+            "value": "no"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 4,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b0700002-0000-0000-0000-000000000003",
+      "stepName": "record after-wait-success",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:crumbs}"
+          },
+          "value": {
+            "value": "after-wait-success"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 5,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b0700002-0000-0000-0000-000000000004",
+      "stepName": "Error Handler around failing child (nonzero exit must propagate as a step failure)",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "seh",
+      "actionOp": {
+        "actionName": "error-handler",
+        "actionPropValues": {
+          "statusVariable": {
+            "value": "{var:caught}"
+          }
+        },
+        "requiresChildSteps": true
+      },
+      "children": [
+        {
+          "stepGuid": "b0700002-0000-0000-0000-000000000401",
+          "stepName": "run child-fail, waitForCompletion=true (child exits nonzero → step fails → handler catches)",
+          "parentGuid": "b0700002-0000-0000-0000-000000000004",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "run-bot",
+            "actionPropValues": {
+              "botSource": {
+                "value": "file"
+              },
+              "botFilePath": {
+                "value": "{var:_sgtScratchDir}/child-fail.sgbot"
+              },
+              "waitForCompletion": {
+                "value": true
+              },
+              "childMachineControl": {
+                "value": "no"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 7,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        },
+        {
+          "stepGuid": "b0700002-0000-0000-0000-000000000402",
+          "stepName": "record in-handler-after (must be skipped — failure aborts handler body)",
+          "parentGuid": "b0700002-0000-0000-0000-000000000004",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "add-to-list",
+            "actionPropValues": {
+              "listVariable": {
+                "value": "{var:crumbs}"
+              },
+              "value": {
+                "value": "in-handler-after"
+              },
+              "addPosition": {
+                "value": "end"
+              }
+            },
+            "requiresChildSteps": false
+          },
+          "children": [],
+          "seq": 8,
+          "status": "enabled",
+          "isBreakpoint": false,
+          "ignoreErrors": false,
+          "comments": "",
+          "backgroundColor": null
+        }
+      ],
+      "seq": 6,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": true,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b0700002-0000-0000-0000-000000000005",
+      "stepName": "record after-handler",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:crumbs}"
+          },
+          "value": {
+            "value": "after-handler"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 9,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b0700002-0000-0000-0000-000000000006",
+      "stepName": "run child-echo, waitForCompletion=false (fire-and-forget: step passes immediately)",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "run-bot",
+        "actionPropValues": {
+          "botSource": {
+            "value": "file"
+          },
+          "botFilePath": {
+            "value": "{var:_sgtScratchDir}/child-echo.sgbot"
+          },
+          "waitForCompletion": {
+            "value": false
+          },
+          "childMachineControl": {
+            "value": "no"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 10,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    },
+    {
+      "stepGuid": "b0700002-0000-0000-0000-000000000007",
+      "stepName": "record done",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": {
+        "actionName": "add-to-list",
+        "actionPropValues": {
+          "listVariable": {
+            "value": "{var:crumbs}"
+          },
+          "value": {
+            "value": "done"
+          },
+          "addPosition": {
+            "value": "end"
+          }
+        },
+        "requiresChildSteps": false
+      },
+      "children": [],
+      "seq": 11,
+      "status": "enabled",
+      "isBreakpoint": false,
+      "ignoreErrors": false,
+      "comments": "",
+      "backgroundColor": null
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "test": {
+    "id": "tier1-features/database/odbc-roundtrip",
+    "tier": 1,
+    "synthesizedAt": "2026-07-09T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "db-sql-modify-odbc",
+        "db-sql-select-odbc",
+        "db-stored-proc-odbc",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [
+      {
+        "schema": "sgtester",
+        "tableTemplate": "sgt_t6_odbc"
+      }
+    ],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_DEV_ODBC_CONNECTION_MSSQL",
+      "SGT_DEV_DB_CONNECTION"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "insert-bound-affected",
+      "kind": "round-trip",
+      "description": "INSERT via positional ? binds reports affectedRows=1",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10004-0000-0000-0000-000000000003",
+              "name": "affectedRows"
+            }
+          },
+          1
+        ]
+      }
+    },
+    {
+      "id": "insert-plain-affected",
+      "kind": "round-trip",
+      "description": "plain multi-row INSERT reports affectedRows=2",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10004-0000-0000-0000-000000000004",
+              "name": "affectedRows"
+            }
+          },
+          2
+        ]
+      }
+    },
+    {
+      "id": "select-bound-rowcount",
+      "kind": "round-trip",
+      "description": "SELECT with a ? bind (n > 15) returns the 2 matching rows (Bob, Cara)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10004-0000-0000-0000-000000000007",
+              "name": "rowCount"
+            }
+          },
+          2
+        ]
+      }
+    },
+    {
+      "id": "storedproc-rowcount",
+      "kind": "round-trip",
+      "description": "{CALL} of the created proc with minN=20 returns its 2-row recordset (n >= 20: Bob, Cara)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "a6d10004-0000-0000-0000-000000000008",
+              "name": "rowCount"
+            }
+          },
+          2
+        ]
+      }
+    },
+    {
+      "id": "oob-cell-bound-insert",
+      "kind": "round-trip",
+      "description": "out-of-band witness: the ?-bound INSERT landed its NVarChar bind (id=1 → Alice), read back via the non-ODBC dev reader",
+      "expr": {
+        "equals": [
+          {
+            "read_cell": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "sgt_t6_odbc"
+                }
+              },
+              {
+                "id": 1
+              },
+              "name"
+            ]
+          },
+          "Alice"
+        ]
+      }
+    },
+    {
+      "id": "oob-row-count",
+      "kind": "round-trip",
+      "description": "out-of-band witness: table holds exactly 3 rows (1 bound + 2 plain)",
+      "expr": {
+        "equals": [
+          {
+            "count_rows_in": [
+              {
+                "table": {
+                  "schema": "sgtester",
+                  "table": "sgt_t6_odbc"
+                }
+              }
+            ]
+          },
+          3
+        ]
+      }
+    }
+  ]
+}

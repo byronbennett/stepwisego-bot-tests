@@ -1,0 +1,158 @@
+{
+  "test": {
+    "id": "tier1-features/ftp/plain-ftp-folders-and-deletes",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "run-script",
+        "get-file-contents",
+        "write-to-file",
+        "ftp-create-folder",
+        "ftp-check-folder-exists",
+        "ftp-upload-files",
+        "ftp-get-folder-names",
+        "set-variable",
+        "ftp-delete-files",
+        "ftp-check-file-exists",
+        "ftp-delete-folder",
+        "require-shared-vars",
+        "create-folder"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [
+      "fixtures/ftp-server.mjs"
+    ],
+    "sharePointSandboxLists": [],
+    "serialGroup": "sftp"
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 0,
+    "maxDurationMs": 45000
+  },
+  "predictions": [
+    {
+      "id": "server-launched",
+      "kind": "round-trip",
+      "description": "the launcher confirmed the detached ftp-srv listener was up before the bot proceeded",
+      "expr": {
+        "equals": [
+          {
+            "$var": "launchOut"
+          },
+          "server-up"
+        ]
+      }
+    },
+    {
+      "id": "nested-create-witnessed",
+      "kind": "external-write",
+      "description": "one ftp-create-folder call built the whole nested /keep/nested/deep path: in-bot CWD probe + the jail directory itself (this tree is never deleted, so it survives to post-run evaluation)",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "folderExists"
+              },
+              true
+            ]
+          },
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/ftp-root/keep/nested/deep"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "single-file-upload",
+      "kind": "round-trip",
+      "description": "the single-file localPath branch pushed exactly 1 file over plain FTP (byte fidelity is triple A's job; the file is deliberately deleted later in this bot)",
+      "expr": {
+        "equals": [
+          {
+            "$stepOut": {
+              "stepGuid": "aa18ff02-0000-0000-0000-000000000007",
+              "name": "uploadedCount"
+            }
+          },
+          1
+        ]
+      }
+    },
+    {
+      "id": "root-folder-listing",
+      "kind": "round-trip",
+      "description": "ftp-get-folder-names on / sees exactly the two trees (dir-type LIST parse on the ftp branch; sorted compare — order unspecified)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "foldersSorted"
+          },
+          "keep,work"
+        ]
+      }
+    },
+    {
+      "id": "delete-files-witnessed",
+      "kind": "round-trip",
+      "description": "wildcard DELE removed the sentinel the upload provably placed (uploadedCount=1 calibrates; the SIZE probe then reports absent)",
+      "expr": {
+        "equals": [
+          {
+            "$var": "fileGone"
+          },
+          false
+        ]
+      }
+    },
+    {
+      "id": "recursive-delete-folder",
+      "kind": "external-write",
+      "description": "delete-folder on /work/a (which still held inner/) removed the whole subtree but left /work itself — in-bot CWD probe + the jail",
+      "expr": {
+        "and": [
+          {
+            "equals": [
+              {
+                "$var": "folderGone"
+              },
+              false
+            ]
+          },
+          {
+            "not": [
+              {
+                "file_exists": [
+                  {
+                    "file": "{var:_sgtScratchDir}/ftp-root/work/a"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "file_exists": [
+              {
+                "file": "{var:_sgtScratchDir}/ftp-root/work"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

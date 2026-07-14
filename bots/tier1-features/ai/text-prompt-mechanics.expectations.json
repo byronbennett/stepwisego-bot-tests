@@ -1,0 +1,93 @@
+{
+  "test": {
+    "id": "tier1-features/ai/text-prompt-mechanics",
+    "tier": 1,
+    "synthesizedAt": "2026-07-12T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": [
+        "ai-text-prompt",
+        "require-shared-vars"
+      ],
+      "pipeFns": [],
+      "patterns": []
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": [],
+    "requiresEnv": [
+      "SGT_AI_OPENAI_API_KEY"
+    ],
+    "serialGroup": "ai-openai",
+    "engines": [
+      "in-process",
+      "agent"
+    ]
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 1,
+    "maxDurationMs": 90000
+  },
+  "predictions": [
+    {
+      "id": "pred-apple",
+      "kind": "round-trip",
+      "description": "forced-output prompt at temperature 0 returned exactly APPLE (the one sanctioned near-exact content check)",
+      "expr": {
+        "matches_regex": [
+          {
+            "$var": "out1"
+          },
+          "^\\s*APPLE\\s*$"
+        ]
+      }
+    },
+    {
+      "id": "pred-echo",
+      "kind": "round-trip",
+      "description": "{var:echoMarker} was token-substituted into the prompt before send \u2014 the echo contains the marker",
+      "expr": {
+        "contains": [
+          {
+            "$var": "out2"
+          },
+          "sgt-echo-9174"
+        ]
+      }
+    },
+    {
+      "id": "pred-token-accounting",
+      "kind": "round-trip",
+      "description": "token accounting step outputs populated (totalTokens > 0)",
+      "expr": {
+        "greater_than": [
+          {
+            "$stepOut": {
+              "stepGuid": "a13b0001-0000-4000-8000-000000000002",
+              "name": "totalTokens"
+            }
+          },
+          0
+        ]
+      }
+    },
+    {
+      "id": "pred-bad-model-no-output",
+      "kind": "round-trip",
+      "description": "invalid model errored (smoke expectErrorCount=1) and wrote nothing to its result variable",
+      "expr": {
+        "equals": [
+          {
+            "$var": "out3"
+          },
+          ""
+        ]
+      }
+    }
+  ]
+}
