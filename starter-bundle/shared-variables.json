@@ -1,0 +1,101 @@
+{
+  "type": "stepwisego-shared-variables",
+  "version": 1,
+  "category": "Regression Tests",
+  "variables": [
+    {
+      "name": "sgtDbMssql",
+      "dataType": "dbConnection",
+      "description": "SQL Server connection for the database tests. Point it at a scratch database — tests create and drop their own session-named tables."
+    },
+    {
+      "name": "sgtDbPg",
+      "dataType": "dbConnection",
+      "description": "PostgreSQL connection for the database tests. Scratch database only."
+    },
+    {
+      "name": "sgtDbMysql",
+      "dataType": "dbConnection",
+      "description": "MySQL connection for the database tests. Scratch database only."
+    },
+    {
+      "name": "sgtOdbcMssql",
+      "dataType": "text",
+      "isSecureText": true,
+      "description": "Full DSN-less ODBC connection string for SQL Server (requires the Microsoft ODBC driver installed locally)."
+    },
+    {
+      "name": "sgtSharePoint",
+      "dataType": "sharepointConnection",
+      "description": "SharePoint Online connection (Microsoft Entra app registration) pointed at a dedicated TEST site — the tests create and delete lists, items, files, and folders on it. Certificate auth unlocks the SP-REST-backed actions; client-secret-only covers the Graph-backed ones."
+    },
+    {
+      "name": "sgtMailGraph",
+      "dataType": "emailConnection",
+      "description": "Microsoft 365 / Graph mail connection (app registration with Mail permissions) for the Graph email tests. Use a dedicated test mailbox."
+    },
+    {
+      "name": "sgtMailGraphUpn",
+      "dataType": "text",
+      "description": "UPN (email address) of the Graph test mailbox — must match the mailbox sgtMailGraph points at."
+    },
+    {
+      "name": "sgtMailGraphBulkFolderId",
+      "dataType": "text",
+      "description": "Graph folder ID of a staging folder in the test mailbox used by the folder-scoped bulk-delete leg. Graph addresses custom folders by ID, not display name. Create a folder (e.g. 'bot-tests-bulk') and look up its ID via Graph Explorer."
+    },
+    {
+      "name": "sgtMailAccount",
+      "dataType": "text",
+      "description": "Address of a DEDICATED IMAP/SMTP test mailbox. The tests send mail to it, move messages, flag them, and DELETE them — never point this at a personal or production inbox."
+    },
+    {
+      "name": "sgtMailPassword",
+      "dataType": "text",
+      "isSecureText": true,
+      "description": "App password for the test mailbox (e.g. a Gmail app password). Never a real account password."
+    },
+    {
+      "name": "sgtMailImapHost",
+      "dataType": "text",
+      "description": "IMAP host of the test mailbox."
+    },
+    {
+      "name": "sgtMailImapPort",
+      "dataType": "text",
+      "description": "IMAP port (TLS)."
+    },
+    {
+      "name": "sgtMailSmtpHost",
+      "dataType": "text",
+      "description": "SMTP host of the test mailbox."
+    },
+    {
+      "name": "sgtMailSmtpPort",
+      "dataType": "text",
+      "description": "SMTP port (TLS)."
+    },
+    {
+      "name": "sgtAiOpenAi",
+      "dataType": "text",
+      "isSecureText": true,
+      "description": "OpenAI credential for the AI tests, as a JSON payload. The tests make a handful of small completions per run (pennies of usage)."
+    },
+    {
+      "name": "sgtAiOllama",
+      "dataType": "text",
+      "description": "Local Ollama credential for the AI tests, as a JSON payload. Optional — only needed if you want the local-model legs."
+    },
+    {
+      "name": "sgtHostedPrintDir",
+      "dataType": "text",
+      "description": "Windows folder the tier-3 Excel print-to-file test writes its PDF into. Windows + desktop Excel only."
+    },
+    {
+      "name": "sgtPathToken",
+      "dataType": "text",
+      "value": "svar-path-segment",
+      "description": "Fixture value for the shared-variable mechanics test (int-11). Not a credential — keep the pre-filled value."
+    }
+  ]
+}

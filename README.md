@@ -22,36 +22,55 @@ meaningful first run with zero configuration.
 
 Each release of this suite targets a specific StepwiseGO version. The
 `VERSION` file (and the git tag on this repository) says which one — this
-copy targets **StepwiseGO v0.2.191**. Use the suite version that matches
+copy targets **StepwiseGO v0.2.192**. Use the suite version that matches
 your installed StepwiseGO version, or the closest one below it. Bots may use
 actions introduced in the stated version; on older installations those tests
 will error rather than skip.
 
 ## Quick start
 
+### Option A — the installer bot (recommended)
+
+This repository ships an installer bot you paste straight into the editor —
+it downloads the suite from here and sets everything up in the right place.
+
 1. Install the StepwiseGO desktop app and open it.
 2. In **Settings → Storage**, note your **Bot Files Folder** (set one if you
    haven't).
-3. Create a folder named `RegressionTests` inside your Bot Files Folder.
-4. Copy the **contents** of this repository's `bots/` folder into
+3. On GitHub, open
+   [`install/InstallRegressionTests.stepwise-steps.txt`](install/InstallRegressionTests.stepwise-steps.txt)
+   and copy the entire file (use the **Copy raw file** button — the copy
+   icon in the file toolbar).
+4. In StepwiseGO, create a new bot, click once on the **Steps** panel so it
+   has focus, and press **Ctrl+V** (macOS: **Cmd+V**). The installer's steps
+   and variables appear in the tree.
+5. Save the bot **into your Bot Files Folder** (e.g. as
+   `InstallRegressionTests`) — the installer creates `RegressionTests` next
+   to wherever it is saved. (Run it unsaved and it falls back to your
+   Documents folder.)
+6. Run the bot. It downloads the newest suite from this repository into
+   `RegressionTests` and cleans up after itself. Re-running it later
+   **upgrades the suite in place** — it replaces the suite's folders but
+   never touches your `.runs` results or your own files.
+7. Create the suite's shared variables — see
+   [Create the variables](#create-the-variables-copypaste) below.
+8. Open any test bot and run it — or run `RunAllRegressionTests.sgbot` to
+   execute the whole suite. The master runner writes a `results.csv` (one
+   row per test: PASS / FAIL / SKIPPED) into a `.runs/<run-id>/suite/`
+   folder under `RegressionTests` and logs a summary line at the end.
+
+If you've already downloaded this repository, `install/InstallRegressionTests.sgbot`
+is the same installer as an importable bot file.
+
+### Option B — manual copy
+
+1. Create a folder named `RegressionTests` inside your Bot Files Folder.
+2. Copy the **contents** of this repository's `bots/` folder into
    `RegressionTests` — you should end up with
    `RegressionTests/RunAllRegressionTests.sgbot`,
    `RegressionTests/tier1-features/`, and so on. (Copy the contents, not the
    repo root — the editor lists bots only a few folder levels deep.)
-5. In the **Shared Variables** page (activity bar), click **Import Bundle**
-   and select `starter-bundle/stepwisego-bot-tests.svarbundle` from this
-   repository. When asked for the bundle password, enter `stepwisego`, then
-   click **Save All**. This creates every test variable — empty — under the
-   **Regression Tests** category, kept separate from your own variables (use
-   the category filter to hide or show them).
-6. Fill in values for the resources you have (see the table below and the
-   guides in `docs/`). Leave the rest empty — tests that need them will
-   **skip with a warning** instead of failing.
-7. Open any test bot and run it — or run `RunAllRegressionTests.sgbot` to
-   execute the whole suite.
-8. Read the results: the master runner writes a `results.csv` (one row per
-   test: PASS / FAIL / SKIPPED) into a `.runs/<run-id>/suite/` folder under
-   `RegressionTests`, and logs a summary line at the end of the run.
+3. Continue from step 7 above.
 
 ## Shared variables
 
@@ -59,6 +78,39 @@ All external connections flow through StepwiseGO **Shared Variables** —
 encrypted, machine-local, never written into the bots themselves. The bots
 reference them as `{svar:name}` tokens; you supply the values once, in the
 editor.
+
+### Create the variables (copy/paste)
+
+1. In StepwiseGO, open the **Shared Variables** page (the key icon in the
+   activity bar).
+2. First time only: click **Set Password** and choose a Shared Variable
+   Password — it encrypts every value at rest on your machine.
+3. On GitHub, open
+   [`starter-bundle/shared-variables.json`](starter-bundle/shared-variables.json)
+   and copy the entire file (**Copy raw file** button).
+4. Back in StepwiseGO, click the **Import** (upload) icon, choose the
+   **Paste JSON** tab, paste, and click **Import**.
+5. The variables appear in a yellow **Pending imports** panel — click
+   **Save All**. If you already have variables with the same names, you'll
+   be asked per variable whether to overwrite or skip.
+6. Every suite variable now exists under the **Regression Tests** category,
+   kept separate from your own variables (use the category filter to hide or
+   show them). Variables with no value yet show an **orange &#42;** next to
+   their name — they are not configured, and tests that need them will
+   **skip** (not fail) until you fill them in.
+7. Fill in values for the resources you have (see the table below and the
+   guides in `docs/`): double-click a variable to edit it —
+   connection-typed variables (database, SharePoint, email) open a
+   structured form. The orange &#42; disappears once a value is saved.
+8. Leave the rest empty — tests that need them will **skip with a warning**
+   naming exactly what is missing.
+
+Alternative: click **Import** → **Bundle file** and select
+`starter-bundle/stepwisego-bot-tests.svarbundle` (bundle password
+`stepwisego`, not your Shared Variable Password) — same variables, same
+pending-imports flow.
+
+### The variables
 
 | Name | Type | Used by | What to put in it |
 |---|---|---|---|
@@ -83,9 +135,6 @@ editor.
 
 Notes:
 
-- Connection-typed variables (database, SharePoint, email) open a structured
-  editor in StepwiseGO — double-click the variable on the Shared Variables
-  page to fill it in.
 - `sgtPathToken` ships pre-filled — it is a fixture value for the
   shared-variable mechanics test, not a credential. Keep it as-is.
 - Secure values (passwords, API keys) are encrypted at rest with your Shared
@@ -155,7 +204,8 @@ bots/
   tier1-features/<category>/    one folder per action category
   tier2-shapes/int-NN-*/        integration chains (multi-action scenarios)
   tier3-hosted/                 Windows + desktop Excel only
-starter-bundle/                 the import-me variables bundle
+install/                        the installer bot (paste payload + .sgbot)
+starter-bundle/                 the variables to import (paste JSON + bundle)
 docs/                           per-resource setup + troubleshooting + test index
 VERSION                         the StepwiseGO version this suite targets
 ```
@@ -174,6 +224,9 @@ themselves.
 | Symptom | Likely cause |
 |---|---|
 | Test errors instead of skipping | StepwiseGO older than this suite's `VERSION` — upgrade, or check out the matching suite tag |
+| Ctrl+V doesn't paste the installer | Click the Steps panel first (focus must not be in a text field or dialog), and copy the **entire** payload file — the text must start with `STEPWISE_CLIPBOARD_V1:` |
+| No "Paste JSON" tab in the import dialog | StepwiseGO older than this suite's `VERSION` — upgrade, or use the bundle file instead |
+| A variable shows an orange &#42; | It has no value yet — double-click to configure it, or leave it empty (tests that need it skip) |
 | Bundle import rejects the password | Use the bundle password `stepwisego` (not your Shared Variable Password) |
 | Bots missing from the editor's list | The repo root was copied instead of `bots/` **contents** — the extra folder level pushes bots past the editor's folder depth |
 | Database tests fail on permissions | The account can't CREATE/DROP tables in the scratch database |
