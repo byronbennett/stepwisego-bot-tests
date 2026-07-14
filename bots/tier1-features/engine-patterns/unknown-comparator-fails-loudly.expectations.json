@@ -1,0 +1,55 @@
+{
+  "test": {
+    "id": "tier1-features/engine-patterns/unknown-comparator-fails-loudly",
+    "tier": 1,
+    "synthesizedAt": "2026-07-14T00:00:00Z",
+    "sourceBot": null,
+    "vocabularyTargets": {
+      "actions": ["if", "else", "error-handler", "add-to-list"],
+      "pipeFns": [],
+      "patterns": ["if-else", "error-handler"]
+    },
+    "synthesisModel": null,
+    "synthesisRevisions": 0
+  },
+  "envelope": {
+    "ephemeralDbTables": [],
+    "fixtureRefs": [],
+    "sharePointSandboxLists": []
+  },
+  "smoke": {
+    "expectComplete": true,
+    "expectErrorCount": 1,
+    "maxDurationMs": 30000
+  },
+  "predictions": [
+    {
+      "id": "neither-branch-runs",
+      "kind": "round-trip",
+      "description": "An If whose comparator the engine does not implement ('isNull') FAILS the step — it does not quietly answer false. The witness is that the ELSE branch is absent from the crumbs too: a false condition would have run it, so 'else-ran' is exactly the crumb the old silent-false behavior produced. Neither 'then-ran' nor 'else-ran' appears; the error handler catches the failure and abandons its remaining children ('in-handler-after' skipped); the run continues at the handler's sibling.",
+      "expr": {
+        "equals": [
+          { "$var": "crumbs" },
+          ["start", "after-handler"]
+        ]
+      }
+    },
+    {
+      "id": "handler-caught-it",
+      "kind": "round-trip",
+      "description": "The bad comparator raises a real step error — the enclosing error-handler's statusVariable flips to true (it is initialized to false on entry).",
+      "expr": { "equals": [ { "$var": "errHappened" }, true ] }
+    },
+    {
+      "id": "error-names-the-comparator",
+      "kind": "round-trip",
+      "description": "The failure message names the offending comparator, so an author can see WHICH comparator is unsupported rather than debugging a branch that mysteriously never runs.",
+      "expr": {
+        "contains": [
+          { "$stepOut": { "stepGuid": "e1a00009-0000-0000-0000-000000000002", "name": "errorMessage" } },
+          "Unknown comparator 'isNull'"
+        ]
+      }
+    }
+  ]
+}

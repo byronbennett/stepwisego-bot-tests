@@ -26,11 +26,11 @@
     {
       "id": "comparator-truth-table",
       "kind": "round-trip",
-      "description": "One breadcrumb per If in bot order pins the whole truth table: numeric greaterThan ('10'>'9' numerically, lexically false); loose equals is numeric ('0.30'=='0.3'), case-insensitive ('CSV'=='csv'), and date-instant ('2/12/2026'=='2026-02-12'); equalsExact is literal ('CSV'!=='csv' → else); isEmpty/hasValue on empty string; multi-row and/or evaluates LEFT-TO-RIGHT with no precedence ((a=a AND b=c) OR x=x → true); contains on a list variable is item-wise case-insensitive membership; nested if runs outer-then then inner-else; isNumber('12.5'); ordering comparators on non-numeric non-date strings are FALSE (no lexical ordering) → else branch",
+      "description": "One breadcrumb per If in bot order pins the whole truth table: numeric greaterThan ('10'>'9' numerically, lexically false); loose equals is numeric ('0.30'=='0.3'), case-insensitive ('CSV'=='csv'), and date-instant ('2/12/2026'=='2026-02-12'); equalsExact is literal ('CSV'!=='csv' → else); isEmpty/hasValue on empty string; multi-row and/or evaluates LEFT-TO-RIGHT with no precedence ((a=a AND b=c) OR x=x → true); contains on a list variable is item-wise case-insensitive membership; nested if runs outer-then then inner-else; isNumber('12.5'); ordering comparators on non-numeric non-date strings are FALSE (no lexical ordering) → else branch. Then the empty-vs-blank split, on a whitespace-only value '   ': isBlank TRUE (trim-aware) but isEmpty FALSE (→ else) and hasValue TRUE — so isBlank is the only comparator that catches it — and isNotBlank FALSE (→ else); '' is blank as well; '0' is NOT blank (isNotBlank TRUE — a falsy-looking value still counts as a value). isBlank/isNotBlank were declared in the Comparator union but never implemented, so before this they silently evaluated FALSE and every one of these Ifs took the else branch.",
       "expr": {
         "equals": [
           { "$var": "crumbs" },
-          ["num-gt", "loose-num-eq", "ci-eq", "exact-miss", "date-eq", "empty-yes", "hasvalue-miss", "andor-ltr", "list-contains", "outer-then", "inner-else", "isnum", "str-gt-false"]
+          ["num-gt", "loose-num-eq", "ci-eq", "exact-miss", "date-eq", "empty-yes", "hasvalue-miss", "andor-ltr", "list-contains", "outer-then", "inner-else", "isnum", "str-gt-false", "spaces-blank", "spaces-not-empty", "spaces-hasvalue", "spaces-notblank-false", "empty-blank", "zero-notblank"]
         ]
       }
     }

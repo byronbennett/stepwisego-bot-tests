@@ -22,14 +22,20 @@ branching over financial data.
 | 10 | nested if (outer true, inner false → inner else) | this triple | outer-then, inner-else |
 | 11 | isNumber | this triple | isnum |
 | 12 | ordering on non-numeric strings is false (NOT lexical) | this triple | str-gt-false |
-| 13 | notEquals/notContains/startsWith/endsWith/matchesRegex/isNull/isBlank/isDate/containsKey/containsValue/fileExists family | deferred: logic-variables Tier 1 campaign | — |
+| 13 | isBlank on whitespace-only "   " → TRUE (trim-aware) | this triple | spaces-blank |
+| 14 | isEmpty on whitespace-only "   " → FALSE (not empty) → else | this triple | spaces-not-empty |
+| 15 | hasValue on whitespace-only "   " → TRUE (it has a value) | this triple | spaces-hasvalue |
+| 16 | isNotBlank on whitespace-only "   " → FALSE → else | this triple | spaces-notblank-false |
+| 17 | isBlank on "" → TRUE (empty is blank as well) | this triple | empty-blank |
+| 18 | isNotBlank on "0" → TRUE (a falsy-looking value is still a value) | this triple | zero-notblank |
+| 19 | notEquals/notContains/startsWith/endsWith/matchesRegex/isDate/containsKey/containsValue/fileExists family | deferred: logic-variables Tier 1 campaign | — |
 
 ## Witnesses
 
 - In-bot: every branch decision materializes as a breadcrumb from either the
   then-branch or an explicit `else` child — a wrong branch produces a wrong
   crumb, not a silent absence.
-- Out-of-band: one deep-equal over the full ordered crumb list pins all 13
+- Out-of-band: one deep-equal over the full ordered crumb list pins all 18
   decisions and their order in a single prediction.
 
 ## Expected values derived from
@@ -48,3 +54,18 @@ behavior. Probe-confirmed before commit.
   they do NOT fall back to lexical comparison.
 - Date-instant equality interprets naive dates in the bot time zone; both
   operands here are date-only so the check is zone-stable.
+- Pinned: the empty-vs-blank split. `isEmpty`/`hasValue` test for exactly `""`;
+  `isBlank`/`isNotBlank` trim first, so a whitespace-only value is blank but
+  NOT empty. Permutations 13–16 are the four-way contrast on the same `"   "`
+  value — the case a bot hits when a cell, a CSV field, or a CRLF-split line
+  looks empty to a human and isn't. Checks 13–18 are also the regression guard
+  for the original defect: `isBlank`/`isNotBlank` were declared in the
+  `Comparator` union but never implemented in `condition-evaluator`, so they
+  silently evaluated FALSE and every one of these Ifs took the else branch. An
+  unimplemented comparator now throws instead (covered by unit tests in
+  `packages/shared/src/engine/__tests__/condition-evaluator.test.ts`, which a
+  bot-level triple can't witness — a throwing step fails the run rather than
+  leaving a crumb).
+- There is no `isNull`: after token substitution every operand is a string, so
+  a null variable and an empty one are indistinguishable. `isNull`/`isNotNull`
+  were removed from the union rather than faked.

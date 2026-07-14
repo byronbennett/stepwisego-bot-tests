@@ -47,6 +47,7 @@ variables it requires (empty = zero-setup).
 | tier1-features/engine-patterns/loop-signals | SGT engine-patterns — loop signals (while, exit-loop, continue-loop) | none — runs out of the box |
 | tier1-features/engine-patterns/token-gbl-var | SGT engine-patterns — {gbl-var:} token pattern (read, pipe functions, write-back via set-variable, var/gbl-var namespaces are distinct) | none — runs out of the box |
 | tier1-features/engine-patterns/token-substitution | SGT engine-patterns — token substitution (chaining, verbatim, pipes, missing var) | none — runs out of the box |
+| tier1-features/engine-patterns/unknown-comparator-fails-loudly | SGT engine-patterns — an unimplemented comparator fails the step (never silently false) | none — runs out of the box |
 | tier1-features/excel/cell-io | SGT excel — cell IO (set/get value, set/get values, clear-values, row/column reads, typing, offsets) | none — runs out of the box |
 | tier1-features/excel/data-exchange | SGT excel — data exchange (datatable bridge, jsonl, workbook json, copy-range, clipboard) | none — runs out of the box |
 | tier1-features/excel/formulas | SGT excel — formulas (set/get formula, formualizer compute, cached-result-first) | none — runs out of the box |

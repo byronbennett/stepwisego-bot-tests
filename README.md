@@ -1,7 +1,7 @@
 # StepwiseGO Bot Tests
 
 This repository contains the regression test suite the StepwiseGO team runs
-against every release — 136 self-checking bots covering step
+against every release — 137 self-checking bots covering step
 actions, engine patterns, and integration chains across the product. Run
 them on your own machine to:
 
@@ -13,7 +13,7 @@ them on your own machine to:
   preconditions, verifies its results with independent witnesses, and cleans
   up after itself (ARRANGE → ACT → ASSERT → CLEANUP).
 
-**28 of the bots need no external infrastructure at all**
+**29 of the bots need no external infrastructure at all**
 — files, Excel, JSON/XML/CSV, regex, logic, scripting; the FTP and HTTP
 tests spin up local servers on the fly. You can clone this repo and get a
 meaningful first run with zero configuration.
@@ -22,7 +22,7 @@ meaningful first run with zero configuration.
 
 Each release of this suite targets a specific StepwiseGO version. The
 `VERSION` file (and the git tag on this repository) says which one — this
-copy targets **StepwiseGO v0.2.192**. Use the suite version that matches
+copy targets **StepwiseGO v0.2.194**. Use the suite version that matches
 your installed StepwiseGO version, or the closest one below it. Bots may use
 actions introduced in the stated version; on older installations those tests
 will error rather than skip.

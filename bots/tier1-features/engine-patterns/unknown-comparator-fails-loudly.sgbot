@@ -1,0 +1,93 @@
+{
+  "job": {
+    "jobName": "SGT engine-patterns — an unimplemented comparator fails the step (never silently false)",
+    "jobGuid": "e1a00009-0000-0000-0000-000000000000",
+    "botVersion": 1
+  },
+  "parms": [
+    { "name": "_sgtSessionId", "token": "{var:_sgtSessionId}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "PLACEHOLDER", "defaultValue": "PLACEHOLDER", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "crumbs", "token": "{var:crumbs}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "listOfTexts", "value": [], "defaultValue": [], "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "errHappened", "token": "{var:errHappened}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "boolean", "value": false, "defaultValue": false, "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false },
+    { "name": "someText", "token": "{var:someText}", "tokenPrefix": "var", "valueSource": "bot", "dataType": "text", "value": "hello", "defaultValue": "hello", "isPrivate": false, "isSecureText": false, "saveValue": false, "isStep": false }
+  ],
+  "files": [],
+  "steps": [
+    {
+      "stepGuid": "e1a00009-0000-0000-0000-000000000001",
+      "stepName": "record start",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "start" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 1, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00009-0000-0000-0000-000000000002",
+      "stepName": "Error Handler (catches the bad If so the run can finish and be asserted on)",
+      "parentGuid": null,
+      "actionType": "action",
+      "stepPrefix": "seh",
+      "actionOp": { "actionName": "error-handler", "actionPropValues": { "statusVariable": { "value": "{var:errHappened}" } }, "requiresChildSteps": true },
+      "children": [
+        {
+          "stepGuid": "e1a00009-0000-0000-0000-000000000003",
+          "stepName": "If someText isNull — 'isNull' is NOT a comparator the engine implements",
+          "parentGuid": "e1a00009-0000-0000-0000-000000000002",
+          "actionType": "action",
+          "actionOp": {
+            "actionName": "if",
+            "actionPropValues": {
+              "conditions": { "value": [ { "logic": "and", "leftOperand": "{var:someText}", "comparator": "isNull", "rightOperand": "" } ] }
+            },
+            "requiresChildSteps": true
+          },
+          "children": [
+            {
+              "stepGuid": "e1a00009-0000-0000-0000-000000000004",
+              "stepName": "then: then-ran (must NOT run)",
+              "parentGuid": "e1a00009-0000-0000-0000-000000000003",
+              "actionType": "action",
+              "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "then-ran" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+              "children": [], "seq": 4, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            },
+            {
+              "stepGuid": "e1a00009-0000-0000-0000-000000000005",
+              "stepName": "Else",
+              "parentGuid": "e1a00009-0000-0000-0000-000000000003",
+              "actionType": "action",
+              "actionOp": { "actionName": "else", "actionPropValues": {}, "requiresChildSteps": true },
+              "children": [
+                {
+                  "stepGuid": "e1a00009-0000-0000-0000-000000000006",
+                  "stepName": "else: else-ran (must NOT run either — this is the crumb the OLD silent-false behavior produced)",
+                  "parentGuid": "e1a00009-0000-0000-0000-000000000005",
+                  "actionType": "action",
+                  "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "else-ran" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+                  "children": [], "seq": 6, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+                }
+              ],
+              "seq": 5, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+            }
+          ],
+          "seq": 3, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        },
+        {
+          "stepGuid": "e1a00009-0000-0000-0000-000000000007",
+          "stepName": "record in-handler-after (must be skipped — the handler abandons its remaining children)",
+          "parentGuid": "e1a00009-0000-0000-0000-000000000002",
+          "actionType": "action",
+          "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "in-handler-after" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+          "children": [], "seq": 7, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+        }
+      ],
+      "seq": 2, "status": "enabled", "isBreakpoint": false, "ignoreErrors": true, "comments": "", "backgroundColor": null
+    },
+    {
+      "stepGuid": "e1a00009-0000-0000-0000-000000000008",
+      "stepName": "record after-handler",
+      "parentGuid": null,
+      "actionType": "action",
+      "actionOp": { "actionName": "add-to-list", "actionPropValues": { "listVariable": { "value": "{var:crumbs}" }, "value": { "value": "after-handler" }, "addPosition": { "value": "end" } }, "requiresChildSteps": false },
+      "children": [], "seq": 8, "status": "enabled", "isBreakpoint": false, "ignoreErrors": false, "comments": "", "backgroundColor": null
+    }
+  ]
+}
