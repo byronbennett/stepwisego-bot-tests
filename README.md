@@ -22,7 +22,7 @@ meaningful first run with zero configuration.
 
 Each release of this suite targets a specific StepwiseGO version. The
 `VERSION` file (and the git tag on this repository) says which one — this
-copy targets **StepwiseGO v0.2.190**. Use the suite version that matches
+copy targets **StepwiseGO v0.2.191**. Use the suite version that matches
 your installed StepwiseGO version, or the closest one below it. Bots may use
 actions introduced in the stated version; on older installations those tests
 will error rather than skip.
